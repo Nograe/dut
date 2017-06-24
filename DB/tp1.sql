@@ -1,45 +1,40 @@
-CREATE TABLE Buveur(
-       NumBuveur INTEGER PRIMARY KEY,
-       Nom VARCHAR(25) NOT NULL,
-       Prenom VARCHAR(25) NOT NULL,
-       Ville VARCHAR(30)
-       );
-CREATE TABLE Viticulteur(
-       NumVitic INTEGER PRIMARY KEY,
-       Nom VARCHAR(25) NOT NULL,
-       Prenom VARCHAR(25),
-       Ville VARCHAR(30) NOT NULL
-       );
-CREATE TABLE Vin(
-       NumVin INTEGER PRIMARY KEY,
-       Cru VARCHAR(15) NOT NULL,
-       Millesime INTEGER NOT NULL,
-       Region VARCHAR(15) NOT NULL,
-       NumVitic INTEGER NOT NULL,
-       FOREIGN KEY (NumVitic) REFERENCES Viticulteur (NumVitic)
-       );
-CREATE TABLE Commande(
-       NumCom INTEGER PRIMARY KEY NOT NULL,
-       NumBuveur INTEGER NOT NULL,
-       NumVin INTEGER NOT NULL,
-       Qtte INTEGER NOT NULL,
-       DateCom DATE NOT NULL,
-       FOREIGN KEY (NumVin) REFERENCES Vin (NumVin),
-       FOREIGN KEY (NumBuveur) REFERENCES Buveur (NumBuveur)
-       );
-CREATE TABLE Livraison(
-       NumCom INTEGER NOT NULL,
-       Qtte INTEGER NOT NULL,
-       DateLiv DATE NOT NULL,
-       PRIMARY KEY (NumCom, DateLiv),
-       FOREIGN KEY (NumCom) REFERENCES Commande (NumCom)
-       );
-<<<<<<< HEAD
+CREATE TABLE Buveur ( 
+       NumBuveur INTEGER PRIMARY KEY, 
+       Nom VARCHAR(25) NOT NULL, 
+       Prenom VARCHAR(25) NOT NULL, 
+       Ville VARCHAR(30) );
 
-=======
-       
-       
->>>>>>> a095d6c37ec85eeb7788b4790b15b6f7edbab814
+CREATE TABLE Viticulteur ( 
+       NumVitic INTEGER PRIMARY KEY, 
+       Nom VARCHAR(25) NOT NULL, 
+       Prenom VARCHAR(25), 
+       Ville VARCHAR(30) NOT NULL );
+
+CREATE TABLE Vin ( 
+	NumVin INTEGER PRIMARY KEY, 
+	Cru VARCHAR(15) NOT NULL, 
+	Millesime INTEGER NOT NULL, 
+	Region VARCHAR(15) NOT NULL, 
+	NumVitic INTEGER NOT NULL, 
+	FOREIGN KEY (NumVitic) REFERENCES Viticulteur (NumVitic) );
+
+CREATE TABLE Commande  ( 
+	NumCom INTEGER PRIMARY KEY, 
+	NumBuveur INTEGER NOT NULL, 
+	NumVin INTEGER NOT NULL,	
+	Qtte INTEGER NOT NULL, 
+	DateCom DATE NOT NULL,
+	FOREIGN KEY (NumBuveur) REFERENCES Buveur (NumBuveur),
+	FOREIGN KEY (NumVin) REFERENCES Vin (NumVin) );
+
+CREATE TABLE Livraison  ( 
+	NumCom INTEGER NOT NULL, 
+	Qtte INTEGER NOT NULL, 
+	DateLiv DATE NOT NULL, 
+	PRIMARY KEY (NumCom, DateLiv) ,
+	FOREIGN KEY (NumCom) REFERENCES Commande (NumCom) );
+
+
 INSERT INTO Buveur (NumBuveur ,Nom ,Prenom , Ville ) 
        VALUES (1400 ,'Gautier' ,'Robert' ,'Paris' );
 
@@ -215,8 +210,4 @@ INSERT INTO Livraison (NumCom ,Qtte ,DateLiv )
     VALUES (6 ,8 ,STR_TO_DATE('28-12-1987', '%d-%m-%Y') );
 
 INSERT INTO Livraison (NumCom ,Qtte ,DateLiv ) 
-<<<<<<< HEAD
     VALUES (7 ,3 ,STR_TO_DATE('30-12-1987', '%d-%m-%Y') );
-=======
-    VALUES (7 ,3 ,STR_TO_DATE('30-12-1987', '%d-%m-%Y') );
->>>>>>> a095d6c37ec85eeb7788b4790b15b6f7edbab814

@@ -1,0 +1,13 @@
+1.select * from Buveur;
+2.select NumBuveur, Nom, Ville from Buveur;
+3.select NumBuveur, Nom from Buveur where Ville='Paris';
+4.select NumBuveur, Nom from Buveur where Ville='Paris' or Ville='Macon';
+5.select <distinct> Cru from Vin where Region='Loire';
+6.select distinct Ville from Buveur;
+7.select NumCom from Commande where Qtte between 10 and 50;
+7.1.select NumCom from Commande where Qtte>10 and Qtte<50;
+8.select NumCom from Commande where DateCom>'1987-12-01';
+9.select NumVin,Cru from Vin where Cru like 'B%';
+10.select NumVitic,Nom from Viticulteur where Nom like '%lin%';
+11.select NumBuveur,Nom from Buveur where Ville!='Paris' and Ville!='Macon';
+11.1.select NumBuveur,Nom from Buveur where Ville not in ('Paris','Macon');
