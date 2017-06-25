@@ -26,8 +26,10 @@ n : égal à n
 -executable
 -false : toujours faux
 -links n : fichier ayant 'n' liens
+
 -mmin n : fichier dont les données ont été modifiées il y a 'n' minutes
 -mtime n : fichier dont les données ont été modifiées il y a 'n' *24heures
+
 -name " " : recherche par nom
 -name pattern
 -newer file : fichier modifié plus récemment que 'file'
@@ -35,6 +37,7 @@ n : égal à n
 -perm mode : fichier dont les autorisations d'accès sont fixées au 'mode' indiqué (ex: 731)
 -perm -mode : fichier ayant au moins les autorisations de 'mode'
 -perm /mode : fichier ayant certaines des autorisations de 'mode'
+-perm +mode : fichier ayant au maximum les autorisations de 'mode'
 -readable
 -size n [cwbkMG] : fichier de taille 'n' (ex: -size +10M )
 -true: renvoie toujours vrai

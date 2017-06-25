@@ -12,6 +12,7 @@ select distinct B1.Ville, B1.NumBuveur, B2.Ville, B2.NumBuveur from Buveur as B1
 7.1 select B2.Ville, B2.NumBuveur from Buveur as B1, Buveur as B2 where B1.NumBuveur=1400 and B1.Ville=B2.Ville <>;
 7.1.1 
 7.2 select * from Buveur where Ville=any (select Ville from Buveur where NumBuveur=1400) <and NumBuveur!=1400>;
+8 
 
 SQL92
 1 select <distinct> Buveur.NumBuveur,Nom,Ville from Buveur natural join Commande;
