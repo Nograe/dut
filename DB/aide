@@ -1,0 +1,80 @@
++-----------+----------+----------+------------+Buveur	
+| NumBuveur | Nom      | Prenom   | Ville      |	
++-----------+----------+----------+------------+	
+|      1100 | Combet   | Aline    | Dijon      |	SHOW TABLES;
+|      1200 | Maury    | Francois | Paris      |	
+|      1300 | Jamet    | Florence | Versailles |	DELETE FROM Table WHERE Champ=?;
+|      1350 | Gravinel | Sophie   | Nice       |
+|      1400 | Gautier  | Robert   | Paris      |	TRUNCATE Table;	Supprimer table
+|      1450 | Pascal   | Yves     | Macon      |	
+|      1500 | Fradet   | Philippe | Macon      |	DESCRIBE Table; Affiche champs de Table
+|      1600 | Dupond   | Alain    | Paris      |
+|      1700 | Combes   | Edouard  | Paris      |
+|      1750 | Durieux  | Blaise   | Chinon     |
++-----------+----------+----------+------------+
+
++--------+-----------+--------+------+------------+Commande
+| NumCom | NumBuveur | NumVin | Qtte | DateCom    |
++--------+-----------+--------+------+------------+
+|      1 |      1600 |     90 |    6 | 1987-06-10 |
+|      2 |      1500 |    100 |   18 | 1987-11-20 |
+|      3 |      1500 |     88 |   24 | 1987-09-10 |
+|      4 |      1600 |    175 |    6 | 1987-02-12 |
+|      5 |      1300 |    140 |    3 | 1987-03-18 |
+|      6 |      1100 |    140 |    8 | 1987-12-24 |
+|      7 |      1200 |     88 |    3 | 1987-12-24 |
+|      8 |      1400 |    140 |   12 | 1988-01-10 |
+|     11 |      1200 |    140 |   12 | 1989-12-12 |
+|     12 |      1100 |    120 |    6 | 1989-12-13 |
++--------+-----------+--------+------+------------+
+
++--------+------+------------+Livraison
+| NumCom | Qtte | DateLiv    |
++--------+------+------------+
+|      1 |    6 | 1987-07-15 |
+|      2 |   12 | 1987-08-30 |
+|      2 |    6 | 1987-09-27 |
+|      3 |   12 | 1987-11-20 |
+|      4 |    6 | 1987-12-20 |
+|      6 |    8 | 1987-12-28 |
+|      7 |    3 | 1987-12-30 |
++--------+------+------------+
+
++--------+----------------+-----------+-----------+----------+Vin
+| NumVin | Cru            | Millesime | Region    | NumVitic |
++--------+----------------+-----------+-----------+----------+
+|     80 | Sauternes      |      1982 | Bordeaux  |       18 |
+|     84 | Pauillac       |      1982 | Bordeaux  |       21 |
+|     85 | Chinon         |      1983 | Loire     |        5 |
+|     86 | Chinon         |      1978 | Loire     |        4 |
+|     88 | Chambertin     |      1980 | Bourgogne |        1 |
+|     90 | Margaux        |      1978 | Bordeaux  |       22 |
+|     98 | Moulis         |      1981 | Bordeaux  |       23 |
+|    100 | Champagne Brut |      1988 | Champagne |       15 |
+|    120 | Chinon         |      1985 | Loire     |        4 |
+|    128 | Bourgueil      |      1985 | Loire     |        4 |
+|    140 | Pommard        |      1976 | Bourgogne |       10 |
+|    150 | Monthelie      |      1978 | Bourgogne |       10 |
+|    160 | Bourgueil      |      1984 | Loire     |        3 |
+|    170 | Bouzy          |      1984 | Champagne |       15 |
+|    175 | Meursault      |      1980 | Bourgogne |       16 |
+|    190 | Saint Emilion  |      1981 | Bordeaux  |       18 |
++--------+----------------+-----------+-----------+----------+
+
++----------+-----------------------+---------+--------------------+Viticulteur
+| NumVitic | Nom                   | Prenom  | Ville              |
++----------+-----------------------+---------+--------------------+
+|        1 | Moulin                | Jean    | Macon              |
+|        3 | Morin                 | Jules   | Benais             |
+|        4 | Vallee                | Claude  | Saint Nicolas      |
+|        5 | Coulis Dutheil        | NULL    | Chinon             |
+|       10 | Parent                | Pierre  | Pommard            |
+|       15 | Barancourt            | NULL    | Tours sur Marne    |
+|       16 | Jadot                 | Louis   | Beaune             |
+|       18 | Medeville             | Charles | Preignac           |
+|       20 | Tissot                | Jacques | Arbois             |
+|       21 | Lynch-Bages           | NULL    | Pauillac           |
+|       22 | Chateau Monbrison     | NULL    | Margaux            |
+|       23 | Chateau Moulin A Vent | NULL    | Castelnau de Medoc |
++----------+-----------------------+---------+--------------------+
+
