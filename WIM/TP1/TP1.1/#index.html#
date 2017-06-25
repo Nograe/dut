@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="src/style.css">
+    <Link rel="icon" href="src/icon.png" />
+    <script language="JavaScript">
+        var txt="Le site dont vous êtes le héros - ";
+        var vitesse=80;
+        var refresh=null;
+        function scroll_title() {
+        document.title=txt;
+        txt=txt.substring(1,txt.length)+txt.charAt(0);
+        refresh=setTimeout("scroll_title()",vitesse);}
+        scroll_title();
+    </script>
+  </head>
+  <body style="background-color:#222C28">
+    <header>
+      <h1 class="center">Introduction</h1>
+      <p class="center">
+        <i>Où voulez-vous aller ?</i>
+      </p>
+    </header>
+    <img class="map" src="src/choix.png" width="1280px" height="720px" alt="choix" usemap="#choixmap" hidefocus="true">
+    <map name="choixmap">
+        <area target="" alt="choice_forest" title="choice_forest" href="forest.html" coords="543,715,1277,715,1278,266,1268,241,1231,227,1183,234,1164,223,1141,212,1111,216,1101,229,1079,240,1051,251,1028,281,1058,312,1089,341,1022,371,982,384,963,428,938,446,933,471,1013,532,916,556,873,523,662,573,661,592,654,615,646,641,612,677" shape="poly">
+        <area target="" alt="choice_mountain" title="choice_mountain" href="mountain.html" coords="1,652,494,565,528,546,525,518,611,479,756,471,884,449,866,410,972,398,1014,372,966,356,733,210,698,174,646,118,605,156,547,216,513,281,486,266,461,271,436,266,339,284,255,243,216,249,135,293,67,270,0,264" shape="poly">
+        <area target="" alt="choice_mer" title="choice_sea" href="mer.html" coords="2,653,1,718,85,679,354,689,426,719,534,719,611,675,642,643,659,591,658,576,868,521,915,553,1009,532,929,467,933,444,961,426,972,400,871,411,889,445,616,483,530,520,533,545,489,567" shape="poly">
+    </map>
+  </body>
+</html>
