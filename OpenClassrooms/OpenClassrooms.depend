@@ -1,6 +1,0 @@
-# depslib dependency file v1.0
-1510179186 source:c:\users\matthieu\desktop\dutinfo\openclassrooms\main.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-
