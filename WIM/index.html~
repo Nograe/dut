@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Le site dont vous êtes le héros</title>
+    <!--<link rel="stylesheet" href="style.css">-->
+  </head>
+  <body>
+    <header>
+      <h1>Introduction</h1>
+    </header>
+    <i>Vous êtes dans un labyrinthe></i>
+  </body>
+</html>

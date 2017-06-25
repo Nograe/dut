@@ -1,0 +1,40 @@
+section
+{
+    margin-left:10cm;
+    margin-top:1cm;
+}
+header {
+    margin: auto;
+}
+nav {
+    position:fixed;
+    width:10cm;
+}
+aside {
+    float:right;
+    margin-left:80%;
+}
+article {
+    margin-right:20%;
+}
+body {
+    	color: #444;
+	background:#f4f4f4;
+	padding:0 0 2em 0;
+	margin:0;
+}
+h1 {
+	font-size: 4em;
+	font-weight: normal;
+	text-shadow: 1px 1px 1px #cccccc;
+	border-bottom:2px dotted #ccc;
+	padding:0.8em;
+}
+
+h2 {
+	font-size: 2em;
+	font-weight:bold;
+	margin: 1.5em 0 .8em 0;
+	color: #444;
+	text-shadow: 1px 1px 1px #cccccc;
+}
