@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int strlength(char* str)
+{
+
+  int i=0;
+
+  while(str[i]!='\0'){
+    i++;
+  }
+
+  return i;
+}
+
+void reverse(int tab[],int taille) {
+    int i;
+    int temp;
+
+    for(i=0; i<taille/2; i++) {
+        temp=tab[i];
+        tab[i]=tab[taille-i-1];
+        tab[taille-i-1]=temp;
+    }
+}
+
+void printtab(int tab[],int taille) {
+
+    int i;
+
+    for(i=0; i<taille; i++) {
+      printf("%d",tab[i]);
+    }
+    printf("\n");
+}
+
+
+char* inttostr(int nb){
+  
+  char *chain;
+  int tab[1000]={0};
+  int i=0,j=0;
+
+  while(nb!=0){
+    tab[i]=nb%10;
+    nb=nb/10;
+    i++;
+  }
+  reverse(tab,i);
+
+  i++;
+  chain=malloc(sizeof(char) * i);
+  printf("Alloué: %d\n",i);
+  
+  for(j=0;j<i;j++)
+    chain[j]=tab[j]+'0';
+
+  chain[i-1]='\0';
+  return chain;
+
+}
+
+void main(){
+  char *test=inttostr(50);
+  int i;
+  printf("%s\n",test);
+
+  for(i=0; i<strlength(test)+1; i++)
+    printf("%c",test[i]);
+
+}
