@@ -84,16 +84,12 @@ int main(int argc, char* argv[]) {
   if(cj1==cj2 && cj1==0){
     if(x1>x2){
       printf("Player1 wins\n");
-      return 0;
-    } if(x1==x2 && y1>y2){
+    }else if(x1==x2 && y1>y2){
       printf("Player1 wins\n");
-      return 0;
-    } if(x1==x2 && y1==y2 && z1>z2){
+    }else if(x1==x2 && y1==y2 && z1>z2){
       printf("Player1 wins\n");
-      return 0;
-    } else{
+    }else if(z1!=z2){
       printf("Player2 wins");
-      return 0;
     }
   }
 
