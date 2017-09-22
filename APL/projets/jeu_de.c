@@ -59,40 +59,41 @@ int main(int argc, char* argv[]) {
 //Comparaisons
   //Combo spéciaux (1)
   if(cj1>cj2){
-    printf("1Player1 wins\n");
+    printf("Player1 wins\n");
   } if(cj2>cj1){
-    printf("2Player2 wins\n");
+    printf("Player2 wins\n");
   }
   //Combo suites et fiches (2-3)
   if(cj1==cj2 && cj1>0 && cj1<3){
     if(x1>x2){
-      printf("3Player1 wins\n");
+      printf("Player1 wins\n");
     } if(x2>x1){
-      printf("4Player2 wins\n");
+      printf("Player2 wins\n");
     }
   }
   //Combo triplets (4)
   if(cj1==cj2 && cj1==3){
     if(x1>x2){
-      printf("5Player1 wins\n");
+      printf("Player1 wins\n");
     } else if(x2>x1){
-      printf("6Player2 wins\n");
+      printf("Player2 wins\n");
     }
   }
 
   //Combo quelconque (5)
   if(cj1==cj2 && cj1==0){
     if(x1>x2){
-      printf("7Player1 wins\n");
+      printf("Player1 wins\n");
       return 0;
     } if(x1==x2 && y1>y2){
-      printf("8Player1 wins\n");
+      printf("Player1 wins\n");
       return 0;
     } if(x1==x2 && y1==y2 && z1>z2){
-      printf("9Player1 wins\n");
+      printf("Player1 wins\n");
       return 0;
     } else{
-      printf("10Player2 wins");
+      printf("Player2 wins");
+      return 0;
     }
   }
 
