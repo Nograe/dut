@@ -2,6 +2,6 @@
 <img src="files/readme.png">
 </p>
 
-# dutinfo
-## 2017/2018
-
+# Algorithmique/Programmation
+# Architecture/Systèmes/Réseaux
+# Base de Données
