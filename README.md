@@ -9,4 +9,4 @@
 ## - [TP](ASR/)
 ## - [Homework](ASR/HOMEWORK/)
 # [Bases de Données](DB/)
-- [**Clock**](modules/default/clock)
+- [Clock](modules/default/clock)
