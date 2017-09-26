@@ -3,7 +3,7 @@
 </p>
 
 # [Algorithmique et Programmation](APL/)
-- [**Cours**](APL/)
+- [***Cours***](APL/)
 ## - [*Projets*](APL/projets/)
 # [Architecture, Systèmes et Réseaux](ASR/)
 ## - [*TP*](ASR/)
