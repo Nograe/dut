@@ -19,9 +19,18 @@ CREATE TABLE Vin(
        FOREIGN KEY (NumVitic) REFERENCES Viticulteur (NumVitic),
        );
 CREATE TABLE Commande(
-       NumCom INTEGER
-       NumBuveur INTEGER
-       NumVin INTEGER
-       Qtte INTEGER
-       DateCom DATE
+       NumCom INTEGER PRIMARY KEY NOT NULL,
+       NumBuveur INTEGER NOT NULL,
+       NumVin INTEGER NOT NULL,
+       Qtte INTEGER NOT NULL,
+       DateCom DATE NOT NULL,
+       FOREIGN KEY (NumVin) REFERENCES Vin (NumVin),
+       FOREIGN KEY (NumBuveur) REFERENCES Buveur (NumBuveur),
+       );
 CREATE TABLE Livraison(
+       NumCom INTEGER KEY NOT NULL,
+       Qtte INTEGER NOT NULL,
+       DateLiv DATE NOT NULL,
+       PRIMARY KEY (NumCom, DateLiv),
+       FOREIGN KEY (NumCom) REFERENCES Commande (NumCom),
+       );
