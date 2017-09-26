@@ -28,7 +28,7 @@ CREATE TABLE Commande(
        FOREIGN KEY (NumBuveur) REFERENCES Buveur (NumBuveur)
        );
 CREATE TABLE Livraison(
-       NumCom INTEGER KEY NOT NULL,
+       NumCom INTEGER NOT NULL,
        Qtte INTEGER NOT NULL,
        DateLiv DATE NOT NULL,
        PRIMARY KEY (NumCom, DateLiv),
