@@ -2,6 +2,6 @@
 <img src="files/readme.png">
 </p>
 
-# Algorithmique et Programmation
-# Architecture, Systèmes et Réseaux
-# Bases de Données
+# Algorithmique et Programmation(APL/)
+# Architecture, Systèmes et Réseaux(ASR/)
+# Bases de Données(DB)
