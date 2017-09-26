@@ -16,7 +16,7 @@ CREATE TABLE Vin(
        Millesime INTEGER NOT NULL,
        Region VARCHAR(15) NOT NULL,
        NumVitic INTEGER NOT NULL,
-       FOREIGN KEY (NumVitic) REFERENCES Viticulteur (NumVitic),
+       FOREIGN KEY (NumVitic) REFERENCES Viticulteur (NumVitic)
        );
 CREATE TABLE Commande(
        NumCom INTEGER PRIMARY KEY NOT NULL,
@@ -25,12 +25,12 @@ CREATE TABLE Commande(
        Qtte INTEGER NOT NULL,
        DateCom DATE NOT NULL,
        FOREIGN KEY (NumVin) REFERENCES Vin (NumVin),
-       FOREIGN KEY (NumBuveur) REFERENCES Buveur (NumBuveur),
+       FOREIGN KEY (NumBuveur) REFERENCES Buveur (NumBuveur)
        );
 CREATE TABLE Livraison(
        NumCom INTEGER KEY NOT NULL,
        Qtte INTEGER NOT NULL,
        DateLiv DATE NOT NULL,
        PRIMARY KEY (NumCom, DateLiv),
-       FOREIGN KEY (NumCom) REFERENCES Commande (NumCom),
+       FOREIGN KEY (NumCom) REFERENCES Commande (NumCom)
        );
