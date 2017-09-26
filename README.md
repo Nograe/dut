@@ -4,8 +4,8 @@
 
 # [Algorithmique et Programmation](APL/)
 ## [Cours](APL/)
-## [Projets] (APL/projets/)
+## [Projets](APL/projets/)
 # [Architecture, Systèmes et Réseaux](ASR/)
-## [TP] (ASR/)
-## [Homework] (ASR/HOMEWORK/)
+## [TP](ASR/)
+## [Homework](ASR/HOMEWORK/)
 # [Bases de Données](DB/)
