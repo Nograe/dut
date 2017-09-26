@@ -2,6 +2,6 @@
 <img src="files/readme.png">
 </p>
 
-# Algorithmique/Programmation
-# Architecture/Systèmes/Réseaux
-# Base de Données
+# Algorithmique et Programmation
+# Architecture, Systèmes et Réseaux
+# Bases de Données
