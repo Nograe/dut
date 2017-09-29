@@ -21,7 +21,7 @@ int tri(int p1, int p2, int p3, int p4, int p5, char t1, char t2, char t3, char 
 }
 
 int combi(int p1, int p2, int p3, int p4, int p5, char t1, char t2, char t3, char t4, char t5){
-    //Carré, full et brelan
+    //Carrï¿½, full et brelan
     if(p1==p2==p3==p4 || p2==p3==p4==p5){
         return 8;
     }
@@ -53,6 +53,47 @@ int combi(int p1, int p2, int p3, int p4, int p5, char t1, char t2, char t3, cha
     if(t1==t2 && t1==t3 && t1==t4 && t1==t5){ return 9;}
 }
 
+int trisimple(int j1, int j2, int v1, int v2, int v3, int v4, int v5, int vv1, int vv2, int vv3, int vv4, int vv5){
+    int var=0;
+    if(v1<v2){
+    var=v1; v1=v2; v2=var;
+    } if(v2<v3){
+    var=v2; v2=v3; v3=var;
+    } if(v3<v4){
+    var=v3; v3=v4; v4=var;
+    } if(v4<v5){
+    var=v4; v4=v5; v5=var;
+    }
+    if(v1<v2 || v2<v3 || v3<v4 || v4<v5){
+    trisimple(j1,j2,v1,v2,v3,v4,v5,0,0,0,0,0);
+    return;
+    }
+    
+    int var2=0;
+    if(vv1<vv2){
+    var2=vv1; vv1=vv2; vv2=var2;
+    } if(vv2<vv3){
+    var2=vv2; vv2=vv3; vv3=var2;
+    } if(vv3<vv4){
+    var2=vv3; vv3=vv4; vv4=var2;
+    } if(vv4<vv5){
+    var2=vv4; vv4=vv5; vv5=var2;
+    }
+    if(vv1<vv2 || vv2<vv3 || vv3<vv4 || vv4<vv5){
+    trisimple(j1,j2,0,0,0,0,0,vv1,vv2,vv3,vv4,vv5);
+    return;
+    }
+    printf("%d>%d>%d>%d>%d  ;  %d>%d>%d>%d>%d",v1, v2, v3, v4, v5, vv1, vv2, vv3, vv4, vv5);
+
+	if(max(v1,vv1)==1){
+		return 1;
+	} else if(max(v2,vv1)==0){
+		return 0;
+	} else {
+		
+	}
+}
+
 int max(int x, int y){
     if(x>y){
     return 1; 
@@ -65,16 +106,16 @@ int max(int x, int y){
 
 void samecombi(int j1, int j2, int v1, int v2, int v3, int v4, int v5, int vv1, int vv2, int vv3, int vv4, int vv5){
     if(j1==0 || j1==5 || j1==6 || j1==9){
-        if(max(v1,vv1)==1){
+        if(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5)==1){
             printf("Player1 wins\n");
             return;
         }
-        if(max(v1,vv1)==0){
+        if(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5)==0){
             printf("Player2 wins\n");
             return;
         }
-        if(max(v1,vv1)==2){
-            max(v2,vv2);
+        if(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5)==2){
+            printf("Draw\n");
             return;
         }
     }
@@ -84,7 +125,7 @@ void samecombi(int j1, int j2, int v1, int v2, int v3, int v4, int v5, int vv1, 
 void main(){
     int v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5;
     char c1,c2,c3,c4,c5,cc1,cc2,cc3,cc4,cc5;
-    scanf("%d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c",&v1,&v2,&v3,&v4,&v5,&vv1,&vv2,&vv3,&vv4,&vv5,&c1,&c2,&c3,&c4,&c5,&cc1,&cc2,&cc3,&cc4,&cc5);
+    scanf("%d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c %d %c",&v1,&c1,&v2,&c2,&v3,&c3,&v4,&c4,&v5,&c5,&vv1,&cc1,&vv2,&cc2,&vv3,&cc3,&vv4,&cc4,&vv5,&cc5);
 
     int combij1=tri(v1,v2,v3,v4,v5,c1,c2,c3,c4,c5);
     int combij2=tri(vv1,vv2,vv3,vv4,vv5,cc1,cc2,cc3,cc4,cc5);
@@ -99,3 +140,4 @@ void main(){
         return;
     }
 }
+    
