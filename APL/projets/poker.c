@@ -158,25 +158,7 @@ int max(int x, int y){
 
 void samecombi(int j1, int j2, int v1, int v2, int v3, int v4, int v5, int vv1, int vv2, int vv3, int vv4, int vv5){
 
-  if(j1==2){
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==1){ printf("Player1 wins\n"); return;}
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==0){ printf("Player2 wins\n"); return;}
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==2){ samecombi(0,0,v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5); return; }
-  }
-
-  if(j1==3){
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==1){ printf("Player1 wins\n"); return;}
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==0){ printf("Player2 wins\n"); return;}
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==2){ samecombi(0,0,v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5); return; }
-  }
-
-  if(j1==4){
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==1){ printf("Player1 wins\n"); return;}
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==0){ printf("Player2 wins\n"); return;}
-  if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==2){ samecombi(0,0,v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5); return; }
-  }
-
-  if(j1==8){
+  if(j1==2 || j1==3 || j1==4 || j1==8){
   if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==1){ printf("Player1 wins\n"); return;}
   if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==0){ printf("Player2 wins\n"); return;}
   if(max(trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,1),trisimple(v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5,2))==2){ samecombi(0,0,v1,v2,v3,v4,v5,vv1,vv2,vv3,vv4,vv5); return; }
