@@ -219,14 +219,14 @@ void cinq() {
 
 void main() {
     printf("Instructions:\n");
-    printf("\tAfficher sapin droite (a)\n");
-    printf("\tAfficher sapin gauche (b)\n");
-    printf("\tAfficher sapin complet (c)\n");
-    printf("\tAfficher carre (d)\n");
-    printf("\tAfficher losange (e)\n");
-    printf("\tAfficher cinq (f)\n");
-    printf("\tAfficher instructions (h)\n");
-    printf("\tQuitter (q)\n");
+    printf("   Afficher sapin droite (a)\n");
+    printf("   Afficher sapin gauche (b)\n");
+    printf("   Afficher sapin complet (c)\n");
+    printf("   Afficher carre (d)\n");
+    printf("   Afficher losange (e)\n");
+    printf("   Afficher cinq (f)\n");
+    printf("   Afficher instructions (h)\n");
+    printf("   Quitter (q)\n");
     printf("\nVotre choix?\n");
     choix();
 }
