@@ -251,6 +251,10 @@ void main() {
     printf("   Afficher cinq (f)\n");
     printf("   Afficher instructions (h)\n");
     printf("   Quitter (q)\n");
+<<<<<<< HEAD
     printf("\nVotre choix ?\n");
+=======
+    printf("\nVotre choix?\n");
+>>>>>>> fd670b2e0e6be527978a8a42970d18bb11e02a42
     choix();
 }
