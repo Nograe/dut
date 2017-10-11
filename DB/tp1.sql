@@ -34,8 +34,12 @@ CREATE TABLE Livraison(
        PRIMARY KEY (NumCom, DateLiv),
        FOREIGN KEY (NumCom) REFERENCES Commande (NumCom)
        );
+<<<<<<< HEAD
+
+=======
        
        
+>>>>>>> a095d6c37ec85eeb7788b4790b15b6f7edbab814
 INSERT INTO Buveur (NumBuveur ,Nom ,Prenom , Ville ) 
        VALUES (1400 ,'Gautier' ,'Robert' ,'Paris' );
 
@@ -211,4 +215,8 @@ INSERT INTO Livraison (NumCom ,Qtte ,DateLiv )
     VALUES (6 ,8 ,STR_TO_DATE('28-12-1987', '%d-%m-%Y') );
 
 INSERT INTO Livraison (NumCom ,Qtte ,DateLiv ) 
+<<<<<<< HEAD
     VALUES (7 ,3 ,STR_TO_DATE('30-12-1987', '%d-%m-%Y') );
+=======
+    VALUES (7 ,3 ,STR_TO_DATE('30-12-1987', '%d-%m-%Y') );
+>>>>>>> a095d6c37ec85eeb7788b4790b15b6f7edbab814
