@@ -1,0 +1,16 @@
+find <directory> <options> file <option>
+
+Default directory: working dir
+
+OPTIONS:
+-amin n:
+-
+-
+-
+-
+-
+-
+-
+-
+-name " ": search by name
+- size : +10M / -20k
