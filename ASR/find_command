@@ -1,16 +1,86 @@
-find <directory> <options> file <option>
+find <directory> <expressions>
 
-Default directory: working dir
+Default directory: répertoire en cours
 
-OPTIONS:
--amin n:
--
--
--
--
--
--
--
--
--name " ": search by name
-- size : +10M / -20k
+Expressions: options | tests | actions
+                => Séparé par des opérateurs ( -and par défaut)
+
+    OPTIONS: => Vrai
+-maxdepth n : descendre au niveau 'n' au maximum
+-mindepth n : descendre au niveau 'n' au minimum
+
+    TEST: => Vrai/Faux
++n : supérieur
+-n : inférieur à n
+n : égal à n    
+
+-amin n : accès au fichier il y a 'n' minutes
+-anewer file : dernier accès au fichier plus récent que le dernier accès à 'file'
+-atime n : dernier accès au fichier il y a 'n' *24 heures
+
+-cmin n : dernière modification du statut du fichier il y a 'n' minutes.
+-cnewer file : dernier modification du statut du fichier plus récent que la dernière modification de 'file'
+-ctime n : dernière modification du statut du fichier il y a 'n' *24heures
+
+-empty : fichier régulier/répertoire vide
+-executable
+-false : toujours faux
+-links n : fichier ayant 'n' liens
+-mmin n : fichier dont les données ont été modifiées il y a 'n' minutes
+-mtime n : fichier dont les données ont été modifiées il y a 'n' *24heures
+-name " " : recherche par nom
+-name pattern
+-newer file : fichier modifié plus récemment que 'file'
+-path pattern : fichier dont le nom correspond au 'pattern' complet ( / et . sont traités comme des caractères )
+-perm mode : fichier dont les autorisations d'accès sont fixées au 'mode' indiqué (ex: 731)
+-perm -mode : fichier ayant au moins les autorisations de 'mode'
+-perm /mode : fichier ayant certaines des autorisations de 'mode'
+-readable
+-size n [cwbkMG] : fichier de taille 'n' (ex: -size +10M )
+-true: renvoie toujours vrai
+-type c : fichier de type 'c' ( d: répertoire; f: fichier régulier; l: lien symbolique )
+-writable
+
+    ACTIONS: => Vrai/Faux
+-exec command : éxecute 'commande' si 'vrai' est renvoyé | {} remplacé par le nom | \; en fin de commande
+-exec command {} +
+-execdir command : éxecute dans le répertoire qui contient le fichier trouvé
+-execdir command {} +
+-ok command : demande confirmation avant d'éxecuter exec
+-okdir command : demande confirmation avant d'éxecuter execdir
+-print : affiche le résultat du find
+-print0 : affiche avec caractères saut de ligne
+-printf format  ( \n \t \v \NNN %Ak %Ck %d %f %h %H %m %M %p %P %s %Tk %y )
+-prune : ne pas descendre dans l'arborescence du répertoire en cours
+-quit
+
+    OPERATEURS:
+
+       ( expr )
+              Force la précédence.
+
+       ! expr Vrai si expr est fausse.
+
+       -not expr
+              Comme ! expr.
+
+       expr1 expr2
+              ET  (implicite);  expr2  n'est pas évaluée si expr1
+              est fausse.
+
+       expr1 -a expr2
+              Comme expr1 expr2.
+
+       expr1 -and expr2
+              Comme expr1 expr2.
+
+       expr1 -o expr2
+              OU; expr2 n'est pas évaluée si expr1 est vraie.
+
+       expr1 -or expr2
+              Comme expr1 -o expr2.
+
+       expr1 , expr2
+              Liste; expr1 et expr2 sont toujours évaluées toutes
+              les  deux.   La  valeur  de  expr1  est ignorée; la
+              valeur de la liste est celle de expr2.

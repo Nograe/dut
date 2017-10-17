@@ -1,17 +1,49 @@
 #include <stdio.h>
 
 void printtab(int tab[]);
+void soustr(int tab1[], int tab2[], int result[]);
 void calcul(int tab1[], int tab2[], int tabresult[], char op);
 void reverse(int tab[]);
-int max(int tab1[], int tab2[]);
+int max(int tab1[], int tab2[], int option);
 void fill(int tab[], char *var_main);
+void copy(int model[], int copy[]);
 
 void mult(int tab1[], int tab2[], int result[]) {
     printf("Mult!\n");
 }
 
 void divid(int tab1[], int tab2[], int result[]) {
-    printf("Divid!\n");
+
+    if(tab1[0]==1 && tab2[0]==0 || tab1[0]==0 && tab2[0]==1){
+        result[0]=1;
+    }
+
+    tab1[0]=0;
+    tab2[0]=0;
+
+    int count=0;
+    int temp[100]={0};
+    int i;
+    temp[0]=tab1[0];
+    temp[1]=tab1[1];
+
+    while(max(tab1,tab2,1)){
+        calcul(tab1,tab2,temp,'-');
+        reverse(temp);
+        copy(temp,tab1);
+//printf("tab1: ");
+//printtab(tab1);
+        count++;
+    }
+    for(i=2; i<=1000; i++){
+        result[i]=count%10;
+        count=count/10;
+        if(count==0){
+            result[1]=i-1;
+            return;
+        }
+    }
+
 }
 
 void modulo(int tab1[], int tab2[], int result[]) {
@@ -26,22 +58,22 @@ void add(int tab1[], int tab2[], int result[]) {
     int taillemax;
     int taille1=tab1[1]+1;
     int taille2=tab2[1]+1;
-    if(taille1 >= taille2){
+    if(taille1 >= taille2) {
         taillemax=taille1;
     } else {
         taillemax=taille2;
     }
 
-    for(i=taillemax; i>=2; i--){
-        if(taille1<=1){
+    for(i=taillemax; i>=2; i--) {
+        if(taille1<=1) {
             sum=tab2[taille2]+retenue;
-        } else if(taille2<=1){
+        } else if(taille2<=1) {
             sum=tab1[taille1]+retenue;
-        } else{
+        } else {
             sum=tab1[taille1]+tab2[taille2]+retenue;
         }
         retenue=0;
-        if (sum<10){
+        if (sum<10) {
             result[j]=sum;
             j++;
         } else {
@@ -53,10 +85,10 @@ void add(int tab1[], int tab2[], int result[]) {
         taille2--;
     }
 
-    if(retenue==1){
+    if(retenue==1) {
         result[j]=1;
         result[1]=taillemax;
-    } else{
+    } else {
         result[1]=taillemax-1;
     }
 
@@ -69,10 +101,10 @@ void soustr(int tab1[], int tab2[], int result[]) {
     int taille2=tab2[1]+1;
     result[0]=0;
 
-    if(signe == 2 && max(tab2,tab1)){
+    if(signe == 2 && max(tab2,tab1,0)) {
         result[0]=1;
     }
-    if(signe == 3 && max(tab1,tab2)){
+    if(signe == 3 && max(tab1,tab2,0)) {
         result[0]=1;
     }
 
@@ -80,23 +112,23 @@ void soustr(int tab1[], int tab2[], int result[]) {
     int j=2;
     int retenue=0;
     int taillemax;
-    if(taille1 >= taille2){
+    if(taille1 >= taille2) {
         taillemax=taille1;
     } else {
         taillemax=taille2;
     }
 
-    for(i=taillemax; i>=2; i--){
-        if(taille1<=1){
+    for(i=taillemax; i>=2; i--) {
+        if(taille1<=1) {
             sous=tab2[taille2]-retenue;
-        } else if(taille2<=1){
+        } else if(taille2<=1) {
             sous=tab1[taille1]-retenue;
-        } else{
+        } else {
             sous=tab1[taille1]-tab2[taille2]-retenue;
         }
 //printf("Retenue= %d ; ", retenue);
         retenue=0;
-        if (sous >= 0){
+        if (sous >= 0) {
             result[j]=sous;
             j++;
         } else {
@@ -109,8 +141,12 @@ void soustr(int tab1[], int tab2[], int result[]) {
         taille2--;
     }
 
-    result[1]=taillemax;
-    
+    while(result[taillemax] == 0){
+        taillemax--;
+    }
+
+    result[1]=taillemax-1;
+
 }
 
 void calcul(int tab1[], int tab2[], int tabresult[], char op) {
@@ -120,7 +156,13 @@ void calcul(int tab1[], int tab2[], int tabresult[], char op) {
         return;
     }
     if(op == '/') {
-        divid(tab1,tab2,tabresult);
+        if(max(tab1,tab2,0)) {
+            divid(tab1,tab2,tabresult);
+        }
+        else{
+            printf("Fail\n");
+            tabresult[1]=1;
+        }
         return;
     }
     if(op == '%') {
@@ -130,8 +172,8 @@ void calcul(int tab1[], int tab2[], int tabresult[], char op) {
     if(op == '+') {
         // -X + Y   -> Positif pour Y > X
         // => Y-X  si  Y > X
-        if(tab1[0]==1 && tab2[0]==0){
-            if(!max(tab1,tab2)){
+        if(tab1[0]==1 && tab2[0]==0) {
+            if(max(tab2,tab1,0)) {
                 tabresult[0]=0;
                 soustr(tab2,tab1,tabresult);
                 return;
@@ -141,65 +183,74 @@ void calcul(int tab1[], int tab2[], int tabresult[], char op) {
             return;
         }
         // -X + -Y  -> Négatif
-        if(tab1[0]==1 && tab2[0]==1){
+        if(tab1[0]==1 && tab2[0]==1) {
             tabresult[0]=1;
             add(tab1,tab2,tabresult);
-            return; 
+            return;
         }
         // X + -Y   -> Positif pour X > Y
-        if(tab1[0]==0 && tab2[0]==1){
+        if(tab1[0]==0 && tab2[0]==1) {
             tabresult[0]=2;
             soustr(tab1,tab2,tabresult);
-            return; 
+            return;
         }
         add(tab1,tab2,tabresult);
         return;
     }
     if(op == '-') {
         // -X - Y   -> Négatif
-        if(tab1[0]==1 && tab2[0]==0){
+        if(tab1[0]==1 && tab2[0]==0) {
             tabresult[0]=1;
             add(tab1,tab2,tabresult);
             return;
         }
         // -X - -Y  -> Positif pour Y > X
         // => Y-X  si  Y > X
-        if(tab1[0]==1 && tab2[0]==1){
-            if(!max(tab1,tab2)){
+        if(tab1[0]==1 && tab2[0]==1) {
+            if(!max(tab1,tab2,0)) {
                 tabresult[0]=0;
                 soustr(tab2,tab1,tabresult);
                 return;
             }
             tabresult[0]=3;
             soustr(tab1,tab2,tabresult);
-            return; 
+            return;
         }
         // X - -Y   -> Positif
-        if(tab1[0]==0 && tab2[0]==1){
+        if(tab1[0]==0 && tab2[0]==1) {
             add(tab1,tab2,tabresult);
-            return; 
+            return;
         }
         // X - Y    -> Positif pour X > Y
-        if(tab1[0]==0 && tab2[0]==0){
-            if(!max(tab1,tab2)){
+        if(tab1[0]==0 && tab2[0]==0) {
+            if(!max(tab1,tab2,0)) {
                 tabresult[0]=3;
                 soustr(tab2,tab1,tabresult);
                 return;
             }
-        tabresult[0]=2;
-        soustr(tab1,tab2,tabresult);
-        return;
+            tabresult[0]=2;
+            soustr(tab1,tab2,tabresult);
+            return;
         }
     }
 
 }
 
-void reverse(int tab[]){
+void copy(int model[], int copy[]){
+    int taille=model[1]+2;
+    int i;
+
+    for(i=0; i<taille; i++){
+        copy[i]=model[i];
+    }
+}
+
+void reverse(int tab[]) {
     int i;
     int temp;
     int taille=tab[1]+4;
 
-    for(i=2; i<taille/2; i++){
+    for(i=2; i<taille/2; i++) {
         temp=tab[i];
         tab[i]=tab[taille-i-1];
         tab[taille-i-1]=temp;
@@ -207,50 +258,61 @@ void reverse(int tab[]){
 }
 
 //Renvoie 1 si X > Y
-int max(int tab1[], int tab2[]){
+int max(int tab1[], int tab2[], int option) {
     int i;
     int taille=tab1[1]+1;
     int taille2=tab2[1]+1;
+    int verif=1;
 
-    if(taille > taille2){
+    if(tab1[0]==0 && tab2[0]==1 && option==1){
         return 1;
     }
 
-    if(taille < taille2){
+    if(tab1[0]==1 && tab2[0]==0 && option==1){
         return 0;
     }
 
-    for(i=2; i<=taille; i++){
-//printf("Compare: tab1[%d]=%d   et tab2[%d]=%d\n", i, tab1[i], i, tab2[i]);
-        if(tab1[i] > tab2[i]){
-            return 1;
-        }
+    if(taille > taille2) {
+        return 1;
     }
 
+    if(taille < taille2) {
+        return 0;
+    }
+
+    for(i=2; i<=taille; i++) {
+//printf("Compare: tab1[%d]=%d   et tab2[%d]=%d\n", i, tab1[i], i, tab2[i]);
+        if(tab1[i] > tab2[i]) {
+            return 1;
+        }
+        if(tab1[i] < tab2[i]) {
+            return 0;
+        }
+        if(tab1[i] != tab2[i]) {
+            verif=0;
+        }
+    }
+    if(verif==1){
+        return 1;
+    }
     return 0;
 }
 
 void printtab(int tab[]) {
     int i=2;
     int taille=tab[1]+2;
-    int var=i;
 
-    //Effacer les '0' en début de résultat
-    while(tab[var] == 0){
-        var++;
+    if (tab[0]==1) {
+        printf("-");
     }
 
-    for(i=var; i<taille; i++) {
-        if (i==0)
-        {
-            printf("-");
-        }
+    for(i=2; i<taille; i++) {
         printf("%d", tab[i]);
     }
     printf("\n");
 }
 
-void fill(int tab[], char *var_main){
+void fill(int tab[], char *var_main) {
 
     char var=*var_main;
     int i=3;
@@ -332,9 +394,6 @@ int main() {
         reverse(tabfinal);
 //printf("Result: ");
 
-        if(tabfinal[0]==1){
-            printf("-");
-        }
         printtab(tabfinal);
         return 0;
     }
@@ -357,10 +416,7 @@ int main() {
 //printtab(tabfinal);
         reverse(tabfinal);
 //printf("Result 2: ");
-        
-        if(tabfinal[0]==1){
-            printf("-");
-        }
+
         printtab(tabfinal);
         return 0;
     }
@@ -378,9 +434,6 @@ int main() {
     reverse(tabfinal);
 //printf("Result 2: ");
 
-    if(tabfinal[0]==1){
-        printf("-");
-    }
     printtab(tabfinal);
     return 0;
 }
