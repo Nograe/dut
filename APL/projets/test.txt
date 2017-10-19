@@ -1,0 +1,25 @@
+    tab1[0]=0;
+    tab2[0]=0;
+
+    int count=0;
+    int temp[1002]= {0};
+    int i;
+    temp[0]=tab1[0];
+    temp[1]=tab1[1];
+
+    while(max(tab1,tab2,1)) {
+        calcul(tab1,tab2,temp,'-');
+        reverse(temp);
+        copy(temp,tab1);
+//printf("tab1: ");
+//printtab(tab1);
+        count++;
+    }
+    for(i=2; i<=1000; i++) {
+        result[i]=count%10;
+        count=count/10;
+        if(count==0) {
+            result[1]=i-1;
+            return;
+        }
+    }

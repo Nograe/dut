@@ -1,53 +1,121 @@
 #include <stdio.h>
 
 void printtab(int tab[]);
+void add(int tab1[], int tab2[], int result[]);
 void soustr(int tab1[], int tab2[], int result[]);
 void calcul(int tab1[], int tab2[], int tabresult[], char op);
+void empty(int tab[]);
 void reverse(int tab[]);
 int max(int tab1[], int tab2[], int option);
 void fill(int tab[], char *var_main);
 void copy(int model[], int copy[]);
 
 void mult(int tab1[], int tab2[], int result[]) {
-    printf("Mult!\n");
+
+    int i,j,k,unit1,unit2,mtp,count,indice;
+    int taille1=tab1[1];
+    int taille2=tab2[1];
+    int temp2[1002]= {0};
+    int temp3[1002]= {0};
+    temp2[1]=1;
+    temp3[1]=1;
+
+    for(i=0,k=taille2+1; i<=taille1,k>=2; i++,k--) {
+        unit2=tab2[k];
+//printf("unit2: %d\n",unit2);
+
+        for(j=taille1+1,count=0; j>=2,count<taille1; j--,count++) {
+            unit1=tab1[j];
+//printf("unit1: %d ; ",unit1);
+            mtp=unit2*unit1;
+//printf("mtp: %d ; ",mtp);
+            indice=i+count;
+//printf("indice: %d\n",indice);
+
+            if(mtp<10) {
+                temp2[2]=mtp;
+                temp2[3]=0;
+                if(indice==0) {
+                    temp2[1]=1;
+                } else {
+                    temp2[1]=1+indice;
+                }
+            } else {
+                temp2[2]=mtp/10;
+                temp2[3]=mtp%10;
+                if(indice==0) {
+                    temp2[1]=2;
+                } else {
+                    temp2[1]=2+indice;
+                }
+            }
+
+//printtab(temp2); printf("+"); printtab(temp3); printf("=");
+            add(temp2,temp3,result);
+            reverse(result);
+//printtab(result); printf("\n");
+            copy(result,temp3);
+        }
+    }
+    reverse(result);
 }
 
 void divid(int tab1[], int tab2[], int result[]) {
 
-    if(tab1[0]==1 && tab2[0]==0 || tab1[0]==0 && tab2[0]==1){
-        result[0]=1;
+    int signe=result[0];
+
+    int taille1=tab1[1];
+    int taille2=tab2[1];
+    int temp[1002]={0};
+    int temp1[1002]={0};
+    int addunit[3]={0,1,1};
+
+    if(tab2[2]< tab1[2]/2){
+        temp[2]=1;
+        temp[1]=(taille1-taille2)+1;
+    }
+    if(tab2[2]>= tab1[2]/2){
+        temp[2]=5;
+        temp[1]=(taille1-taille2);
     }
 
-    tab1[0]=0;
-    tab2[0]=0;
-
-    int count=0;
-    int temp[100]={0};
-    int i;
-    temp[0]=tab1[0];
-    temp[1]=tab1[1];
-
-    while(max(tab1,tab2,1)){
-        calcul(tab1,tab2,temp,'-');
+    while(max(tab1,result,0)){
+printf("temp:"); printtab(temp);
+        empty(result);
+        calcul(temp,tab2,result,'*');
+        reverse(result);
+printf("temp * tab2 = result:"); printtab(result);
+        copy(temp,temp1);
+        empty(temp);
+        add(temp1,addunit,temp);
         reverse(temp);
-        copy(temp,tab1);
-//printf("tab1: ");
-//printtab(tab1);
-        count++;
     }
-    for(i=2; i<=1000; i++){
-        result[i]=count%10;
-        count=count/10;
-        if(count==0){
-            result[1]=i-1;
-            return;
-        }
-    }
+
+    empty(result);
+    soustr(temp1,addunit,result);
+    result[0]=signe;
 
 }
 
 void modulo(int tab1[], int tab2[], int result[]) {
-    printf("Modulo!\n");
+
+    if(tab1[0]==1 && tab2[0]==0) {
+
+    }
+    if(tab1[0]==0 && tab2[0]==1) {
+
+    }
+    if(tab1[0]==1 && tab2[0]==1) {
+
+    }
+
+    int temp[1002]= {0};
+    int temp2[1002]= {0};
+
+    divid(tab1,tab2,temp);
+    mult(tab2,temp,temp2);
+    soustr(tab1,temp2,result);
+
 }
 
 void add(int tab1[], int tab2[], int result[]) {
@@ -141,7 +209,7 @@ void soustr(int tab1[], int tab2[], int result[]) {
         taille2--;
     }
 
-    while(result[taillemax] == 0){
+    while(result[taillemax] == 0) {
         taillemax--;
     }
 
@@ -152,18 +220,28 @@ void soustr(int tab1[], int tab2[], int result[]) {
 void calcul(int tab1[], int tab2[], int tabresult[], char op) {
 
     if(op == '*') {
-        mult(tab1,tab2,tabresult);
-        return;
+        if(tab1[0]==1 && tab2[0]==0 || tab1[0]==0 && tab2[0]==1) {
+            tabresult[0]=1;
+        }
+        if(max(tab1,tab2,0)) {
+            mult(tab1,tab2,tabresult);
+            return;
+        } else {
+            mult(tab2,tab1,tabresult);
+            return;
+        }
     }
     if(op == '/') {
         if(max(tab1,tab2,0)) {
+            if(tab1[0]==1 && tab2[0]==0 || tab1[0]==0 && tab2[0]==1) {
+                tabresult[0]=1;
+            }
             divid(tab1,tab2,tabresult);
-        }
-        else{
-            printf("Fail\n");
+            return;
+        } else {
             tabresult[1]=1;
+            return;
         }
-        return;
     }
     if(op == '%') {
         modulo(tab1,tab2,tabresult);
@@ -236,11 +314,18 @@ void calcul(int tab1[], int tab2[], int tabresult[], char op) {
 
 }
 
-void copy(int model[], int copy[]){
+void empty(int tab[]){
+    int i;
+    for(i=0; i<tab[1]+1; i++){
+        tab[i]=0;
+    }
+}
+
+void copy(int model[], int copy[]) {
     int taille=model[1]+2;
     int i;
 
-    for(i=0; i<taille; i++){
+    for(i=0; i<taille; i++) {
         copy[i]=model[i];
     }
 }
@@ -264,11 +349,11 @@ int max(int tab1[], int tab2[], int option) {
     int taille2=tab2[1]+1;
     int verif=1;
 
-    if(tab1[0]==0 && tab2[0]==1 && option==1){
+    if(tab1[0]==0 && tab2[0]==1 && option==1) {
         return 1;
     }
 
-    if(tab1[0]==1 && tab2[0]==0 && option==1){
+    if(tab1[0]==1 && tab2[0]==0 && option==1) {
         return 0;
     }
 
@@ -292,7 +377,7 @@ int max(int tab1[], int tab2[], int option) {
             verif=0;
         }
     }
-    if(verif==1){
+    if(verif==1) {
         return 1;
     }
     return 0;
@@ -307,6 +392,7 @@ void printtab(int tab[]) {
     }
 
     for(i=2; i<taille; i++) {
+        //if(i==2) {printf("-");}
         printf("%d", tab[i]);
     }
     printf("\n");
