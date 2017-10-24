@@ -2,12 +2,12 @@
 | NumBuveur | Nom      | Prenom   | Ville      |	
 +-----------+----------+----------+------------+	
 |      1100 | Combet   | Aline    | Dijon      |	SHOW TABLES;
-|      1200 | Maury    | Francois | Paris      |
-|      1300 | Jamet    | Florence | Versailles |
+|      1200 | Maury    | Francois | Paris      |	
+|      1300 | Jamet    | Florence | Versailles |	DELETE FROM Table WHERE Champ=?;
 |      1350 | Gravinel | Sophie   | Nice       |
-|      1400 | Gautier  | Robert   | Paris      |
-|      1450 | Pascal   | Yves     | Macon      |
-|      1500 | Fradet   | Philippe | Macon      |
+|      1400 | Gautier  | Robert   | Paris      |	TRUNCATE Table;	Supprimer table
+|      1450 | Pascal   | Yves     | Macon      |	
+|      1500 | Fradet   | Philippe | Macon      |	DESCRIBE Table; Affiche champs de Table
 |      1600 | Dupond   | Alain    | Paris      |
 |      1700 | Combes   | Edouard  | Paris      |
 |      1750 | Durieux  | Blaise   | Chinon     |
