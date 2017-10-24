@@ -1,25 +1,50 @@
-    tab1[0]=0;
-    tab2[0]=0;
+    int signe=result[0];
 
-    int count=0;
-    int temp[1002]= {0};
-    int i;
-    temp[0]=tab1[0];
-    temp[1]=tab1[1];
+    int taille1=tab1[1];
+    int taille2=tab2[1];
+    int temp[1002]={0};
+    int temp1[1002]={0};
+    int adddiz[4]={0,2,1,0};
+    int addunit[3]={0,1,1};
 
-    while(max(tab1,tab2,1)) {
-        calcul(tab1,tab2,temp,'-');
+    if(tab2[2] < tab1[2]/2){
+        temp[2]=1;
+        temp[1]=(taille1-taille2)+1;
+    }
+    if(tab2[2] > tab1[2]/2){
+        temp[2]=5;
+        temp[1]=(taille1-taille2);
+    }
+    if(taille1 == taille2+1){
+        temp[2]=1;
+        temp[1]=1;
+    }
+    if(tab2[2] >= tab1[2]*2){
+        temp[2]=tab2[2];
+        temp[1]=(taille1-taille2)-1;
+    }
+
+    while(max(tab1,result,0)){
+//printf("temp:"); printtab(temp);
+        empty(result);
+        calcul(temp,tab2,result,'*');
+        reverse(result);
+//printf("temp * tab2 = result:"); printtab(result);
+        copy(temp,temp1);
+        empty(temp);
+        add(temp1,adddiz,temp);
         reverse(temp);
-        copy(temp,tab1);
-//printf("tab1: ");
-//printtab(tab1);
-        count++;
     }
-    for(i=2; i<=1000; i++) {
-        result[i]=count%10;
-        count=count/10;
-        if(count==0) {
-            result[1]=i-1;
-            return;
-        }
+
+    while(max(result,tab1,0)){
+        empty(temp1);
+        soustr(result,tab1,temp1);
+        reverse(temp1);
+        copy(temp1,result);
+        copy(temp,temp1);
+        soustr(temp1,addunit,temp);
     }
+
+    empty(result);
+    soustr(temp1,addunit,result);
+    result[0]=signe;

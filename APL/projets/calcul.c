@@ -4,6 +4,7 @@ void printtab(int tab[]);
 void add(int tab1[], int tab2[], int result[]);
 void soustr(int tab1[], int tab2[], int result[]);
 void calcul(int tab1[], int tab2[], int tabresult[], char op);
+void divid2(int dividend[], int divisor[], int result[]);
 void empty(int tab[]);
 void reverse(int tab[]);
 int max(int tab1[], int tab2[], int option);
@@ -20,11 +21,11 @@ void mult(int tab1[], int tab2[], int result[]) {
     temp2[1]=1;
     temp3[1]=1;
 
-    for(i=0,k=taille2+1; i<=taille1,k>=2; i++,k--) {
+    for(i=0,k=taille2+1 ; i<=taille1 && k>=2 ; i++,k--) {
         unit2=tab2[k];
 //printf("unit2: %d\n",unit2);
 
-        for(j=taille1+1,count=0; j>=2,count<taille1; j--,count++) {
+        for(j=taille1+1,count=0; j>=2 && count<taille1; j--,count++) {
             unit1=tab1[j];
 //printf("unit1: %d ; ",unit1);
             mtp=unit2*unit1;
@@ -60,61 +61,82 @@ void mult(int tab1[], int tab2[], int result[]) {
     reverse(result);
 }
 
-void divid(int tab1[], int tab2[], int result[]) {
+void divid(int dividend[], int divisor[], int result[], int option) {
 
     int signe=result[0];
+    int previous=0;
+    int next=0;
+    int taille_divisor=divisor[1];
+    int var,i;
 
-    int taille1=tab1[1];
-    int taille2=tab2[1];
-    int temp[1002]={0};
-    int temp1[1002]={0};
-    int addunit[3]={0,1,1};
-
-    if(tab2[2]< tab1[2]/2){
-        temp[2]=1;
-        temp[1]=(taille1-taille2)+1;
-    }
-    if(tab2[2]>= tab1[2]/2){
-        temp[2]=5;
-        temp[1]=(taille1-taille2);
-    }
-
-    while(max(tab1,result,0)){
-printf("temp:"); printtab(temp);
-        empty(result);
-        calcul(temp,tab2,result,'*');
-        reverse(result);
-printf("temp * tab2 = result:"); printtab(result);
-        copy(temp,temp1);
-        empty(temp);
-        add(temp1,addunit,temp);
-        reverse(temp);
+    while(max(dividend,divisor,0)){
+        previous=next;
+        divid2(dividend,divisor,result);
+        next=divisor[1];
+//printf("%d, %d\n",previous,next);
+        if(previous-next > 1 && previous!=0){
+            var=result[result[1]+1];
+            for(i=0; i<previous-next-1; i++){
+            result[1]++;
+            result[result[1]+i]=0;
+            }
+            result[result[1]+1]=var;
+        }
+        divisor[1]=taille_divisor;
     }
 
-    empty(result);
-    soustr(temp1,addunit,result);
+    if(next>divisor[1]){
+        result[1]++;
+    }
+
+    reverse(result);
     result[0]=signe;
 
+    if(option==1){
+        empty(result);
+        copy(dividend,result);
+        reverse(result);
+    }
+}
+
+void divid2(int dividend[], int divisor[], int result[]) {
+
+    int temp[1002]={0};
+    int count=0;
+
+//printf("dividend: "); printtab(dividend);
+
+    while(max(dividend,divisor,0)){
+        divisor[1]++;
+    }
+    divisor[1]--;
+    while(max(dividend,divisor,0)){
+        soustr(dividend,divisor,temp); reverse(temp); copy(temp,dividend); empty(temp);
+        count++;
+    }
+
+    result[1]++;
+    result[result[1]+1]=count;
+
+//printf("divisor: "); printtab(divisor); printf("result: "); printtab(result);
 }
 
 void modulo(int tab1[], int tab2[], int result[]) {
 
+    if(max(tab2,tab1,0)) {
+        copy(tab1,result);
+        reverse(result);
+        return;
+    }
+
+    tab1[0]=0;
+    tab2[0]=0;
+
+    divid(tab1,tab2,result,1);
+
     if(tab1[0]==1 && tab2[0]==0) {
-
+        result[0]=1;
     }
-    if(tab1[0]==0 && tab2[0]==1) {
-
-    }
-    if(tab1[0]==1 && tab2[0]==1) {
-
-    }
-
-    int temp[1002]= {0};
-    int temp2[1002]= {0};
-
-    divid(tab1,tab2,temp);
-    mult(tab2,temp,temp2);
-    soustr(tab1,temp2,result);
 
 }
 
@@ -164,6 +186,13 @@ void add(int tab1[], int tab2[], int result[]) {
 
 void soustr(int tab1[], int tab2[], int result[]) {
 
+    if(max(tab1,tab2,0)==-1) {
+        result[0]=0;
+        result[1]=1;
+        result[2]=0;
+        return;
+    }
+
     int signe=result[0];
     int taille1=tab1[1]+1;
     int taille2=tab2[1]+1;
@@ -204,7 +233,7 @@ void soustr(int tab1[], int tab2[], int result[]) {
             retenue++;
             j++;
         }
-//printf("tab1[%d]=%d - tab2[%d]=%d = %d\n", taille1, tab1[taille1], taille2, tab2[taille2], result[j-1]);
+//printf("tab1[%d]=%d - tab2[%d]=%d=%d\n", taille1, tab1[taille1], taille2, tab2[taille2], result[j-1]);
         taille1--;
         taille2--;
     }
@@ -220,7 +249,7 @@ void soustr(int tab1[], int tab2[], int result[]) {
 void calcul(int tab1[], int tab2[], int tabresult[], char op) {
 
     if(op == '*') {
-        if(tab1[0]==1 && tab2[0]==0 || tab1[0]==0 && tab2[0]==1) {
+        if( (tab1[0]==1 && tab2[0]==0) || (tab1[0]==0 && tab2[0]==1) )  {
             tabresult[0]=1;
         }
         if(max(tab1,tab2,0)) {
@@ -233,10 +262,10 @@ void calcul(int tab1[], int tab2[], int tabresult[], char op) {
     }
     if(op == '/') {
         if(max(tab1,tab2,0)) {
-            if(tab1[0]==1 && tab2[0]==0 || tab1[0]==0 && tab2[0]==1) {
+            if( (tab1[0]==1 && tab2[0]==0) || (tab1[0]==0 && tab2[0]==1) ) {
                 tabresult[0]=1;
             }
-            divid(tab1,tab2,tabresult);
+            divid(tab1,tab2,tabresult,0);
             return;
         } else {
             tabresult[1]=1;
@@ -322,6 +351,7 @@ void empty(int tab[]){
 }
 
 void copy(int model[], int copy[]) {
+    empty(copy);
     int taille=model[1]+2;
     int i;
 
@@ -378,7 +408,7 @@ int max(int tab1[], int tab2[], int option) {
         }
     }
     if(verif==1) {
-        return 1;
+        return -1;
     }
     return 0;
 }
@@ -440,7 +470,7 @@ void fill(int tab[], char *var_main) {
 }
 
 
-int main() {
+int main (int argc, char *argv[]){
 
     int tab1[102]= {0};
     int tab2[102]= {0};
