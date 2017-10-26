@@ -478,8 +478,11 @@ int main (int argc, char *argv[]){
     int tabresult[1002]= {0};
     int tabfinal[1002]= {0};
     char op1, op2, var;
+    int tab1temp[102]={0};
 
     fill(tab1,&var);
+    copy(tab1,tab1temp);
+    printtab(tab1temp);
 
     //Skip espaces et récupération 1er opérateur
     while(var == ' ') {
@@ -504,22 +507,28 @@ int main (int argc, char *argv[]){
 
     //Test 3e opérateur
     if((int)op2 == 10) {
-        calcul(tab1,tab2,tabfinal,op1);
-//printf("Before reverse: ");
-//printtab(tabfinal);
-        reverse(tabfinal);
-//printf("Result: ");
-
-        printtab(tabfinal);
-        return 0;
+        op2=op1;
+        op1='+';
+        printf("tab1temp before: "); printtab(tab1temp);
+        printf("tab2 before: "); printtab(tab2);
+        printf("tab3 before: "); printtab(tab3);
+        copy(tab2,tab3);
+        empty(tab2);
+        copy(tab1temp,tab2);
+        empty(tab1temp);
+        tab1temp[0]=0;
+        tab1temp[1]=1;
+        tab1temp[2]=0;
+        printf("tab1temp after: "); printtab(tab1temp);
+        printf("tab1temp after: "); printtab(tab1temp);
+        printf("tab1temp after: "); printtab(tab1temp);
+    } else {
+        fill(tab3,&var);
+//printtab(tab3);
     }
 
-    fill(tab3,&var);
 
-//printtab(tab3);
-
-
-    //Calcul prioritaire de tab2 et tab3 puis tab1 et result
+    //Calcul prioritaire de tab2 et tab3 puis tab1temp et result
     if((op2 == '*' || op2=='/' || op2=='%') && (op1 != '*' && op1 != '/' && op1 != '%')) {
         calcul(tab2,tab3,tabresult,op2);
 //printf("Before reverse 1: ");
@@ -527,7 +536,7 @@ int main (int argc, char *argv[]){
         reverse(tabresult);
 //printf("Result 1: ");
 //printtab(tabresult);
-        calcul(tab1,tabresult,tabfinal,op1);
+        calcul(tab1temp,tabresult,tabfinal,op1);
 //printf("Before reverse 2: ");
 //printtab(tabfinal);
         reverse(tabfinal);
@@ -537,8 +546,8 @@ int main (int argc, char *argv[]){
         return 0;
     }
 
-    //Calcul de tab1 et tab2 puis tabresult et tab 3
-    calcul(tab1,tab2,tabresult,op1);
+    //Calcul de tab1temp et tab2 puis tabresult et tab 3
+    calcul(tab1temp,tab2,tabresult,op1);
 //printf("Before reverse 1: ");
 //printtab(tabresult);
     reverse(tabresult);

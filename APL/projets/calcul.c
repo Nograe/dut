@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void printtab(int tab[]);
 void add(int tab1[], int tab2[], int result[]);
@@ -129,12 +130,16 @@ void modulo(int tab1[], int tab2[], int result[]) {
         return;
     }
 
-    tab1[0]=0;
-    tab2[0]=0;
+    int signe1=tab1[0];
+    int signe2=tab2[0];
 
     divid(tab1,tab2,result,1);
 
-    if(tab1[0]==1 && tab2[0]==0) {
+    if(signe1 && !signe2) {
+        result[0]=1;
+    }
+
+    if(signe1 && signe2) {
         result[0]=1;
     }
 
@@ -249,6 +254,11 @@ void soustr(int tab1[], int tab2[], int result[]) {
 void calcul(int tab1[], int tab2[], int tabresult[], char op) {
 
     if(op == '*') {
+        if(tab1[1]==1 && tab1[2]==0){
+            tabresult[0]=0;
+            tabresult[1]=1;
+            return;
+        }
         if( (tab1[0]==1 && tab2[0]==0) || (tab1[0]==0 && tab2[0]==1) )  {
             tabresult[0]=1;
         }
@@ -297,6 +307,11 @@ void calcul(int tab1[], int tab2[], int tabresult[], char op) {
         }
         // X + -Y   -> Positif pour X > Y
         if(tab1[0]==0 && tab2[0]==1) {
+            if(max(tab2,tab1,0)){
+                soustr(tab2,tab1,tabresult);
+                tabresult[0]=1;
+                return;
+            }
             tabresult[0]=2;
             soustr(tab1,tab2,tabresult);
             return;
@@ -472,9 +487,9 @@ void fill(int tab[], char *var_main) {
 
 int main (int argc, char *argv[]){
 
-    int tab1[102]= {0};
-    int tab2[102]= {0};
-    int tab3[102]= {0};
+    int tab1[1002]= {0};
+    int tab2[1002]= {0};
+    int tab3[1002]= {0};
     int tabresult[1002]= {0};
     int tabfinal[1002]= {0};
     char op1, op2, var;
