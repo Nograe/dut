@@ -431,6 +431,7 @@ int max(int tab1[], int tab2[], int option) {
 void printtab(int tab[]) {
     int i=2;
     int taille=tab[1]+2;
+    char convert;
 
     if (tab[0]==1) {
         printf("-");
@@ -438,7 +439,8 @@ void printtab(int tab[]) {
 
     for(i=2; i<taille; i++) {
         //if(i==2) {printf("-");}
-        printf("%d", tab[i]);
+        convert=tab[i]+'0';
+        printf("%c", convert);
     }
     printf("\n");
 }
