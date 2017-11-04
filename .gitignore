@@ -7,3 +7,9 @@
 # Executables
 *.exe
 *.out
+
+# Windows bash
+.bashrc
+
+# Temp files
+/temp/*
