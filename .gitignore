@@ -12,5 +12,5 @@
 .bashrc
 
 # Temp files
-temp/*
-!temp/help.c
+.temp/*
+!.temp/help.c
