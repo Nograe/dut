@@ -1,5 +1,6 @@
 # Object files
 *.o
+*.c~
 
 # Libraries
 *.a
@@ -15,4 +16,8 @@
 .temp/*
 !.temp/help.c
 !.temp/chateau.pdf
-!.temp/exposé.pdf
+!.temp/expose.pdf
+
+# OpenClassrooms
+OpenClassrooms/*
+OpenClassrooms-Projets/*
