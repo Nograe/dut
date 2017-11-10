@@ -33,6 +33,13 @@ CREATE TABLE Livraison  (
 	DateLiv DATE NOT NULL, 
 	PRIMARY KEY (NumCom, DateLiv) ,
 	FOREIGN KEY (NumCom) REFERENCES Commande (NumCom) );
+	
+CREATE TABLE Vente (
+	IDVente INTEGER PRIMARY KEY AUTO_INCREMENT,
+	NumVin INTEGER NOT NULL,
+	Prix INTEGER NOT NULL,
+	NbBouteilles INTEGER NOT NULL,
+	FOREIGN KEY (NumVin) REFERENCES Vin (NumVin) );
 
 
 INSERT INTO Buveur (NumBuveur ,Nom ,Prenom , Ville ) 
@@ -211,3 +218,30 @@ INSERT INTO Livraison (NumCom ,Qtte ,DateLiv )
 
 INSERT INTO Livraison (NumCom ,Qtte ,DateLiv ) 
     VALUES (7 ,3 ,STR_TO_DATE('30-12-1987', '%d-%m-%Y') );
+    
+    
+    
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (80, 14, 3);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (84, 23, 5);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (85, 12, 10);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (88, 56, 1);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (98, 14, 14);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (100, 16, 2);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (120, 8, 5);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (128, 64, 10);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (140, 120, 25);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (150, 100, 3);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (170, 99, 5);
+INSERT INTO Vente (NumVin ,Prix ,NbBouteilles )
+    VALUES (190, 12, 20);
