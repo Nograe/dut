@@ -35,7 +35,7 @@ char* removeLast(char* str,int n){
 }
 
 void main(){
-   char *test=removeLast("GwlM0aUc",3);
+  char *test=removeLast("GwlM0aUc",3);
   int i;
 
   for(i=0; i<strlength(test)+1; i++)
