@@ -127,14 +127,12 @@ void identify_rule(char *rule, char *replace, char *subst){
 
 int main(int argc, char *argv[]) {
 
-    /*char rule[100];
-    scanf("%[^\n]",rule);
-    char origin[100];
-    scanf("%s[^\n]",origin);
-    int repet;
-    scanf("%d",&repet);*/
-    if(argv[3][0] == '0'){
-        printf("%s\n",argv[2]);
+    char *rule=argv[1];
+    char *origin=argv[2];
+    int repet=argv[3][0]-'0';
+
+    if(repet == 0){
+        printf("%s\n",origin);
         return 0;
     }
 
@@ -142,11 +140,17 @@ int main(int argc, char *argv[]) {
 
     char replacetab[1];
     char subst[100];
-    identify_rule(argv[1],replacetab,subst);
+    identify_rule(rule,replacetab,subst);
     char replace=replacetab[0];
 
-    char **result = identify(argv[2],replace,&elements,&reste);
+    char **result = identify(origin,replace,&elements,&reste);
     insert(result, subst, reste, elements-1);
+
+
+    int i;
+    for(i=1 ; i<=repet ; i++){
+
+    }
 
     return 0;
 }
