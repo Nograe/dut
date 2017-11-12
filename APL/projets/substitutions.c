@@ -143,13 +143,14 @@ int main(int argc, char *argv[]) {
     identify_rule(rule,replacetab,subst);
     char replace=replacetab[0];
 
-    char **result = identify(origin,replace,&elements,&reste);
-    insert(result, subst, reste, elements-1);
+    char **result;
 
 
     int i;
     for(i=1 ; i<=repet ; i++){
-
+        free(result);
+        result = identify(origin,replace,&elements,&reste);
+        insert(result, subst, reste, elements-1);
     }
 
     return 0;
