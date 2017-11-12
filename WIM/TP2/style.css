@@ -34,3 +34,12 @@ td {
 input.submit {
     left: 50px;
 }
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+/* Désactiver le spin */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
