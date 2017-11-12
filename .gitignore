@@ -14,9 +14,6 @@
 
 # Temp files
 .temp/*
-!.temp/help.c
-!.temp/chateau.pdf
-!.temp/expose.pdf
 
 # OpenClassrooms
 OpenClassrooms/*
