@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" href="style.css">
+      <title> S'inscrire </title>
+   </head>
+   <body>
+      <h1 align="center">S'inscrire</h1>
+      <form method="post" action="http://www.iut-fbleau.fr/sitebp/post.php" >
+         <table style="width:70%; position:absolute; left: 7%;">
+            <tr>
+               <td>Nom: </td>
+               <td><input required="required" type="text" style="" placeholder="Dupond" name="nom"/></td>
+            </tr>
+            <tr>
+               <td>Prénom: </td>
+               <td><input required="required" type="text" style="" placeholder="Pierre" name="prenom"/></td>
+            </tr>
+            <tr>
+               <td>Date de naissance: </td>
+               <td><input required="required" type="date" name="date_naissance"/></td>
+            </tr>
+            <tr>
+               <td>Mail: </td>
+               <td align="left"><input required="required" type="email" placeholder="exemple@mail.com" name="mail"/></td>
+            </tr>
+            <tr>
+               <td>Code postal: </td>
+               <td align="left"><input required="required" type="number" placeholder="75000" maxlength="99999" name="code_postal"/></td>
+            </tr>
+            <tr>
+               <td>Tel: </td>
+               <td align="left"><input required="required" type="tel" placeholder="0601020305" name="tel"maxlength="10" minlength="10"/></td>
+            </tr>
+            <tr>
+               <td>Sexe: </td>
+               <td align="left"><input required="required" class="exclude" type="radio" name="sexe" checked="checked" value="homme"/>Homme</td>
+            </tr>
+            <tr>
+               <td></td>
+               <td align="left"><input required="required" class="exclude" type="radio" name="sexe" value="femme"/>Femme</td>
+            </tr>
+            <tr>
+               <td>Semestre: </td>
+               <td align="left">
+                  <select name="semestre">
+                     <option value="S1">S1</option>
+                     <option selected value="S2">S2</option>
+                     <option value="S3">S3</option>
+                     <option value="S4">S4</option>
+                  </select>
+               </td>
+            </tr>
+            <tr>
+               <td>Niveau en HTML:</td>
+               <td align="left">
+                  <input class="exclude" type="range" min="0" max="10" step="1" value="5" name="html_level"/>
+               </td>
+            </tr>
+            <tr>
+               <td>Commentaire: </td>
+               <td><textarea required="required" width="75%" name="message" ></textarea></td>
+            </tr>
+            <tr>
+               <td> </td>
+               <td>
+                  <input class="exclude" type="submit" value="S'inscrire"/>
+               </td>
+            </tr>
+            <tr>
+               <td></td>
+               <td>
+                  <input class="exclude" type="reset" value="Recommencer"/>
+               </td>
+            </tr>
+         </table>
+      </form>
+   </body>
+</html>                                                               
