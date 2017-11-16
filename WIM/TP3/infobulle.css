@@ -7,7 +7,7 @@ body {
 a.infobulle {
    position: relative;
    text-decoration: none;
-   border-bottom: 0.5px dotted white;
+   border-bottom: 1px dotted white;
    color: white;
 }
 a.infobulle span {
