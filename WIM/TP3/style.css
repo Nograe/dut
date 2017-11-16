@@ -1,49 +1,62 @@
 body {
    background-color:#222C28;
-   padding:0px;
-   color: white;
-  /*border: 1px solid red;*/
+	font-family: "Courier New", Courier, monospace;
+	color: #FFFFFF;
+	font-weight: normal;
 }
-img {
-    box-shadow: 5px 5px 5px black;
-    margin: 10px 10px;
-    border-radius: 10px;
-    width: 200px;
-    heigth: 200px;
+header {
+   padding-top: 5px;
+   margin-left: 20%;
+   margin-right: 20%;
 }
-nav {
-    margin : 0px;
-    padding-left: 20%;
-    background-color: #009973;
-    border: 2px solid #009973;
+.titre {
+   background: #6b726a;
+   padding: 10px;
+   text-align: center;
+   text-transform: uppercase;
 }
 ul {
-    list-style: none;
-    padding: 10px;
+   list-style: none;
+   padding: 10px;
+   margin: auto;
+   display: table;
+   margin-right: auto;
+   margin-left: auto;
 }
 li {
-    display: inline-block;
-    padding: 1em;
-}
-li:not(:first-child) {
+   display: inline-block;
+   padding: 1em;
 }
 a {
-    font-size: 2em;
-    text-decoration: none;
-    color: #FFFFFF;
-    text-transform: uppercase;
+   color: #58ACFA;
+   text-decoration: none;
+   border-bottom: 0.5px dotted #58ACFA;
 }
-li:not(:first-child) a:hover {
-    border-bottom: 2px solid white;
+.informaticien {
+   margin-left: 10%;
+   margin-right: 30%;
+   border: 1px solid white;
 }
-ul li:first-child {
-    position: absolute;
-    right: 50px;
-    border-radius: 10px;
-    border: 2px solid white;
+.informaticien h2 {
+   text-align: center;
+   text-transform: uppercase;
 }
-@media only screen and (max-width: 600px) {
-    body {
-        background-color: lightblue;
-    }
+article {
+   display: inline-table;
+   width: 290px;
+   height: 220px;
+   margin: 5px;
+   margin-right: 5px;
+   margin-left: 5px;
+   border: 1px solid white;
+}
+.informaticien img {
+   float: right;
+   margin-right: 20px;
+   margin-top: 20px;
+   box-shadow: 8px 8px 8px black;
+   border: 10px solid white;
+   height: 120px;
+   width: 120px;
+   object-fit: fill;
 }

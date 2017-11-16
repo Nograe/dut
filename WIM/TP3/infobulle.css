@@ -1,0 +1,31 @@
+body {
+   background-color:#222C28;
+	font-family: "Courier New", Courier, monospace;
+	color: #FFFFFF;
+	font-weight: normal;
+}
+a.infobulle {
+   position: relative;
+   text-decoration: none;
+   border-bottom: 0.5px dotted white;
+   color: white;
+}
+a.infobulle span {
+   display: none;
+}
+a:hover, a:focus {
+   cursor: help;
+   text-decoration: none;
+}
+a.infobulle:hover span {
+   display: inline;
+   position: absolute;
+   top: 30px;
+   left: 20px;
+   width: 200px;
+   background: rgba(44, 58, 52, 0.9);
+   border: 0.5px solid white;
+   border-left: 3px solid white;
+   border-radius: 5px;
+   padding: 5px;
+}
