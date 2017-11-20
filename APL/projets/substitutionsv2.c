@@ -18,10 +18,10 @@ int strlength(char* str) {
 
 void copy(char *origin, char *copy){
 
-    int i;
+    int i,taille = strlength(origin);
     //printf("Original: %s | Copy: %s\n",origin,copy);
 
-    for(i = 0 ; i <= strlength(origin) ; i++){
+    for(i = 0 ; i <= taille ; i++){
 
         copy[i] = origin[i];
         //printf("%d| origin: '%c' -> copy: '%c'\n",i,origin[i],copy[i]);
