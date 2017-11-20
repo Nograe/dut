@@ -1,9 +1,10 @@
 COMMANDES:
 SHOW TABLES : Affiche les tables
 DELETE FROM Table WHERE Champ=? : Supprime Champ de Table
-TRUNCATE Table : Supprimer table
-DESCRIBE Table : Affiche champs de Table
-
+TRUNCATE table : Supprime tous les champs table
+DESCRIBE table : Affiche champs de Table
+UPDATE table SET champ='?' WHERE clé=?
+INSERT INTO table VALUES(A,B,C,D) : Insère dans table les valeurs A,B,C,D
 
 OPERATIONS:
 
