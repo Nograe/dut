@@ -23,3 +23,13 @@ fscanf(fichier, "... %X ... %Y",typeX, typeY); //Custom
 ///EOF = Fin fichier
 while(char_lu != EOF)
 /* Code */
+
+///Position
+ftell(fichier); //Renvoie la position
+fseek(fichier, long deplacement, int depart)
+	SEEK_CUR; SEEK_END; SEEK_SET;
+rewind(fichier) //Retourne au début
+
+///Renommer/Supprimer
+rename(char* ancienNom, char* nouveauNom);
+remove(char* nomFichier);
