@@ -87,9 +87,23 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
    -webkit-appearance: none;
 }
-input:checked::after {
-  position: absolute;
-  content: '✓';
-  padding-left: 44%;
-  color: #009000;
+#next {
+   position: absolute;
+   text-decoration: none;
+   color: white;
+   bottom: 20px;
+   right: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
+}
+#previous {
+   position: absolute;
+   text-decoration: none;
+   color: white;
+   bottom: 20px;
+   left: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
 }

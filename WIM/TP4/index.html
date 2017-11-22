@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+   <head>
+      <meta charset="UTF-8">
+      <title>JS Color !</title>
+      <link rel="stylesheet" href="style.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script language="Javascript">
+         function select_color() {
+            var color = prompt("Entrez une couleur", "cyan");
+            if (color != null) {
+               document.getElementById("color").style.backgroundColor = color;
+            }
+            if (color == "white") {
+               document.getElementById("color").style.border = "2px solid black";
+            }
+         }
+      </script>
+   </head>
+   <body>
+      <h1>Cliquez dans la zone pour changer sa couleur</h1>
+      <div id="color" onclick="select_color(this)"></div>
+      <a id="next" href="bulb.html">Aller à l'exercice suivant</a>
+   </body>
+</html>

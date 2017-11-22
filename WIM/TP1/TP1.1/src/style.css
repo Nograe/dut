@@ -1,5 +1,33 @@
 body {
-    background-color:#222C28;
+   background-color:#222C28;
+	font-family: "Courier New", Courier, monospace;
+	color: #FFFFFF;
+}
+#next {
+   font-size: 1em;
+   text-transform: none;
+   position: absolute;
+   text-decoration: none;
+   cursor: default;
+   color: white;
+   bottom: 20px;
+   right: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
+}
+#previous {
+   font-size: 1em;
+   text-transform: none;
+   position: absolute;
+   text-decoration: none;
+   cursor: default;
+   color: white;
+   bottom: 20px;
+   left: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
 }
 h1,p {
 	font-family: "Courier New", Courier, monospace;
@@ -46,4 +74,30 @@ a.inventory {
     color: white;
     font-size: 18px;
     text-decoration: underline;
+}
+#next {
+   font-size: 1em;
+   text-transform: none;
+   position: absolute;
+   text-decoration: none;
+   cursor: default;
+   color: white;
+   bottom: 20px;
+   right: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
+}
+#previous {
+   font-size: 1em;
+   text-transform: none;
+   position: absolute;
+   text-decoration: none;
+   cursor: default;
+   color: white;
+   bottom: 20px;
+   left: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
 }

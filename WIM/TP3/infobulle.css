@@ -29,3 +29,23 @@ a.infobulle:hover span {
    border-radius: 5px;
    padding: 5px;
 }
+#next {
+   position: absolute;
+   text-decoration: none;
+   color: white;
+   bottom: 20px;
+   right: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
+}
+#previous {
+   position: absolute;
+   text-decoration: none;
+   color: white;
+   bottom: 20px;
+   left: 20px;
+   padding: 7px;
+   border: 1px solid white;
+   border-radius: 10px;
+}

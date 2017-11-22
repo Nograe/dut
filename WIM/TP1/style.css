@@ -18,7 +18,7 @@ article {
     margin-right:20%;
 }
 body {
-    	color: #444;
+   color: #444;
 	background:#f4f4f4;
 	padding:0 0 2em 0;
 	margin:0;
@@ -37,4 +37,24 @@ h2 {
 	margin: 1.5em 0 .8em 0;
 	color: #444;
 	text-shadow: 1px 1px 1px #cccccc;
+}
+#next {
+   position: absolute;
+   text-decoration: none;
+   color: black;
+   bottom: 20px;
+   right: 20px;
+   padding: 7px;
+   border: 1px solid black;
+   border-radius: 10px;
+}
+#previous {
+   position: absolute;
+   text-decoration: none;
+   color: black;
+   bottom: 20px;
+   left: 20px;
+   padding: 7px;
+   border: 1px solid black;
+   border-radius: 10px;
 }

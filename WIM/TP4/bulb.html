@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+   <head>
+      <meta charset="UTF-8">
+      <title>Ampoule !</title>
+      <link rel="stylesheet" href="style.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script language="Javascript">
+         function bulb() {
+            var path = "http://www.iut-fbleau.fr/sitebp/web/wim11/js/";
+            if (document.getElementById("bulb").src == path+"on.png") {
+               document.getElementById("bulb").src = path+"off.png";
+            } else {
+               document.getElementById("bulb").src = path+"on.png";
+            }
+         }
+      </script>
+   </head>
+   <body>
+      <h1>Cliquez pour allumer/éteindre l'ampoule</h1>
+      <img id="bulb" src="http://www.iut-fbleau.fr/sitebp/web/wim11/js/on.png" onclick="bulb(this)"/>
+      <a id="previous" href="index.html">Aller à l'exercice précédent</a>
+      <a id="next" href="blink.html">Aller à l'exercice suivant</a>
+   </body>
+</html>

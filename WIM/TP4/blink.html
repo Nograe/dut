@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+   <head>
+      <meta charset="UTF-8">
+      <title>Clignote !</title>
+      <link rel="stylesheet" href="style.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script language="Javascript">
+         function bulb() {
+            setInterval(function() {
+               var path = "http://www.iut-fbleau.fr/sitebp/web/wim11/js/";
+               if (document.getElementById("bulb").src == path+"on.png") {
+                  document.getElementById("bulb").src = path+"off.png";
+                  } else {
+                  document.getElementById("bulb").src = path+"on.png";
+               }
+            },500);
+         }
+         window.onload = bulb;
+      </script>
+   </head>
+   <body>
+      <h1>Woaw</h1>
+      <img id="bulb" style="cursor: default;" src="http://www.iut-fbleau.fr/sitebp/web/wim11/js/on.png" onclick="bulb(this)"/>
+      <a id="previous" href="bulb.html">Aller à l'exercice précédent</a>
+      <img id="next" style="width: 100px; cursor: none; border: none;" src="src/woaw.gif">
+   </body>
+</html>
