@@ -1,0 +1,62 @@
+body {
+   background-color:#222C28;
+	font-family: "Courier New", Courier, monospace;
+	color: #FFFFFF;
+	font-weight: normal;
+}
+header {
+   padding-top: 5px;
+   margin-left: 20%;
+   margin-right: 20%;
+}
+.titre {
+   background: #6b726a;
+   padding: 10px;
+   text-align: center;
+   text-transform: uppercase;
+}
+ul {
+   list-style: none;
+   padding: 10px;
+   margin: auto;
+   display: table;
+   margin-right: auto;
+   margin-left: auto;
+}
+li {
+   display: inline-block;
+   padding: 1em;
+}
+a {
+   color: #58ACFA;
+   text-decoration: none;
+   border-bottom: 0.5px dotted #58ACFA;
+}
+.informaticien {
+   margin-left: 10%;
+   margin-right: 30%;
+   border: 1px solid white;
+}
+.informaticien h2 {
+   text-align: center;
+   text-transform: uppercase;
+}
+article {
+   display: inline-table;
+   width: 290px;
+   height: 220px;
+   margin: 5px;
+   margin-right: 5px;
+   margin-left: 5px;
+   border: 1px solid white;
+}
+.informaticien img {
+   float: right;
+   margin-right: 20px;
+   margin-top: 20px;
+   box-shadow: 8px 8px 8px black;
+   border: 10px solid white;
+   height: 120px;
+   width: 120px;
+   object-fit: fill;
+}
