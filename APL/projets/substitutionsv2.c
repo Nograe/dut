@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 int strlength(char* str);
-void identify_rule(char *rule,char idrule[][100]);
-void replace(char *origin, char idrule[][100], char *result);
+void copy(char *origin, char *copy);
+int new_size(char *origin, char idrule[][256]);
+void identify_rule(char *rule,char idrule[][256]);
+void replace(char *origin, char idrule[][256], char *result);
 
 
 int strlength(char* str) {
@@ -16,12 +18,12 @@ int strlength(char* str) {
     return i;
 }
 
-void copy(char *origin, char *copy){
+void copy(char *origin, char *copy) {
 
     int i,taille = strlength(origin);
     //printf("Original: %s | Copy: %s\n",origin,copy);
 
-    for(i = 0 ; i <= taille ; i++){
+    for(i = 0 ; i <= taille ; i++) {
 
         copy[i] = origin[i];
         //printf("%d| origin: '%c' -> copy: '%c'\n",i,origin[i],copy[i]);
@@ -30,35 +32,30 @@ void copy(char *origin, char *copy){
 
 }
 
-int new_size(char *origin, char idrule[][100]) {
+int new_size(char *origin, char idrule[][256]) {
 
     int size = strlength(origin)+1;
 
-    int i=0,j;
+    int i=0,ascii=0;
 
     while(origin[i] != '\0') {
+        ascii = (int)origin[i];
 
-        ///Parcours de chaque règle pour trouver un idchar dans origin, stocké dans idrule[r][0]
-        for(j = 1 ; j <= (int)idrule[0][0] ; j++) {
-            if(idrule[j][0] == origin[i]) {
-                size = size + idrule[j][1];
-                size--;
-                //printf("Found: %c | size = %d\n",idrule[j][0],size);
-            }
-        }
+        if(idrule[0][ascii] != '\0')
+            size += idrule[0][ascii]-1;
+
         i++;
     }
 
     return (size*sizeof(char));
 }
 
-void identify_rule(char *rule,char idrule[][100]) {
+void identify_rule(char *rule,char idrule[][256]) {
 
-    int i=0,j,c=0;
+    int i=0,j=0,c=0,ascii=0;;
 
     while(rule[i]!=']') {
-        j=2;
-        c++;
+        j=0;
         i++;
 
         while(rule[i]==' ' || rule[i] == ',')
@@ -68,7 +65,7 @@ void identify_rule(char *rule,char idrule[][100]) {
             break;
 
         ///Caractère à remplacer
-        idrule[c][0] = rule[i];
+        ascii = (int)rule[i];
         //printf("idrule[%d][0]: %c\n",c,idrule[c][0]);
 
         i++;
@@ -80,41 +77,38 @@ void identify_rule(char *rule,char idrule[][100]) {
             i++;
 
         while(rule[i] != ' ' && rule[i] != ']' && rule[i] != ',') {
-            idrule[c][j]=rule[i];
-            //printf("\tidrule[%d][%d]: %c\n",c,j,idrule[c][j]);
+            idrule[ascii][j] = rule[i];
+            //printf("idrule[%d][%d]: %c\n",ascii,j,idrule[ascii][j]);
             i++;
             j++;
         }
-        idrule[c][1]=j-2;
+        idrule[ascii][j] = '\0';
+        idrule[0][ascii] = j;
         //printf("Taille du replace: %d\n",idrule[c][1]);
     }
-    idrule[0][0]=c;
-    //printf("Nombre regles: %d\n",idrule[0][0]);
 }
 
-void replace(char *origin, char idrule[][100], char *result) {
+void replace(char *origin, char idrule[][256], char *result) {
 
-    int i=0,c=0,j,k;
+    int i=0,c=0,j=0,ascii=0;
 
     while(origin[i] != '\0') {
+        ascii = (int)origin[i];
 
-        result[c] = origin[i];
-        //printf("result[%d]: %c\n",c,result[c]);
-        ///Parcours de chaque règle pour trouver un idchar dans origin, stocké dans idrule[r][0]
-        for(j = 1 ; j <= (int)idrule[0][0] ; j++) {
-
-            if(idrule[j][0] == origin[i]) {
-
-                for(k = 2 ; k <= idrule[j][1]+1 ; k++){
-                    result[c] = idrule[j][k];
-                    //printf("\tidrule[%d][%d]: %c -> result[%d]: %c\n",j,k,idrule[j][k],c,result[c]);
-                    c++;
-                }
-                c--;
+        if(idrule[ascii][0] == '\0') {
+            result[c] = origin[i];
+            //printf("NO RULE | result[%d]: %c\n",c,result[c]);
+            c++;
+        } else {
+            j = 0;
+            while(idrule[ascii][j] != '\0') {
+                result[c] = idrule[ascii][j];
+                //printf("idrule[%d][%d]: %c -> result[%d]: %c\n",ascii,j,idrule[ascii][j],c,result[c]);
+                j++;
+                c++;
             }
         }
         i++;
-        c++;
     }
 }
 
@@ -123,19 +117,25 @@ int main(int argc, char *argv[]) {
     char *rule_origin=argv[1];
     char *origin=argv[2];
     int repet=argv[3][0]-'0';
-    if(argv[3][1] == '0' && argv[3][0] == '1'){
+    if(argv[3][1] == '0' && argv[3][0] == '1') {
         repet = 10;
     }
     //printf("%d\n",repet);
 
-    if(repet == 0){
+    if(repet == 0) {
         printf("%s",origin);
         return 0;
     }
 
     ///Contient chaque règle, le idchar: [r][0] et la taille: [r][1], taille totale: [0][0]
-    char idrule[100][100] = {{'0'}};
+    char idrule[256][256] = {{'0'}};
     identify_rule(rule_origin,idrule);
+
+    /*int j;
+    for(j = 0 ; j < 256 ; j++) {
+        if(idrule[j][0] != '\0')
+            printf("%d | %s | %d \n", j, idrule[j], idrule[0][j]);
+    }*/
 
     int i;
     char *result;
@@ -153,6 +153,10 @@ int main(int argc, char *argv[]) {
         replace(origin, idrule, result);
 
         result[size-1] = '\0';
+        ///Provisoire
+        if(i == repet && i != 1) {
+            break;
+        }
 
         if(i != 1)
             free(origin);
@@ -161,10 +165,9 @@ int main(int argc, char *argv[]) {
         copy(result, origin);
 
     }
-    printf("%s\n",result);
 
-    free(result);
-    free(origin);
-
-    return 0;
+      printf("%s\n",result);
+      free(result);
+      free(origin);
+      return 0;
 }
