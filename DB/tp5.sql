@@ -1,5 +1,5 @@
 1. 
-a) create view CommandeBuveur(NumCom,DateCom,Nom) as select NumCom,DateCom,NumBuveur from Commande natural join Buveur;
+a) create view CommandeBuveur(NumCom,DateCom,Nom) as select NumCom,DateCom,Nom from Commande natural join Buveur;
 b) delete from CommandeBuveur where NumCom=8; /*Impossible: NumCom utilisé dans d'autres tables*/
 c) update CommandeBuveur set DateCom='1990-04-22' where NumCom=12;
 d) update CommandeBuveur set Nom='Risitas' where NumCom=2;
@@ -7,7 +7,7 @@ e) insert into CommandeBuveur(NumCom,DateCom,Nom) values(14,'1990-05-10','Collin
 
 2. create view Vin2(NumVin,Cru,Region) as select NumVin,Cru,Region from Vin;
 a) update Vin2 set Cru='Bourgueuil' where NumVin=85;
-b) delete from Vin2 where NumVin=190;
+b) delete from Vin2 where NumVin=190; /*NumVin présent dans d'autres tables*/ 
 c) insert into Vin2(NumVin,Cru,Region) values(10,'Chinon','Loire'); /*La table d'origine n'a pas de valeurs par défaut*/
 
 3.
