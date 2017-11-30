@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <graph.h>
 
@@ -17,6 +18,7 @@ int main()
       touche = Touche();
     }
     int tmp = temps - (Microsecondes() - ref)/1000000;
+    printf("Microsecondes: %ld\n",Microsecondes());
     hour = tmp / 3600;
     minute = (tmp%3600) / 60;
     seconds = (tmp%60);
