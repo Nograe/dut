@@ -1,4 +1,4 @@
-1. update Livraison set Qtte=Qtte+1 where DateLiv>='1987-11-1'
+ys1. update Livraison set Qtte=Qtte+1 where DateLiv>='1987-11-1'
 +--------+------+------------+	    	  
 | NumCom | Qtte | DateLiv    |	    
 +--------+------+------------+	    
@@ -51,4 +51,15 @@
 |     11 |      1200 |    140 |   12 | 1990-04-22 |
 |     12 |      1100 |    120 |    6 | 1990-04-22 |
 +--------+-----------+--------+------+------------+
-4. 
+4. CREATE TABLE Cave_Cooperative(
+   NumCave INTEGER PRIMARY KEY,
+   VilleCave VARCHAR(25) NOT NULL);
+
+5. ALTER table Viticulteur ADD (NumCave INTEGER NOT NULL  REFERENCES Cave_Cooperative(NumCave) );
+
+6. INSERT INTO Cave_Cooperative(NumCave, VilleCave) VALUES (1, 'Paris');
+   INSERT INTO Cave_Cooperative(NumCave, VilleCave) VALUES (2, 'Lille');
+   INSERT INTO Cave_Cooperative(NumCave, VilleCave) VALUES (3, 'Bordeaux');
+   INSERT INTO Cave_Cooperative(NumCave, VilleCave) VALUES (4, 'Marseille');
+   INSERT INTO Cave_Cooperative(NumCave, VilleCave) VALUES (5, 'Macon');
+   INSERT INTO Cave_Cooperative(NumCave, VilleCave) VALUES (6, 'Chateau-Chalon');

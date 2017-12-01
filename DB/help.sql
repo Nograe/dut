@@ -5,6 +5,7 @@ TRUNCATE table : Supprime tous les champs table
 DESCRIBE table : Affiche champs de Table
 UPDATE table SET champ='?' WHERE clé=?
 INSERT INTO table VALUES(A,B,C,D) : Insère dans table les valeurs A,B,C,D
+ALTER TABLE table ADD champ type <DEFAULT value>
 
 OPERATIONS:
 
