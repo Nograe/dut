@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <graph.h>
- 
+#include "C:\libs\bibliotheque-graphique-iut-1.1\src\include\graph.h"
+
 int main()
 {
   InitialiserGraphique();
