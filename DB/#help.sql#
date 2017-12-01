@@ -13,10 +13,8 @@ select SUM(Qtte),COUNT(Qtte),Qtte from Commande group by Qtte;
 
 OPERATION( ALL | DISTINCT | * | Champ )
 
-GROUP BY Element : Effectue opération selon élément spécifié  
+GROUP BY Element : Effectue opération selon élément spécifié
 
 COUNT : Nombre lignes | SUM : Somme de valeurs | AVG : Moyenne
-
-HAVING : Condition avec agrégats | ex: HAVING COUNT(Qtte) >= 8
 
 LEFT (OUTER) JOIN : Liste tout éléments de la table de gauche et du join
