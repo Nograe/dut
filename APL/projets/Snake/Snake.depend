@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1512412712 source:c:\users\matthieu\desktop\dutinfo\apl\projets\snake\main.c
+	<stdio.h>
+	<stdlib.h>
+	"menu.h"
+	"snake.h"
+
+1512411882 source:c:\users\matthieu\desktop\dutinfo\apl\projets\snake\menu.c
+
+1512411563 source:c:\users\matthieu\desktop\dutinfo\apl\projets\snake\snake.c
+
+1512411874 c:\users\matthieu\desktop\dutinfo\apl\projets\snake\menu.h
+
+1512412838 c:\users\matthieu\desktop\dutinfo\apl\projets\snake\snake.h
+
