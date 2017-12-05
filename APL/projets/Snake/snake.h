@@ -1,4 +1,4 @@
-#define POSX 50
+#define POSX 70
 #define POSY 70
 
 typedef enum {
@@ -16,4 +16,5 @@ typedef struct {
 typedef struct {
 	Segment *s_seg;
 	Direction s_dir;
+	int speed;
 } Body;
