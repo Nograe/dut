@@ -30,7 +30,7 @@ typedef struct {
 
 typedef struct {
     Deck deck_jeu;
-    char *joueurs;
+    Player *joueurs;
     int nbr_joueurs;
     int start_player;
 } Jeu;
@@ -100,27 +100,64 @@ void givetoplayer (Player *p, Deck *d) {
     p->main[cartejoueur].valeur = d->paquet[cartedeck].valeur;
     p->main[cartejoueur].couleur = d->paquet[cartedeck].couleur;
 
+    d->paquet[cartedeck].valeur = 0;
+    d->paquet[cartedeck].couleur = 0;
+
     p->restemain = p->restemain+1;
     d->reste = d->reste-1;
 }
 
 void echange (Player *p, Deck *d, int i){
 
-	int carte = rand()%52;
-	Carte temp;
+  int carte = rand() % 52;
 
-	temp = p->main[i];
-    p->main[i] = d->paquet[carte];
-    d->paquet[carte] = temp;
+  while(d->paquet[carte].valeur == 0)
+    carte = rand() % 52;
+
+  Carte temp;
+  
+  p->main[i] = temp;
+  p->main[i] = d->paquet[carte];
+  d->paquet[carte] = temp;
 }
 
-Jeu initgame(char *players[], int player_isbot[], int playercount, int bid){
+Jeu initgame (char players[][10], int player_isbot[], int nbrplayer, int bid){
 
     Jeu partie;
+    
+    partie.joueurs = malloc(sizeof(Player) * nbrplayer);
 
-    /* */
+    int i;
+    for(i = 0 ; i < nbrplayer ; i++){
+      partie.joueurs[i].name = players[i];
+      partie.joueurs[i].restemain = 0;
+      partie.joueurs[i].mise = bid;
+      partie.joueurs[i].argent = bid;
+      partie.joueurs[i].couche = 0;      
+    }
 
-	return partie;
+    return partie;
+}
+
+void distrib (Jeu *p, int nbrcartes){
+
+  int i, player = p->nbr_joueurs;
+
+  while(player != 0){
+    for( i = 0 ; i < 5 ; i++)
+      givetoplayer(&(p->joueurs[player-1]), &(p->deck_jeu));
+    player--;
+  }
+}
+
+int compare (Jeu p) {
+
+  return best(p.joueurs[0], p.joueurs[1]);
+}
+
+int best (Player p1, Player p2) {
+  
+  return 1;
 }
 
 int main () {
@@ -142,9 +179,17 @@ int main () {
     joueur1.restemain = 0;
     givetoplayer(&joueur1, &maindeck);
     //printmain(joueur1);
+    //printf("Première carte Deck:"); printcarte(maindeck.paquet[maindeck.reste-1]);
     echange(&joueur1, &maindeck, 0);
     //printmain(joueur1);
+    
+    char players[2][10] = {"matt","joueur1"};
+    int isbot[2] = {0,1};
+    int nbrplayer = 2;
+    int bid = 150;
+    Jeu partie = initgame(players, isbot, nbrplayer, bid);
 
+    
 
     return (0);
 }
