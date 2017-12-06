@@ -33,15 +33,16 @@
 
 1512507653 source:/home/matthieu/dutinfo/APL/projets/Snake/snake.c
 
-1512508813 source:/home/matthieu/dutinfo/APL/projets/Snake/main.c
+1512593892 source:/home/matthieu/dutinfo/APL/projets/Snake/main.c
 	<stdio.h>
 	<stdlib.h>
 	<unistd.h>
 	<graph.h>
+	<time.h>
 	"menu.h"
 	"snake.h"
 
 1512498453 /home/matthieu/dutinfo/APL/projets/Snake/menu.h
 
-1512507658 /home/matthieu/dutinfo/APL/projets/Snake/snake.h
+1512590196 /home/matthieu/dutinfo/APL/projets/Snake/snake.h
 
