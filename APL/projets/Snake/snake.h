@@ -18,4 +18,5 @@ typedef struct {
   Direction s_dir;
   int speed;
   int nbrseg;
+  int newseg;
 } Body;
