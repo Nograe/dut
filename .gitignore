@@ -16,7 +16,7 @@
 .temp/*
 !.temp/help*
 desktop.ini
-!.temp.expo*
+!.temp/expo*
 
 # OpenClassrooms
 OpenClassrooms/*
