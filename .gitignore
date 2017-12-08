@@ -14,8 +14,9 @@
 
 # Temp files
 .temp/*
-!.temp/help*.c
+!.temp/help*
 desktop.ini
+!.temp.expo*
 
 # OpenClassrooms
 OpenClassrooms/*
