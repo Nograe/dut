@@ -1,0 +1,21 @@
+Artificial intelligence is intelligence displayed by machines, in contrast with natural intelligence displayed by humans and animals.
+It's also the ensemble of theories and techniques used to produce machines capable of simulating intelligence.
+It's more of a set of concepts and technologies than a discipline in its own right.
+AI is often ranked with cognitive science, mathematical logic and computer science.
+Its use and development have always generated fantasies, concerns and misconceptions.
+
+AI finds its starting point back in the 1950s with Alan Turing. He wondered if a machine could "think".
+In 1950, he proposed a test to determine the intelligence of a machine, now known as the Turing test.
+The term "Artificial Intelligence" was coined by John McCarthy in a summer workshop at Darmouth College in 1956.
+By the middle of the 1960s, the research in the U.S. was heavily funded by the Department of Defense.
+/* An american computer scientist predicted that : "machines will be capable, within twenty years, of doing any work a man can do". */
+
+On 11 May 1997, Deep Blue became the first computer to beat the world chess champion.
+In 2011, Watson, the IBM "question answering system" defeated the two Jeopardy champions.
+In May 2016, AlphaGo defeated the world Go champion.
+
+In 1985, the market for AI had reached over a billion dollars.
+In 2018, it will be over 4 billion dollars.
+
+
+Artificial intelligence today is a narrow AI (or weak AI): it's designed to perform a narrow task (e.g. facial recognition / internet searches / driving a car). However, the long-term goal of many researchers is to create general AI (or strong AI), able to outperform humans to almost all cognitive tasks.
