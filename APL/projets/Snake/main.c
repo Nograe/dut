@@ -79,7 +79,7 @@ int verif (Body S) {
 
 	int x = S.s_seg[0].x;
 	int y = S.s_seg[0].y;
-	if(x <= 10 || x >= WIDTH-10 || y <= 10 || y >= HEIGHT-10) {
+	if(x <= 0 || x >= WIDTH || y <= 0 || y >= HEIGHT) {
 		//printf("Coords: %d | %d", x, y);
 		return 1;
 	}
@@ -100,8 +100,10 @@ int verif (Body S) {
 
 void random_apple (Apple *A) {
 
-    A->x = rand()%WIDTH;
-    A->y = rand()%HEIGHT;
+    int posx = rand()%WIDTH;
+    int posy = rand()%HEIGHT;
+    A->x = posx-posx%12;
+    A->y = posy-posy%12;
 
     ChargerImage("apple.png",A->x,A->y,0,0,10,10);
 }
@@ -135,8 +137,6 @@ int main () {
             touche = Touche();
         else
             break;
-        if(ToucheEnAttente())
-            touche = Touche();
 
 		if(touche == XK_Up)
 			snake_body.s_dir = UP;
