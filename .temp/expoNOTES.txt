@@ -1,3 +1,5 @@
+# HISTORY
+
 Artificial intelligence is intelligence displayed by machines, in contrast with natural intelligence displayed by humans and animals.
 It's also the ensemble of theories and techniques used to produce machines capable of simulating intelligence.
 It's more of a set of concepts and technologies than a discipline in its own right.
@@ -6,9 +8,17 @@ Its use and development have always generated fantasies, concerns and misconcept
 
 AI finds its starting point back in the 1950s with Alan Turing. He wondered if a machine could "think".
 In 1950, he proposed a test to determine the intelligence of a machine, now known as the Turing test.
+
+   !- TURING TEST SLIDE -!
+   
+   His test consist of putting an human C in written confrontation with a computer A and another human B. If the human C is not able to say which one is the computer, the machine pass the test.
+   
+   !- BACK -!
+
 The term "Artificial Intelligence" was coined by John McCarthy in a summer workshop at Darmouth College in 1956.
 By the middle of the 1960s, the research in the U.S. was heavily funded by the Department of Defense.
-/* An american computer scientist predicted that : "machines will be capable, within twenty years, of doing any work a man can do". */
+
+   !- NEXT -!
 
 On 11 May 1997, Deep Blue became the first computer to beat the world chess champion.
 In 2011, Watson, the IBM "question answering system" defeated the two Jeopardy champions.
@@ -18,4 +28,23 @@ In 1985, the market for AI had reached over a billion dollars.
 In 2018, it will be over 4 billion dollars.
 
 
-Artificial intelligence today is a narrow AI (or weak AI): it's designed to perform a narrow task (e.g. facial recognition / internet searches / driving a car). However, the long-term goal of many researchers is to create general AI (or strong AI), able to outperform humans to almost all cognitive tasks.
+/* Artificial intelligence today is a weak AI): it's designed to perform a narrow task (e.g. facial recognition / internet searches / driving a car). But the long-term goal of many researchers is to create a strong AI able to outperform humans in almost all cognitive tasks. */
+
+
+# WHAT ABOUT NOW
+
+Here are some examples of AI applications.
+
+The Moral Machine
+Last year, MIT researchers set up a website called the Moral Machine, which asked visitors to take a decision on moral dilemmas about self-driving cars, such as killing two passengers or five pedestrians.
+The visitor has to judge which outcome is morally acceptable.
+
+Boston Dynamics
+Boston Dynamics is an American company who builds advanced robots with remarkable mobility, agility, dexterity and speed.
+They are best known for the development of Spot, Handle, SpotMini and Atlas.
+
+Sophia
+Sophia is a "social humanoid robot" developed by Hanson Robotics. On October 2017, she became a Saudi Arabian citizen, and the first robot to recieve citizenship. She has now more rights than the natives Saoudian womens.
+
+Deepmind AlphaZero
+Starting on with only the rules and playing against himself using machine learning, AlphaZero has reached in 24 hours a superhuman level of chess, shogi and go, and in each case has beaten the best programs in the world, such as the previous AlphaGo or Stockfish.
