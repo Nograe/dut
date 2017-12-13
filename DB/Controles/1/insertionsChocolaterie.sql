@@ -24,13 +24,47 @@ INSERT INTO Chocolatier (nom , ville )
 INSERT INTO Chocolatier (nom , ville ) 
        VALUES ('Michel Cluizel' ,'Damville' );
 
+------ Clients ------
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Bob Marley', 'Kingston');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Harrison Stafford', 'San Francisco');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Billy Gibbons', 'Houston');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Dusty Hill', 'Houston');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Janis Joplin', 'San Francisco');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Michael Jackson', 'Los Angeles');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Nina Simone', 'Mount Vernon');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Brahim Zaibat', 'Paris');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Benjamin Millepied', 'Paris');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Maurice Béjart', 'Marseille');
+
+INSERT INTO Client (nom , ville ) 
+       VALUES ('Charles Beaudelaire', 'Paris');
 
 ------ Chocolats ------
 
 INSERT INTO Chocolat (nomChocolat , pourcentageCacao, origineFeve, biologique, idChocolatier) 
        VALUES ('gianduja1' , 35, 'Equateur', 0, 3);
        
-       INSERT INTO Chocolat (nomChocolat , pourcentageCacao, origineFeve, biologique, idChocolatier) 
+INSERT INTO Chocolat (nomChocolat , pourcentageCacao, origineFeve, biologique, idChocolatier) 
        VALUES ('gianduja2' , 38, 'Ghana', 0, 3);
 
 INSERT INTO Chocolat (nomChocolat , pourcentageCacao, origineFeve, biologique, idChocolatier) 
@@ -129,40 +163,6 @@ INSERT INTO Chocolat (nomChocolat , pourcentageCacao, origineFeve, biologique, i
 INSERT INTO Chocolat (nomChocolat , pourcentageCacao, origineFeve, biologique, idChocolatier) 
        VALUES ('palette-noir' , 67, 'Ghana', 0, 8);
 
------- Clients ------
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Bob Marley', 'Kingston');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Harrison Stafford', 'San Francisco');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Billy Gibbons', 'Houston');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Dusty Hill', 'Houston');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Janis Joplin', 'San Francisco');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Michael Jackson', 'Los Angeles');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Nina Simone', 'Mount Vernon');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Brahim Zaibat', 'Paris');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Benjamin Millepied', 'Paris');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Maurice Béjart', 'Marseille');
-
-INSERT INTO Client (nom , ville ) 
-       VALUES ('Charles Beaudelaire', 'Paris');
 
 ----- Commandes ----
 
