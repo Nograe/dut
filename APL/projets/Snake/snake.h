@@ -1,5 +1,5 @@
-#define POSX 70
-#define POSY 70
+#define POSX 72
+#define POSY 72
 
 typedef enum {
 	UP = 1,
