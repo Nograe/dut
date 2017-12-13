@@ -1,0 +1,6 @@
+#include "ex3.1.h"
+#include "ex3.2.h"
+#include "ex3.3.h"
+#include "ex3.4.h"
+#include "ex3.5.h"
+#include "ex3.6.h"
