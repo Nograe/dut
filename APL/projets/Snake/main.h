@@ -4,8 +4,8 @@
 #include <graph.h>
 #include <time.h>
 #include "snake.h"
-#define WIDTH 600
-#define HEIGHT 600
+#define WIDTH 50*12
+#define HEIGHT 50*12
 #define CASE 12
 
 int forcexit(int touche);

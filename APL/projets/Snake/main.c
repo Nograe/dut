@@ -8,6 +8,38 @@ int forcexit(int touche) {
     return 0;
 }
 
+void verifpause (Body *B, Apple *A, int *touche, unsigned long *temps) {
+
+  if(*touche != XK_space)
+    return;
+
+  unsigned long tmp = Microsecondes();
+  char *buf = "PAUSE";
+  char *buf2 = "Press SPACE";
+
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,buf,2);
+  EcrireTexte(WIDTH/2 -42,HEIGHT/2,buf2,0);
+
+  do {
+    *touche = Touche();
+  } while (*touche != XK_space && *touche != XK_Escape);
+
+  int diff = Microsecondes() - tmp;
+
+  draw(*B, *A, *temps-diff);
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,"3",2);
+  sleep(1);
+  draw(*B, *A, *temps-diff-1000000);
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,"2",2);
+  sleep(1);
+  draw(*B, *A, *temps-diff-2000000);
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,"1",2);
+  sleep(1);
+
+  *temps -= Microsecondes() - tmp;
+  *touche = 0;
+}
+
 void move_forward (Body *B) {
 
   B->s_seg[B->nbrseg] = B->s_seg[B->nbrseg-1];
@@ -39,16 +71,19 @@ void draw (Body B, Apple A, unsigned long temps) {
   char buf[10];
 
   ChoisirEcran(1);
-  EffacerEcran(CouleurParNom("yellowgreen"));
-  ChoisirCouleurDessin(CouleurParNom("khaki"));
+  EffacerEcran(CouleurParNom("goldenrod"));
+  ChoisirCouleurDessin(CouleurParNom("seagreen"));
 
   for(i = 0 ; i < B.nbrseg ; i++) {
     RemplirRectangle(B.s_seg[i].x, B.s_seg[i].y, 10, 10);
   }
 
-  ChoisirCouleurDessin(CouleurParNom("red"));
-  RemplirRectangle(A.x, A.y, 10, 10);
-  //ChargerImage("apple.png",A.x,A.y,0,0,10,10);
+
+  // Apple
+  if(A.golden)
+    ChargerImage("golden_apple.png",A.x,A.y,0,0,13,13);
+  else
+    ChargerImage("apple.png",A.x,A.y,0,0,13,13);
 
   sprintf(buf,"%ld",tmp);
   ChoisirCouleurDessin(CouleurParNom("black"));
@@ -96,37 +131,54 @@ int verif (Body S) {
   return 0;
 }
 
-int verif_apple (Body B, Apple A){
+void verif_apple (Body *B, Apple *A){
   
-  if(B.s_seg[0].x == A.x && B.s_seg[0].y == A.y)
-    return 1;
+  if(B->s_seg[0].x == A->x && B->s_seg[0].y == A->y)
+    return eat_apple(B, A);
   
-  return 0;
+  return;
 }
 
-void random_apple (Apple *A) {
+void random_apple (Body *B, Apple *A) {
+
+  A->golden = 0;
 
   int posx = rand() % HEIGHT;
   int posy = rand() % WIDTH;
   A->x = (posx - posx % CASE);
   A->y = (posy - posy % CASE);
 
-  //printf("posx: %d | posy: %d", A->x, A->y);
+  int random = rand() % 5;
+  if(random == 1)
+    A->golden = 1;
 
-  //ChargerImage("goldenapple.png",A->x,A->y,0,0,10,10);
+  int i;
+  for(i = 0 ; i < B->nbrseg ; i++){
+    if(A->x == B->s_seg[i].x && A->y == B->s_seg[i].y)
+      return random_apple (B, A);
+  }
 }
 
 void eat_apple (Body *B, Apple *A) {
   
-  A->nbr += 5;
-  
-  B->nbrseg += 2;
+  int score = 2;
+  int addseg = 1;
+
+  if(A->golden){
+    score = 5;
+    addseg = 2;
+  }
+
+  A->nbr += score;
+  B->nbrseg += addseg;
+
   B->s_seg = realloc(B->s_seg, sizeof(Segment) * (B->nbrseg + 1));
 
-  int i = B->nbrseg-2;
-  for(; i < 
+  int i = B->nbrseg-addseg;
+  for(; i < B->nbrseg ; i++)
+    B->s_seg[i] = B->s_seg[B->nbrseg-addseg-1];
   
-  return random_apple(A);
+  return random_apple(B, A);
 }
 
 int main () {
@@ -143,18 +195,15 @@ int main () {
   snake_body.nbrseg = 14;
   snake_body.speed = 90000;
   snake_body.s_seg = malloc((snake_body.nbrseg+1) * sizeof(Segment));
+
   body_init(&snake_body);
+  random_apple(&snake_body, &A);
 
   int touche, old_dir = 4;
 
-  random_apple(&A);
-
   while(!forcexit(touche)) {
 
-    if(verif_apple(snake_body, A)){
-      eat_apple(&snake_body, &A);
-      snake_body.s_seg = realloc(snake_body.s_seg, sizeof(Segment) * (snake_body.nbrseg+1));
-    }
+    verif_apple(&snake_body, &A);
     
     draw(snake_body, A, temps);
 
@@ -180,6 +229,9 @@ int main () {
     if(verif(snake_body)) {
       break;
     }
+
+    verifpause(&snake_body, &A, &touche, &temps);
+
     move_forward(&snake_body);
 
     usleep(snake_body.speed);

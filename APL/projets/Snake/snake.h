@@ -25,4 +25,5 @@ typedef struct {
   int x;
   int y;
   int nbr;
+  int golden;
 } Apple;
