@@ -18,16 +18,16 @@ void move_forward (Body *B) {
 
   switch(B->s_dir) {
   case 1:
-    B->s_seg[0].y-=12;
+    B->s_seg[0].y -= CASE;
     break;
   case 2:
-    B->s_seg[0].y+=12;
+    B->s_seg[0].y += CASE;
     break;
   case 3:
-    B->s_seg[0].x-=12;
+    B->s_seg[0].x -= CASE;
     break;
   case 4:
-    B->s_seg[0].x+=12;
+    B->s_seg[0].x += CASE;
     break;
   }
 }
@@ -53,6 +53,8 @@ void draw (Body B, Apple A, unsigned long temps) {
   sprintf(buf,"%ld",tmp);
   ChoisirCouleurDessin(CouleurParNom("black"));
   EcrireTexte(WIDTH-20,HEIGHT-20,buf,1);
+  sprintf(buf,"%d",A.nbr);
+  EcrireTexte(20,HEIGHT-20,buf,1);
 
   ChoisirEcran(0);
   EffacerEcran(CouleurParNom("yellowgreen"));
@@ -61,8 +63,8 @@ void draw (Body B, Apple A, unsigned long temps) {
 
 void body_init (Body *B) {
   int i;
-  int posx = 20;
-  int posy = 30;
+  int posx = POSX;
+  int posy = POSY;
   for(i = 0 ; i < B->nbrseg ; i++) {
     B->s_seg[i].x = posx;
     B->s_seg[i].y = posy;
@@ -75,7 +77,7 @@ int verif (Body S) {
 
   int x = S.s_seg[0].x;
   int y = S.s_seg[0].y;
-  if(x <= 0 || x >= WIDTH || y <= 0 || y >= HEIGHT) {
+  if(x <= -12 || x >= WIDTH || y <= -12 || y >= HEIGHT) {
     //printf("Coords: %d | %d", x, y);
     return 1;
   }
@@ -94,14 +96,37 @@ int verif (Body S) {
   return 0;
 }
 
+int verif_apple (Body B, Apple A){
+  
+  if(B.s_seg[0].x == A.x && B.s_seg[0].y == A.y)
+    return 1;
+  
+  return 0;
+}
+
 void random_apple (Apple *A) {
 
-  int posx = rand()%WIDTH;
-  int posy = rand()%HEIGHT;
-  A->x = (posx-posx%10) ;
-  A->y = (posy-posy%10) ;
+  int posx = rand() % HEIGHT;
+  int posy = rand() % WIDTH;
+  A->x = (posx - posx % CASE);
+  A->y = (posy - posy % CASE);
+
+  //printf("posx: %d | posy: %d", A->x, A->y);
 
   //ChargerImage("goldenapple.png",A->x,A->y,0,0,10,10);
+}
+
+void eat_apple (Body *B, Apple *A) {
+  
+  A->nbr += 5;
+  
+  B->nbrseg += 2;
+  B->s_seg = realloc(B->s_seg, sizeof(Segment) * (B->nbrseg + 1));
+
+  int i = B->nbrseg-2;
+  for(; i < 
+  
+  return random_apple(A);
 }
 
 int main () {
@@ -113,9 +138,10 @@ int main () {
   srand(time(NULL));
   unsigned long temps = Microsecondes();
   Apple A;
+  A.nbr = 0;
   Body snake_body;
   snake_body.nbrseg = 14;
-  snake_body.speed = 130000;
+  snake_body.speed = 90000;
   snake_body.s_seg = malloc((snake_body.nbrseg+1) * sizeof(Segment));
   body_init(&snake_body);
 
@@ -125,10 +151,12 @@ int main () {
 
   while(!forcexit(touche)) {
 
-
-    //while(!ToucheEnAttente() && !verif(snake_body)) {
+    if(verif_apple(snake_body, A)){
+      eat_apple(&snake_body, &A);
+      snake_body.s_seg = realloc(snake_body.s_seg, sizeof(Segment) * (snake_body.nbrseg+1));
+    }
+    
     draw(snake_body, A, temps);
-      //}
 
     if(ToucheEnAttente()) {
       touche = Touche();
@@ -153,8 +181,6 @@ int main () {
       break;
     }
     move_forward(&snake_body);
-
-
 
     usleep(snake_body.speed);
   }

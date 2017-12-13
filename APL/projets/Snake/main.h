@@ -4,9 +4,12 @@
 #include <graph.h>
 #include <time.h>
 #include "snake.h"
-#define WIDTH 400
-#define HEIGHT 400
+#define WIDTH 600
+#define HEIGHT 600
+#define CASE 12
 
+int forcexit(int touche);
 void move_forward (Body *B);
 void body_init (Body *B);
-int forcexit (int touche);
+void draw (Body B, Apple A, unsigned long temps);
+void eat_apple(Body *B, Apple *A);
