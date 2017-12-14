@@ -15,47 +15,27 @@ void verifpause (Body *B, Apple *A, int *touche, unsigned long *temps) {
 
   unsigned long tmp = Microsecondes();
 
-  EcrireTexte(WIDTH/2 - 40,HEIGHT/2 -20,"PAUSE",2);
-  EcrireTexte(WIDTH/2 - 42,HEIGHT/2,"Press SPACE",0);
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,"PAUSE",2);
+  EcrireTexte(WIDTH/2 -42,HEIGHT/2,"Press SPACE",0);
 
   do {
     *touche = Touche();
-  } while (*touche != XK_space);
+  } while (*touche != XK_space && *touche != XK_Escape);
 
   int diff = Microsecondes() - tmp;
 
   draw(*B, *A, *temps+diff);
-  EcrireTexte(WIDTH/2 - 20,HEIGHT/2 -20,"3",2);
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,"3",2);
   sleep(1);
   draw(*B, *A, *temps+diff+1000000);
-  EcrireTexte(WIDTH/2 - 20,HEIGHT/2 -20,"2",2);
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,"2",2);
   sleep(1);
   draw(*B, *A, *temps+diff+2000000);
-  EcrireTexte(WIDTH/2 - 20,HEIGHT/2 -20,"1",2);
+  EcrireTexte(WIDTH/2 -40,HEIGHT/2 -20,"1",2);
   sleep(1);
 
   *temps += diff+3000000;
   *touche = 0;
-}
-
-void next_level (Body *B, Apple *A, unsigned long *temps) {
-
-  A->spawn++;
-  A->eaten = 0;
-  A->x = malloc(A->spawn * sizeof(int));
-  A->y = malloc(A->spawn * sizeof(int));
-  B->speed -= 5000;
-  random_apple(*B, A);
-
-  body_init(B);
-  EffacerEcran(CouleurParNom("goldenrod"));
-  ChoisirCouleurDessin(CouleurParNom("seagreen"));
-  EcrireTexte(WIDTH/2 - 70,HEIGHT/2 - 20,"NEXT LEVEL!",2);
-  sleep(2);
-  draw(*B, *A, *temps);
-
-  int touche = XK_space;
-  verifpause(B, A, &touche, temps);
 }
 
 void move_forward (Body *B) {
@@ -98,14 +78,16 @@ void draw (Body B, Apple A, unsigned long temps) {
 
 
   // Apple
-  for(i = 0 ; i < A.spawn ; i++)
-    ChargerImage("apple.png",A.x[i]-1,A.y[i]-1,0,0,13,13);
+  if(A.golden)
+    ChargerImage("golden_apple.png",A.x,A.y,0,0,13,13);
+  else
+    ChargerImage("apple.png",A.x,A.y,0,0,13,13);
 
   // Temps - Score
   sprintf(buf,"%ld",tmp);
   ChoisirCouleurDessin(CouleurParNom("black"));
   EcrireTexte(WIDTH-30,HEIGHT-20,buf,1);
-  sprintf(buf,"%d",A.total*5);
+  sprintf(buf,"%d",A.nbr);
   EcrireTexte(20,HEIGHT-20,buf,1);
 
   ChoisirEcran(0);
@@ -120,7 +102,7 @@ void body_init (Body *B) {
   for(i = 0 ; i < B->nbrseg ; i++) {
     B->s_seg[i].x = posx;
     B->s_seg[i].y = posy;
-    posx -= 12;
+    posx-=12;
   }
   B->s_dir = 4;
 }
@@ -148,57 +130,57 @@ int verif (Body S) {
   return 0;
 }
 
-int verif_apple (Body *B, Apple *A) {
+void verif_apple (Body *B, Apple *A){
   
-  int i;
-  for(i = 0 ; i < A->spawn ; i++) {
-    if(B->s_seg[0].x == A->x[i] && B->s_seg[0].y == A->y[i]){
-      A->x[i] = -13;
-      A->y[i] = -13;
-      eat_apple(B, A);
-      return 0;
-    }
-  }
-
-  if(A->eaten == A->spawn)
-    return 1;
-
-  return 0;
+  if(B->s_seg[0].x == A->x && B->s_seg[0].y == A->y)
+    return eat_apple(B, A);
+  
+  return;
 }
 
-void random_apple (Body B, Apple *A) {
+void random_apple (Body *B, Apple *A) {
 
-  int posx, posy, i, j;
-  for(i = 0 ; i < A->spawn ; i++){
-    posx = rand() % WIDTH;
-    posy = rand() % HEIGHT;
-    A->x[i] = (posx - posx % CASE);
-    A->y[i] = (posy - posy % CASE);
-  }
+  A->golden = 0;
 
-  for(i = 0 ; i < B.nbrseg ; i++){
-    for(j = 0 ; j < A->spawn ; j++) {
-      if(A->x[j] == B.s_seg[i].x && A->y[j] == B.s_seg[i].y)
-        return random_apple (B, A);
-    }
+  int posx = rand() % WIDTH;
+  int posy = rand() % HEIGHT;
+  A->x = (posx - posx % CASE);
+  A->y = (posy - posy % CASE);
+
+  int random = rand() % 5;
+  if(random == 1)
+    A->golden = 1;
+
+  int i;
+  for(i = 0 ; i < B->nbrseg ; i++){
+    if(A->x == B->s_seg[i].x && A->y == B->s_seg[i].y)
+      return random_apple (B, A);
   }
 }
 
 void eat_apple (Body *B, Apple *A) {
+  
+  int score = 2;
+  int addseg = 2;
 
-  A->eaten++;
-  A->total++;
-  B->nbrseg += 2;
+  if(A->golden){
+    score = 5;
+    addseg = 4;
+  }
+
+  A->nbr += score;
+  B->nbrseg += addseg;
 
   B->s_seg = realloc(B->s_seg, sizeof(Segment) * (B->nbrseg + 1));
 
-  int i = B->nbrseg-2;
+  int i = B->nbrseg-addseg;
   for(; i < B->nbrseg ; i++){
-    //printf("[%d] prend : [%d]\n", i, B->nbrseg-2-1);
-    B->s_seg[i] = B->s_seg[B->nbrseg-2-1];
+    printf("[%d] prend : [%d]\n", i, B->nbrseg-addseg-1);
+    B->s_seg[i] = B->s_seg[B->nbrseg-addseg-1];
   }
+  
+  return random_apple(B, A);
 }
-
 
 int main () {
 
@@ -208,20 +190,16 @@ int main () {
 
   srand(time(NULL));
   unsigned long temps = Microsecondes();
-
+  Apple A;
+  A.nbr = 0;
+  A.spawn = 5;
   Body snake_body;
   snake_body.nbrseg = 10;
   snake_body.speed = 90000;
   snake_body.s_seg = malloc((snake_body.nbrseg+1) * sizeof(Segment));
-  body_init(&snake_body);
 
-  Apple A;
-  A.eaten = 0;
-  A.total = 0;
-  A.spawn = 5;
-  A.x = malloc(A.spawn * sizeof(int));
-  A.y = malloc(A.spawn * sizeof(int));
-  random_apple(snake_body, &A);
+  body_init(&snake_body);
+  random_apple(&snake_body, &A);
 
   int touche, old_dir = 4;
 
@@ -257,9 +235,6 @@ int main () {
     verifpause(&snake_body, &A, &touche, &temps);
 
     move_forward(&snake_body);
-
-    if(verif_apple(&snake_body, &A))
-      next_level(&snake_body, &A, &temps);
 
     usleep(snake_body.speed);
   }

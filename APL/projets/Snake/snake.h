@@ -1,5 +1,5 @@
-#define POSX 12
-#define POSY 12
+#define POSX WIDTH/2
+#define POSY HEIGHT/2
 
 typedef enum {
   UP = 1,
@@ -18,12 +18,12 @@ typedef struct {
   Direction s_dir;
   int speed;
   int nbrseg;
-  int newseg;
 } Body;
 
 typedef struct {
-  int x;
-  int y;
-  int nbr;
-  int golden;
+  int *x;
+  int *y;
+  int eaten;
+  int total;
+  int spawn;
 } Apple;
