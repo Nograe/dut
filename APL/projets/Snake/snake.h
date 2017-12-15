@@ -1,6 +1,3 @@
-#define POSX WIDTH/2
-#define POSY HEIGHT/2
-
 typedef enum {
   UP = 1,
   DOWN,
@@ -15,7 +12,7 @@ typedef struct {
 
 typedef struct {
   Segment *s_seg;
-  Direction s_dir;
+  Direction dir;
   int speed;
   int nbrseg;
 } Body;

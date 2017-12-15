@@ -8,15 +8,15 @@ int forcexit(int touche) {
     return 0;
 }
 
-void verifpause (Body *B, Apple *A, int *touche, unsigned long *temps) {
+void verifpause (Game G, Body *B, Apple *A, int *touche, unsigned long *temps) {
 
   if(*touche != XK_space)
     return;
 
   unsigned long tmp = Microsecondes();
 
-  EcrireTexte(WIDTH/2 - 40,HEIGHT/2 -20,"PAUSE",2);
-  EcrireTexte(WIDTH/2 - 42,HEIGHT/2,"Press SPACE",0);
+  EcrireTexte(G.width/2 - 40, G.height/2 -20, "PAUSE", 2);
+  EcrireTexte(G.width/2 - 42, G.height/2, "Press SPACE", 0);
 
   do {
     *touche = Touche();
@@ -24,41 +24,63 @@ void verifpause (Body *B, Apple *A, int *touche, unsigned long *temps) {
 
   int diff = Microsecondes() - tmp;
 
-  draw(*B, *A, *temps+diff);
-  EcrireTexte(WIDTH/2 - 20,HEIGHT/2 -20,"3",2);
+  draw(G, *B, *A, *temps+diff);
+  EcrireTexte(G.width/2 - 20,G.height/2 -20,"3",2);
   sleep(1);
-  draw(*B, *A, *temps+diff+1000000);
-  EcrireTexte(WIDTH/2 - 20,HEIGHT/2 -20,"2",2);
+  draw(G, *B, *A, *temps+diff+1000000);
+  EcrireTexte(G.width/2 - 20,G.height/2 -20,"2",2);
   sleep(1);
-  draw(*B, *A, *temps+diff+2000000);
-  EcrireTexte(WIDTH/2 - 20,HEIGHT/2 -20,"1",2);
+  draw(G, *B, *A, *temps+diff+2000000);
+  EcrireTexte(G.width/2 - 20,G.height/2 -20,"1",2);
   sleep(1);
 
   *temps += diff+3000000;
+  while(ToucheEnAttente() == 1)
+    Touche();
   *touche = 0;
 }
 
-void next_level (Body *B, Apple *A, unsigned long *temps) {
+void next_level (Game G, Body *B, Apple *A, unsigned long *temps) {
 
+  B->dir = 4;
   A->spawn++;
   A->eaten = 0;
   A->x = malloc(A->spawn * sizeof(int));
   A->y = malloc(A->spawn * sizeof(int));
   B->speed -= 5000;
-  random_apple(*B, A);
+  random_apple(G, *B, A);
 
-  body_init(B);
+  body_init(G, B);
   EffacerEcran(CouleurParNom("goldenrod"));
-  ChoisirCouleurDessin(CouleurParNom("seagreen"));
-  EcrireTexte(WIDTH/2 - 70,HEIGHT/2 - 20,"NEXT LEVEL!",2);
+  ChoisirCouleurDessin(CouleurParNom("darkred"));
+  EcrireTexte(G.width / 2, G.height / 2 - 20, "NEXT LEVEL!", 2);
+  EcrireTexte(G.width / 2 + 1, G.height / 2 - 20, "NEXT LEVEL!", 2);
   sleep(2);
-  draw(*B, *A, *temps);
+  draw(G, *B, *A, *temps);
 
   int touche = XK_space;
-  verifpause(B, A, &touche, temps);
+  verifpause(G, B, A, &touche, temps);
 }
 
-void move_forward (Body *B) {
+void printscore (Game G, Apple A) {
+
+  char buf[6];
+
+  ChoisirEcran(1);
+  ChoisirCouleurDessin(CouleurParNom("black"));
+
+  EcrireTexte(G.width / 3, G.height / 2, "YOUR SCORE: ", 2);
+  sprintf(buf,"%d",A.total*5);
+  EcrireTexte(G.width / 3 + TailleChaineEcran("YOUR SCORE: 0", 2), G.height / 2, buf, 2);
+
+  ChoisirEcran(0);
+  EffacerEcran(CouleurParNom("seagreen"));
+  CopierZone(1, 0, 0, 0, G.width, G.height, 0, 0);
+
+  sleep(2);
+}
+
+void move_forward (Game G, Body *B) {
 
   B->s_seg[B->nbrseg] = B->s_seg[B->nbrseg-1];
   int i;
@@ -66,23 +88,23 @@ void move_forward (Body *B) {
     B->s_seg[i] = B->s_seg[i-1];
   }
 
-  switch(B->s_dir) {
-  case 1:
-    B->s_seg[0].y -= CASE;
+  switch(B->dir) {
+    case 1:
+    B->s_seg[0].y -= G.tcase;
     break;
-  case 2:
-    B->s_seg[0].y += CASE;
+    case 2:
+    B->s_seg[0].y += G.tcase;
     break;
-  case 3:
-    B->s_seg[0].x -= CASE;
+    case 3:
+    B->s_seg[0].x -= G.tcase;
     break;
-  case 4:
-    B->s_seg[0].x += CASE;
+    case 4:
+    B->s_seg[0].x += G.tcase;
     break;
   }
 }
 
-void draw (Body B, Apple A, unsigned long temps) {
+void draw (Game G, Body B, Apple A, unsigned long temps) {
 
   int i;
   unsigned long tmp = (Microsecondes() - temps)/1000000;
@@ -104,32 +126,32 @@ void draw (Body B, Apple A, unsigned long temps) {
   // Temps - Score
   sprintf(buf,"%ld",tmp);
   ChoisirCouleurDessin(CouleurParNom("black"));
-  EcrireTexte(WIDTH-30,HEIGHT-20,buf,1);
+  EcrireTexte(G.width-30,G.height-20,buf,1);
   sprintf(buf,"%d",A.total*5);
-  EcrireTexte(20,HEIGHT-20,buf,1);
+  EcrireTexte(20,G.height-20,buf,1);
 
   ChoisirEcran(0);
-  EffacerEcran(CouleurParNom("yellowgreen"));
-  CopierZone(1, 0, 0, 0, WIDTH, HEIGHT, 0, 0);
+  EffacerEcran(CouleurParNom("seagreen"));
+  CopierZone(1, 0, 0, 0, G.width, G.height, 0, 0);
 }
 
-void body_init (Body *B) {
+void body_init (Game G, Body *B) {
   int i;
-  int posx = POSX;
-  int posy = POSY;
+  int posx = G.width / 2;
+  int posy = G.height / 2;
   for(i = 0 ; i < B->nbrseg ; i++) {
     B->s_seg[i].x = posx;
     B->s_seg[i].y = posy;
     posx -= 12;
   }
-  B->s_dir = 4;
+  B->dir = 4;
 }
 
-int verif (Body S) {
+int verif (Game G, Body S) {
 
   int x = S.s_seg[0].x;
   int y = S.s_seg[0].y;
-  if(x <= -12 || x >= WIDTH || y <= -12 || y >= HEIGHT) {
+  if(x <= -12 || x >= G.width || y <= -12 || y >= G.height) {
     //printf("Coords: %d | %d", x, y);
     return 1;
   }
@@ -149,7 +171,7 @@ int verif (Body S) {
 }
 
 int verif_apple (Body *B, Apple *A) {
-  
+
   int i;
   for(i = 0 ; i < A->spawn ; i++) {
     if(B->s_seg[0].x == A->x[i] && B->s_seg[0].y == A->y[i]){
@@ -166,20 +188,20 @@ int verif_apple (Body *B, Apple *A) {
   return 0;
 }
 
-void random_apple (Body B, Apple *A) {
+void random_apple (Game G, Body B, Apple *A) {
 
   int posx, posy, i, j;
   for(i = 0 ; i < A->spawn ; i++){
-    posx = rand() % WIDTH;
-    posy = rand() % HEIGHT;
-    A->x[i] = (posx - posx % CASE);
-    A->y[i] = (posy - posy % CASE);
+    posx = rand() % G.width;
+    posy = rand() % G.height;
+    A->x[i] = (posx - posx % G.tcase);
+    A->y[i] = (posy - posy % G.tcase);
   }
 
   for(i = 0 ; i < B.nbrseg ; i++){
     for(j = 0 ; j < A->spawn ; j++) {
       if(A->x[j] == B.s_seg[i].x && A->y[j] == B.s_seg[i].y)
-        return random_apple (B, A);
+        return random_apple (G, B, A);
     }
   }
 }
@@ -202,18 +224,17 @@ void eat_apple (Body *B, Apple *A) {
 
 int main () {
 
-  InitialiserGraphique();
-  CreerFenetre(500,300,WIDTH,HEIGHT);
-  EffacerEcran(CouleurParNom("light grey"));
-
-  srand(time(NULL));
   unsigned long temps = Microsecondes();
+
+  Game G;
+  G.tcase = 12;
+  G.width = 60 * G.tcase;
+  G.height = 40 * G.tcase;
 
   Body snake_body;
   snake_body.nbrseg = 10;
   snake_body.speed = 90000;
   snake_body.s_seg = malloc((snake_body.nbrseg+1) * sizeof(Segment));
-  body_init(&snake_body);
 
   Apple A;
   A.eaten = 0;
@@ -221,50 +242,62 @@ int main () {
   A.spawn = 5;
   A.x = malloc(A.spawn * sizeof(int));
   A.y = malloc(A.spawn * sizeof(int));
-  random_apple(snake_body, &A);
+  
+  InitialiserGraphique();
+  CreerFenetre(500,300,G.width,G.height);
+  EffacerEcran(CouleurParNom("light grey"));
+
+  srand(time(NULL));
+  body_init(G, &snake_body);
+  random_apple(G, snake_body, &A);
 
   int touche, old_dir = 4;
 
   while(!forcexit(touche)) {
 
-    verif_apple(&snake_body, &A);
+    if(verif_apple(&snake_body, &A)) {
+      next_level(G, &snake_body, &A, &temps);
+      old_dir = snake_body.dir;
+    }
     
-    draw(snake_body, A, temps);
+    draw(G, snake_body, A, temps);
+
+    usleep(snake_body.speed);
 
     if(ToucheEnAttente()) {
       touche = Touche();
-    
-      if(touche == XK_Up)
-	snake_body.s_dir = UP;
-      if(touche == XK_Down)
-	snake_body.s_dir = DOWN;
-      if(touche == XK_Left)
-	snake_body.s_dir = LEFT;
-      if(touche == XK_Right)
-	snake_body.s_dir = RIGHT;
-    
 
-      if(old_dir+snake_body.s_dir == 3 || old_dir+snake_body.s_dir == 7)
-	snake_body.s_dir = old_dir;
-      
-      old_dir = snake_body.s_dir;
-    }
+      switch(touche) {
+        case XK_Up:
+        snake_body.dir = UP;
+        break;
+        case XK_Down:
+        snake_body.dir = DOWN;
+        break;
+        case XK_Left:
+        snake_body.dir = LEFT;
+        break;
+        case XK_Right:
+        snake_body.dir = RIGHT;
+        break;
+      }
 
-    if(verif(snake_body)) {
-      break;
-    }
+      if(old_dir+snake_body.dir == 3 || old_dir+snake_body.dir == 7)
+       snake_body.dir = old_dir;
 
-    verifpause(&snake_body, &A, &touche, &temps);
+     old_dir = snake_body.dir;
+   }
 
-    move_forward(&snake_body);
+   if(verif(G, snake_body))
+    break;
 
-    if(verif_apple(&snake_body, &A))
-      next_level(&snake_body, &A, &temps);
+  verifpause(G, &snake_body, &A, &touche, &temps);
 
-    usleep(snake_body.speed);
-  }
+  move_forward(G, &snake_body);
+}
 
+printscore(G, A);
 
-  FermerGraphique();
-  return EXIT_SUCCESS;
+FermerGraphique();
+return EXIT_SUCCESS;
 }
