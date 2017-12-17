@@ -1,3 +1,7 @@
+#ifndef DEF_SNAKE
+
+#define DEF_SNAKE
+
 typedef enum {
   UP = 1,
   DOWN,
@@ -21,6 +25,13 @@ typedef struct {
   int *x;
   int *y;
   int eaten;
-  int total;
   int spawn;
 } Apple;
+
+typedef struct {
+  int *x;
+  int *y;
+  int spawn;
+} Wall;
+
+#endif
