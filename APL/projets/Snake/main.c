@@ -52,17 +52,21 @@ void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps) {
   A->x = malloc(A->spawn * sizeof(int));
   A->y = malloc(A->spawn * sizeof(int));
   W->spawn++;
+  W->x = malloc(W->spawn * sizeof(int));
+  W->y = malloc(W->spawn * sizeof(int));
 
   int width = G->width * G->tcase;
   int height = G->height * G->tcase;
 
   body_init(*G, B);
-  random_apple(*G, *B, A);
+  randomApple(*G, *B, A);
+  randomWall(*G, *B, *A, W);
+
   EffacerEcran(CouleurParNom("goldenrod"));
   ChoisirCouleurDessin(CouleurParNom("darkred"));
   EcrireTexte(width / 2, height / 2 - 20, "NEXT LEVEL!", 2);
   EcrireTexte(width / 2 + 1, height / 2 - 20, "NEXT LEVEL!", 2);
-  sleep(2);
+  sleep(1);
   draw(*G, *B, *A, *W, *temps);
 
   int touche = XK_space;
@@ -129,12 +133,15 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
     RemplirRectangle(B.s_seg[i].x, B.s_seg[i].y, G.tcase - 2, G.tcase - 2);
   }
 
-
-  // Apple
+  // Chargement des Apple
   for(i = 0 ; i < A.spawn ; i++)
     ChargerImage("src/apple_14.png",A.x[i]-1,A.y[i]-1,0,0,13,13);
 
-  // Temps - Score
+  // Chargement des Wall
+  for(i = 0 ; i < W.spawn ; i++)
+    ChargerImage("src/wall_14.png",W.x[i],W.y[i],0,0,14,14);
+
+  // Chargement du Temps - Score
   ChoisirCouleurDessin(CouleurParNom("black"));
   sprintf(buf,"%ld",tmp);
   EcrireTexte(width - (G.tcase * 2), height - (G.tcase * 2), buf, 2);
@@ -148,11 +155,11 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
 void body_init (Game G, Body *B) {
 
   int i;
-  int posx = G.width * G.tcase / 2;
-  int posy = G.height * G.tcase / 2;
+  int posx = G.width * G.tcase / 2 + 1;
+  int posy = G.height * G.tcase / 2 + 1;
   for(i = 0 ; i < B->nbrseg ; i++) {
-    B->s_seg[i].x = posx + 1;
-    B->s_seg[i].y = posy + 1;
+    B->s_seg[i].x = posx;
+    B->s_seg[i].y = posy;
     posx -= G.tcase;
   }
   B->dir = 4;
@@ -160,6 +167,7 @@ void body_init (Game G, Body *B) {
 
 int verif (Game G, Body B, Wall W) {
 
+  // Verification bordures
   int x = B.s_seg[0].x;
   int y = B.s_seg[0].y;
   if(x <= 0 || x >= (G.width * G.tcase) || y <= 0 || y >= (G.height * G.tcase)) {
@@ -167,6 +175,7 @@ int verif (Game G, Body B, Wall W) {
     return 1;
   }
 
+  // Verification collision Body
   int i;
   for(i = 4 ; i <= B.nbrseg ; i++) {
     if(x == B.s_seg[i].x && y == B.s_seg[i].y) {
@@ -175,6 +184,12 @@ int verif (Game G, Body B, Wall W) {
       RemplirRectangle(B.s_seg[i].x, B.s_seg[i].y, G.tcase - 2, G.tcase - 2);
       return 1;
     }
+  }
+
+  // Verification collision Wall
+  for(i = 0 ; i < W.spawn ; i++) {
+    if(x == W.x[i]+1 && y == W.y[i]+1)
+      return 1;
   }
 
   return 0;
@@ -187,9 +202,9 @@ int verif_apple (Game *G, Body *B, Apple *A) {
 
   int i;
   for(i = 0 ; i < A->spawn ; i++) {
-    if(B->s_seg[0].x == A->x[i] && B->s_seg[0].y == A->y[i]){
-      A->x[i] = -13;
-      A->y[i] = -13;
+    if(B->s_seg[0].x == A->x[i]+1 && B->s_seg[0].y == A->y[i]+1){
+      A->x[i] = -G->tcase;
+      A->y[i] = -G->tcase;
       eat_apple(G, B, A);
     }
   }
@@ -197,40 +212,47 @@ int verif_apple (Game *G, Body *B, Apple *A) {
   return 0;
 }
 
-void random_apple (Game G, Body B, Apple *A) {
+void randomApple (Game G, Body B, Apple *A) {
 
   int posx, posy, i, j;
   for(i = 0 ; i < A->spawn ; i++){
     posx = rand() % (G.width * G.tcase);
     posy = rand() % (G.height * G.tcase);
-    A->x[i] = (posx - posx % G.tcase + 1);
-    A->y[i] = (posy - posy % G.tcase + 1);
+    A->x[i] = (posx - posx % G.tcase);
+    A->y[i] = (posy - posy % G.tcase);
   }
 
   for(i = 0 ; i < B.nbrseg ; i++){
     for(j = 0 ; j < A->spawn ; j++) {
       if(A->x[j] == B.s_seg[i].x && A->y[j] == B.s_seg[i].y)
-        return random_apple (G, B, A);
+        return randomApple (G, B, A);
     }
   }
 }
 
 void randomWall (Game G, Body B, Apple A, Wall *W) {
 
-  // int posx, posy, i, j;
-  // for(i = 0 ; i < A->spawn ; i++){
-  //   posx = rand() % (G.width * G.tcase);
-  //   posy = rand() % (G.height * G.tcase);
-  //   A->x[i] = (posx - posx % G.tcase + 1);
-  //   A->y[i] = (posy - posy % G.tcase + 1);
-  // }
+  int posx, posy, i, j;
+  for(i = 0 ; i < W->spawn ; i++){
+    posx = rand() % (G.width * G.tcase);
+    posy = rand() % (G.height * G.tcase);
+    W->x[i] = (posx - posx % G.tcase);
+    W->y[i] = (posy - posy % G.tcase);
+  }
 
-  // for(i = 0 ; i < B.nbrseg ; i++){
-  //   for(j = 0 ; j < A->spawn ; j++) {
-  //     if(A->x[j] == B.s_seg[i].x && A->y[j] == B.s_seg[i].y)
-  //       return random_apple (G, B, A);
-  //   }
-  // }
+  // Vérification du spawn avec Body / Apple
+  for(i = 0 ; i < B.nbrseg ; i++){
+    for(j = 0 ; j < W->spawn ; j++) {
+      if(W->x[j] == B.s_seg[i].x && W->y[j] == B.s_seg[i].y)
+        return randomWall (G, B, A, W);
+    }
+  }
+  for(i = 0 ; i < A.spawn ; i++){
+    for(j = 0 ; j < W->spawn ; j++) {
+      if(W->x[j] == B.s_seg[i].x && W->y[j] == B.s_seg[i].y)
+        return randomWall (G, B, A, W);
+    }
+  }
 }
 
 void eat_apple (Game *G, Body *B, Apple *A) {
@@ -310,5 +332,6 @@ int main () {
     dispMenu(&G, &B, &A, &W, &S);
     temps = Microsecondes();
     old_dir = B.dir;
+    touche = 0;
   }
 }

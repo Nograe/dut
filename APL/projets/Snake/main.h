@@ -18,7 +18,7 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps);
 void body_init (Game G, Body *B);
 int verif (Game G, Body S, Wall W);
 int verif_apple (Game *G, Body *B, Apple *A);
-void random_apple (Game G, Body B, Apple *A);
+void randomApple (Game G, Body B, Apple *A);
 void randomWall (Game G, Body B, Apple A, Wall *W);
 void eat_apple (Game *G, Body *B, Apple *A);
 

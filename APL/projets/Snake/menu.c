@@ -18,7 +18,7 @@ void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	S->setA.eaten = 0;
 	S->setA.spawn = 5;
 
-	S->setW.spawn = 0;
+	S->setW.spawn = 3;
 
 	dispMenu(G, B, A, W, S);
 }
@@ -111,7 +111,7 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 				dispSettings(G, B, A, W, S);
 			if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42))
 				quit();
-			break;
+			return;
 		}
 	}
 }
@@ -120,10 +120,10 @@ void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
 
 	FermerGraphique();
 
-	// Initialisation des paramètres / snake / pommes / création de la fenêtre
+	// Initialisation des paramètres / snake / pommes / murs / création de la fenêtre
 	setSettings(G, B, A, W, S);
   body_init(*G, B);
-  random_apple(*G, *B, A);
+  randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
 	InitialiserGraphique();
 	CreerFenetre(500, 300, G->width * G->tcase, G->height * G->tcase);
