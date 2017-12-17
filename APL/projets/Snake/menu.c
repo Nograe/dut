@@ -18,7 +18,7 @@ void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	S->setA.eaten = 0;
 	S->setA.spawn = 5;
 
-	S->setW.spawn = 3;
+	S->setW.spawn = 10;
 
 	dispMenu(G, B, A, W, S);
 }
@@ -75,7 +75,7 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 			if(old == 1)
 				dispPlay(G, B, A, W, *S);
 			if(old == 2)
-				dispHighscore();
+				dispHighscore(G, B, A, W, S);
 			if(old == 3)
 				dispSettings(G, B, A, W, S);
 			if(old == 4)
@@ -104,14 +104,13 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
 		if(SourisCliquee()) {
 			if(_X >= (tcase * 25.5) && _X <= (tcase * 25.5 + 128) && _Y >= (tcase * 14) && _Y <= (tcase * 14 + 52))
-				dispPlay(G, B, A, W, *S);
+				return dispPlay(G, B, A, W, *S);
 			if(_X >= (tcase * 19) && _X <= (tcase * 19 + 328) && _Y >= (tcase * 21) && _Y <= (tcase * 21 + 52))
-				dispHighscore();
+				return dispHighscore(G, B, A, W, S);
 			if(_X >= (tcase * 22) && _X <= (tcase * 22 + 225) && _Y >= (tcase * 28) && _Y <= (tcase * 28 + 52))
-				dispSettings(G, B, A, W, S);
+				return dispSettings(G, B, A, W, S);
 			if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42))
 				quit();
-			return dispMenu(G, B, A, W, S);
 		}
 	}
 }
@@ -129,12 +128,34 @@ void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
 	CreerFenetre(500, 300, G->width * G->tcase, G->height * G->tcase);
 }
 
-void dispHighscore () {
+void dispHighscore (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
+	FermerGraphique();
+	InitialiserGraphique();
+	CreerFenetre(500, 300, 60*14, 40*14);
+	ChoisirEcran(0);
+
+	while(!SourisCliquee()) {
+		ChargerImage("src/highscores.png", 14 * 19, 14 * 21, 0, 0, 328, 52);
+	}
+
+	FermerGraphique();
+	dispMenu(G, B, A, W, S);
 }
 
 void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
+	FermerGraphique();
+	InitialiserGraphique();
+	CreerFenetre(500, 300, 60*14, 40*14);
+	ChoisirEcran(0);
+
+	while(!SourisCliquee()) {
+		ChargerImage("src/settings.png", 14 * 22, 14 * 28, 0, 0, 225, 52);
+	}
+
+	FermerGraphique();
+	dispMenu(G, B, A, W, S);
 }
 
 void quit () {

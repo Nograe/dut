@@ -222,9 +222,10 @@ void randomApple (Game G, Body B, Apple *A) {
     A->y[i] = (posy - posy % G.tcase);
   }
 
+  // Vérification du spawn avec Body
   for(i = 0 ; i < B.nbrseg ; i++){
     for(j = 0 ; j < A->spawn ; j++) {
-      if(A->x[j] == B.s_seg[i].x && A->y[j] == B.s_seg[i].y)
+      if(A->x[j]+1 == B.s_seg[i].x && A->y[j]+1 == B.s_seg[i].y)
         return randomApple (G, B, A);
     }
   }
@@ -240,10 +241,10 @@ void randomWall (Game G, Body B, Apple A, Wall *W) {
     W->y[i] = (posy - posy % G.tcase);
   }
 
-  // Vérification du spawn avec Body / Apple
+  // Vérification du spawn avec Body / Apple (On évite le spawn-kill)
   for(i = 0 ; i < B.nbrseg ; i++){
     for(j = 0 ; j < W->spawn ; j++) {
-      if(W->x[j] == B.s_seg[i].x && W->y[j] == B.s_seg[i].y)
+      if(W->x[j]+1 == B.s_seg[i].x && W->y[j]+1 == B.s_seg[i].y || W->y[j]+1 == B.s_seg[0].y)
         return randomWall (G, B, A, W);
     }
   }
@@ -327,7 +328,6 @@ int main () {
       move_forward(G, &B);
     }
 
-    printscore(G);
     FermerGraphique();
     dispMenu(&G, &B, &A, &W, &S);
     temps = Microsecondes();

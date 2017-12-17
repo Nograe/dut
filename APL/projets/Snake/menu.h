@@ -33,7 +33,7 @@ typedef struct {
 void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S);
 void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S);
 void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S);
-void dispHighscore ();
+void dispHighscore (Game *G, Body *B, Apple *A, Wall *W, Settings *S);
 void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S);
 void quit ();
 void setSettings (Game *G, Body *B, Apple *A, Wall *W, Settings S);
