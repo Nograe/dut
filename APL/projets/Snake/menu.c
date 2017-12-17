@@ -111,7 +111,7 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 				dispSettings(G, B, A, W, S);
 			if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42))
 				quit();
-			return;
+			return dispMenu(G, B, A, W, S);
 		}
 	}
 }
