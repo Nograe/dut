@@ -8,7 +8,7 @@ int main()
   InitialiserGraphique();
   CreerFenetre(500,300,480,270);
   EffacerEcran(CouleurParNom("light steel blue"));
-  int temps = 86400, touche = 0;
+  int temps = 0, touche = 0;
   int hour, minute, seconds;
   int ref = Microsecondes();
 
