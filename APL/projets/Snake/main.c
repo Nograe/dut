@@ -1,4 +1,6 @@
 #include "main.h"
+//#define DEV
+//#define DEBUG
 
 int forcexit(int touche) {
 
@@ -28,15 +30,15 @@ void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *te
 
   draw(G, B, A, W, *temps+diff);
   EcrireTexte(width/2 - 20, height/2 -20, "3", 2);
-  sleep(1);
-  draw(G, B, A, W, *temps+diff+1000000);
+  usleep(600000);
+  draw(G, B, A, W, *temps+diff+600000);
   EcrireTexte(width/2 - 20, height/2 -20, "2", 2);
-  sleep(1);
-  draw(G, B, A, W, *temps+diff+2000000);
+  usleep(600000);
+  draw(G, B, A, W, *temps+diff+1200000);
   EcrireTexte(width/2 - 20,height/2 -20,"1",2);
-  sleep(1);
+  usleep(600000);
 
-  *temps += diff+3000000;
+  *temps += diff+1800000;
   while(ToucheEnAttente() == 1)
     Touche();
   *touche = 0;
@@ -71,6 +73,42 @@ void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps) {
 
   int touche = XK_space;
   verifpause(*G, *B, *A, *W, &touche, temps);
+}
+
+void timer (Game G, unsigned long temps) {
+
+  int var = (Microsecondes() - temps)/1000000;
+  int sec = var % 60;
+  int min = var / 60;
+  char png[17] = "src/digits/X.png";
+
+  #ifdef DEV
+  ChoisirCouleurDessin(CouleurParNom("red"));
+  DessinerRectangle((G.width * G.tcase) - 145, (G.height * G.tcase) - 55, 145, 55);
+  DessinerRectangle(0, (G.height * G.tcase) - 55, 165, 55);
+  #endif
+
+  png[11] = (min / 10) + '0';
+  ChargerImage(png, G.width * G.tcase - 135, G.height * G.tcase - 40, 0, 0, 23, 31);
+  png[11] = (min % 10) + '0';
+  ChargerImage(png, G.width * G.tcase - 107, G.height * G.tcase - 40, 0, 0, 23, 31);
+  if(var % 2 == 0)
+    ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
+  png[11] = (sec / 10) + '0';
+  ChargerImage(png, G.width * G.tcase - 63, G.height * G.tcase - 40, 0, 0, 23, 31);
+  png[11] = (sec % 10) + '0';
+  ChargerImage(png, G.width * G.tcase - 35, G.height * G.tcase - 40, 0, 0, 23, 31);
+
+  png[11] = (G.score / 10000) + '0';
+  ChargerImage(png, 14, G.height * G.tcase - 40, 0, 0, 23, 31);
+  png[11] = (G.score / 1000 % 10) + '0';
+  ChargerImage(png, 42, G.height * G.tcase - 40, 0, 0, 23, 31);
+  png[11] = (G.score / 100 % 10) + '0';
+  ChargerImage(png, 70, G.height * G.tcase - 40, 0, 0, 23, 31);
+  png[11] = (G.score / 10 % 10) + '0';
+  ChargerImage(png, 98, G.height * G.tcase - 40, 0, 0, 23, 31);
+  png[11] = (G.score % 10) + '0';
+  ChargerImage(png, 126, G.height * G.tcase - 40, 0, 0, 23, 31);
 }
 
 void printscore (Game G) {
@@ -123,7 +161,10 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
   int height = G.height * G.tcase;
   int i;
   unsigned long tmp = (Microsecondes() - temps)/1000000;
-  char buf[10];
+  char bufapple[17] = "src/apple_1X.png";
+  char bufwall[16] = "src/wall_1X.png";
+  bufapple[11] = G.tcase%10 + '0';
+  bufwall[10] = G.tcase%10 + '0';
 
   ChoisirEcran(1);
   EffacerEcran(CouleurParNom("goldenrod"));
@@ -135,19 +176,16 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
 
   // Chargement des Apple
   for(i = 0 ; i < A.spawn ; i++)
-    ChargerImage("src/apple_14.png",A.x[i]-1,A.y[i]-1,0,0,13,13);
+    ChargerImage(bufapple, A.x[i], A.y[i], 0, 0, G.tcase, G.tcase);
 
   // Chargement des Wall
   for(i = 0 ; i < W.spawn ; i++)
-    ChargerImage("src/wall_14.png",W.x[i],W.y[i],0,0,14,14);
+    ChargerImage(bufwall, W.x[i], W.y[i], 0, 0, G.tcase, G.tcase);
 
   // Chargement du Temps - Score
-  ChoisirCouleurDessin(CouleurParNom("black"));
-  sprintf(buf,"%ld",tmp);
-  EcrireTexte(width - (G.tcase * 2), height - (G.tcase * 2), buf, 2);
-  sprintf(buf, "%d", G.score);
-  EcrireTexte(G.tcase * 2, height - (G.tcase * 2), buf, 2);
+  timer(G, temps);
 
+  ChoisirCouleurDessin(CouleurParNom("black"));
   ChoisirEcran(0);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
 }
@@ -214,45 +252,78 @@ int verif_apple (Game *G, Body *B, Apple *A) {
 
 void randomApple (Game G, Body B, Apple *A) {
 
-  int posx, posy, i, j;
-  for(i = 0 ; i < A->spawn ; i++){
+  int width = G.width * G.tcase;
+  int height = G.height * G.tcase;
+  int posx, posy, i, j = 0, verif = 1;
+
+  while (j < A->spawn) {
+
+    #ifdef DEBUG
+    printf("Apple: %d\n", j);
+    #endif
+
+    verif = 1;
     posx = rand() % (G.width * G.tcase);
     posy = rand() % (G.height * G.tcase);
-    A->x[i] = (posx - posx % G.tcase);
-    A->y[i] = (posy - posy % G.tcase);
-  }
+    A->x[j] = (posx - posx % G.tcase);
+    A->y[j] = (posy - posy % G.tcase);
+    posx = A->x[j]; posy = A->y[j];
 
-  // Vérification du spawn avec Body
-  for(i = 0 ; i < B.nbrseg ; i++){
-    for(j = 0 ; j < A->spawn ; j++) {
+    // Vérification du spawn avec le score | timer
+    if( (posx >= 0 && posx <= 165 && posy >= height - 55 - G.tcase && posy <= height) || (posx >= width - 145 - G.tcase && posx <= width && posy >= height - 55 - G.tcase && posy <= height) )
+      continue;
+
+    // Vérification du spawn avec Body
+    for(i = 0 ; i < B.nbrseg ; i++){
       if(A->x[j]+1 == B.s_seg[i].x && A->y[j]+1 == B.s_seg[i].y)
-        return randomApple (G, B, A);
+        verif = 0;
     }
+
+    if(verif)
+      j++;
   }
 }
 
 void randomWall (Game G, Body B, Apple A, Wall *W) {
 
-  int posx, posy, i, j;
-  for(i = 0 ; i < W->spawn ; i++){
+  int width = G.width * G.tcase;
+  int height = G.height * G.tcase;
+  int posx, posy, i, j = 0, verif = 1;
+
+  while (j < W->spawn) {
+
+    #ifdef DEBUG
+    printf("Wall: %d\n", j);
+    #endif
+
+    verif = 1;
     posx = rand() % (G.width * G.tcase);
     posy = rand() % (G.height * G.tcase);
-    W->x[i] = (posx - posx % G.tcase);
-    W->y[i] = (posy - posy % G.tcase);
-  }
+    W->x[j] = (posx - posx % G.tcase);
+    W->y[j] = (posy - posy % G.tcase);
+    posx = W->x[j]; posy = W->y[j]; 
 
-  // Vérification du spawn avec Body / Apple (On évite le spawn-kill)
-  for(i = 0 ; i < B.nbrseg ; i++){
-    for(j = 0 ; j < W->spawn ; j++) {
-      if(W->x[j]+1 == B.s_seg[i].x && W->y[j]+1 == B.s_seg[i].y || W->y[j]+1 == B.s_seg[0].y)
-        return randomWall (G, B, A, W);
+  // Vérification du spawn avec le score | timer
+    if( (posx >= 0 && posx <= 165 && posy >= height - 55 - G.tcase && posy <= height) || (posx >= width - 145 - G.tcase && posx <= width && posy >= height - 55 - G.tcase && posy <= height) )
+      continue;
+
+  // Vérification du spawn avec Wall | Body | Apple (On évite le spawn-kill)
+    for(i = 0 ; i < j ; i++) {
+      if(W->x[j] == W->x[i] && W->y[j] == W->y[i]) 
+        verif = 0;
     }
-  }
-  for(i = 0 ; i < A.spawn ; i++){
-    for(j = 0 ; j < W->spawn ; j++) {
-      if(W->x[j] == B.s_seg[i].x && W->y[j] == B.s_seg[i].y)
-        return randomWall (G, B, A, W);
+
+    for(i = 0 ; i < A.spawn ; i++){
+      if(W->x[j] == A.x[i] && W->y[j] == A.y[i]){
+        verif = 0;
+      }
     }
+
+    if(W->y[j]+1 == B.s_seg[0].y)
+      continue;
+
+    if(verif)
+      j++;
   }
 }
 
