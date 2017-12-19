@@ -1,14 +1,17 @@
+#ifndef DEF_MAIN
+
+#define DEF_MAIN
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <graph.h>
 #include <time.h>
-
-#ifndef DEF_MAIN
-
-#define DEF_MAIN
+#include <string.h>
 #include "snake.h"
 #include "menu.h"
+
+//#define DEV
+//#define DEBUG
 
 int forcexit(int touche);
 void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *temps);

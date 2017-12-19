@@ -4,8 +4,13 @@
 
 void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
-  // Attribution VARIABLES DEFAUT
+	// Vérification (création si NULL) du fichier 'scores'
+	FILE *fichier = NULL;
+	fichier = fopen("src/scores", "a");
+	fclose(fichier);
 
+  // Attribution VARIABLES DEFAUT
+  S->setG.variant = RANDOM;
 	S->setG.tcase = 14;
 	S->setG.width = 60;
 	S->setG.height = 40;
@@ -32,20 +37,19 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
 	InitialiserGraphique();
 	CreerFenetre(500, 300, width, height);
+	ChoisirEcran(2);
 
 	//DessinerSegment(width/2, 0, width/2, height);
 	//DessinerSegment(0, height/2, width, height/2);
 
-	while (!SourisCliquee()) {
-
-		ChoisirEcran(2);
+	while (1) {
 
 		EffacerEcran(CouleurParNom("forestgreen"));
-		ChargerImage("src/snake.png", tcase * 15.5, tcase * 4, 0, 0, 421, 72);
-		ChargerImage("src/play.png", tcase * 25.5, tcase * 14, 0, 0, 128, 52);
-		ChargerImage("src/highscores.png", tcase * 19, tcase * 21, 0, 0, 328, 52);
-		ChargerImage("src/settings.png", tcase * 22, tcase * 28, 0, 0, 225, 52);
-		ChargerImage("src/quit.png", tcase * 26.5, tcase * 35, 0, 0, 91, 42);
+		ChargerImage("src/fonts/snake.png", tcase * 15.5, tcase * 4, 0, 0, 421, 72);
+		ChargerImage("src/fonts/play.png", tcase * 25.5, tcase * 14, 0, 0, 128, 52);
+		ChargerImage("src/fonts/highscores.png", tcase * 19, tcase * 21, 0, 0, 328, 52);
+		ChargerImage("src/fonts/settings.png", tcase * 22, tcase * 28, 0, 0, 225, 52);
+		ChargerImage("src/fonts/quit.png", tcase * 26.5, tcase * 35, 0, 0, 91, 42);
 
 		SourisPosition();
 
@@ -73,30 +77,29 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 		}
 		if(touche == XK_Return) {
 			if(old == 1)
-				dispPlay(G, B, A, W, *S);
+				return dispPlay(G, B, A, W, *S);
 			if(old == 2)
 				dispHighscore(G, B, A, W, S);
 			if(old == 3)
 				dispSettings(G, B, A, W, S);
 			if(old == 4)
 				quit();
-			return;
 		}
 
 		if(_X >= (tcase * 25.5) && _X <= (tcase * 25.5 + 128) && _Y >= (tcase * 14) && _Y <= (tcase * 14 + 52) || old == 1) {
-			ChargerImage("src/select.png", tcase * 23, tcase * 14.5, 0, 0, 19, 28);
+			ChargerImage("src/fonts/select.png", tcase * 23, tcase * 14.5, 0, 0, 19, 28);
 			old = 1;
 		}
 		if(_X >= (tcase * 19) && _X <= (tcase * 19 + 328) && _Y >= (tcase * 21) && _Y <= (tcase * 21 + 52) || old == 2) {
-			ChargerImage("src/select.png", tcase * 16.5, tcase * 21.5, 0, 0, 19, 28);
+			ChargerImage("src/fonts/select.png", tcase * 16.5, tcase * 21.5, 0, 0, 19, 28);
 			old = 2;
 		}
 		if(_X >= (tcase * 22) && _X <= (tcase * 22 + 225) && _Y >= (tcase * 28) && _Y <= (tcase * 28 + 52) || old == 3) {
-			ChargerImage("src/select.png", tcase * 19.5, tcase * 28.5, 0, 0, 19, 28);
+			ChargerImage("src/fonts/select.png", tcase * 19.5, tcase * 28.5, 0, 0, 19, 28);
 			old = 3;
 		}
 		if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42) || old == 4) {
-			ChargerImage("src/select.png", tcase * 24, tcase * 35.5, 0, 0, 19, 28);
+			ChargerImage("src/fonts/select.png", tcase * 24, tcase * 35.5, 0, 0, 19, 28);
 			old = 4;
 		}
 
@@ -105,14 +108,19 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 		if(SourisCliquee()) {
 			if(_X >= (tcase * 25.5) && _X <= (tcase * 25.5 + 128) && _Y >= (tcase * 14) && _Y <= (tcase * 14 + 52))
 				return dispPlay(G, B, A, W, *S);
-			if(_X >= (tcase * 19) && _X <= (tcase * 19 + 328) && _Y >= (tcase * 21) && _Y <= (tcase * 21 + 52))
-				return dispHighscore(G, B, A, W, S);
-			if(_X >= (tcase * 22) && _X <= (tcase * 22 + 225) && _Y >= (tcase * 28) && _Y <= (tcase * 28 + 52))
-				return dispSettings(G, B, A, W, S);
+			if(_X >= (tcase * 19) && _X <= (tcase * 19 + 328) && _Y >= (tcase * 21) && _Y <= (tcase * 21 + 52)) {
+				dispHighscore(G, B, A, W, S);
+				continue;
+			}
+			if(_X >= (tcase * 22) && _X <= (tcase * 22 + 225) && _Y >= (tcase * 28) && _Y <= (tcase * 28 + 52)) {
+				dispSettings(G, B, A, W, S);
+				continue;
+			}
 			if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42))
 				quit();
 		}
 	}
+	printf("Le menu a été quitté\n");
 }
 
 void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
@@ -121,41 +129,131 @@ void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
 
 	// Initialisation des paramètres / snake / pommes / murs / création de la fenêtre
 	setSettings(G, B, A, W, S);
-  body_init(*G, B);
-  randomApple(*G, *B, A);
-  randomWall(*G, *B, *A, W);
+	body_init(*G, B);
+	randomApple(*G, *B, A);
+	randomWall(*G, *B, *A, W);
 	InitialiserGraphique();
 	CreerFenetre(500, 300, G->width * G->tcase, G->height * G->tcase);
 }
 
 void dispHighscore (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
-	FermerGraphique();
-	InitialiserGraphique();
-	CreerFenetre(500, 300, 60*14, 40*14);
-	ChoisirEcran(0);
+	int width = 60 * 14;
+	int height = 40 * 14;
+	int touche = 0, temp, temp_l, posy = 120, posx = 320;
+	char buf[6], player[11];
 
-	while(!SourisCliquee()) {
-		ChargerImage("src/highscores.png", 14 * 19, 14 * 21, 0, 0, 328, 52);
+	EffacerEcran(CouleurParNom("forestgreen"));
+	ChargerImage("src/fonts/highscores_title.png", 14 * 11.75, 14 * 4, 0, 0, 523, 45);
+	ChoisirCouleurDessin(CouleurParNom("black"));
+
+	FILE* fichier = NULL;
+	fichier = fopen("src/scores", "r");
+
+	char c = 0;
+	int line = 0, i = 0, j = 0;
+
+	// On compte les lignes
+	while(c != EOF) {
+		c = fgetc(fichier);
+		if(c == '\n')
+			line++;
 	}
 
-	FermerGraphique();
-	dispMenu(G, B, A, W, S);
+	// La 1re dimension stocke le score, la 2e stocke la ligne
+	int (*scores)[2];
+	scores = malloc(line * sizeof(*scores));
+
+	// Récupération des scores
+	fseek(fichier, 0, SEEK_SET);
+	for(i = 0 ; i < line ; i++) {
+		scores[i][1] = i;
+		fscanf(fichier, "%d", &scores[i][0]);
+		while(fgetc(fichier) != '\n');
+	}
+
+	// Tri des scores
+	for(i = 0; i < line; i++) {
+		for(j = i+1; j < line; j++) {
+			if(scores[i][0] > scores[j][0]) {
+				temp = scores[i][0];
+				temp_l = scores[i][1];
+				scores[i][0] = scores[j][0];
+				scores[i][1] = scores[j][1];
+				scores[j][0] = temp;
+				scores[j][1] = temp_l;
+			}
+		}
+	}
+
+			#ifdef DEV
+	for(i = 0 ; i < line ; i++) {
+		printf("score %d: %d\n", scores[i][1], scores[i][0]);
+	}
+			#endif
+
+	// Récupération et affichage du pseudo | score
+	for(i = line-1 ; i >= 0 ; i--) {
+		fseek(fichier, 0, SEEK_SET);
+		for(temp = 0 ; temp < scores[i][1] ; temp++ ) {
+			while(fgetc(fichier) != '\n');
+		}
+		fscanf(fichier, "%*d %s", player);
+		if(player[0] > 97 && player[0] < 122)
+			player[0] -= 32;
+		player[10] = '\0';
+		sprintf(buf, "%d", scores[i][0]);
+		if(posy > (height - 42) && posx == 650)
+			break;
+		if(posy >= height - 42) {
+			posy = 120;
+			posx = 650;
+		}
+		posy += 42;
+		EcrireTexte(posx - 150, posy, player, 2);
+		EcrireTexte(posx, posy, buf, 2);
+	}
+
+	ChargerImage("src/redcross.png", 5, height-37, 0, 0, 32, 32);
+
+	CopierZone(2, 0, 0, 0, width, height, 0, 0);
+
+	int verif = 0; 
+	while(touche != XK_Escape) {
+		if(SourisCliquee() && _X >= 0 && _X <= 37 && _Y >= height-37 && _Y <= height) {
+			remove("src/scores");
+			fichier = fopen("src/scores", "a");
+			break;
+		}
+		if(ToucheEnAttente())
+			touche = Touche();
+	}
+
+	fclose(fichier);
+	while(SourisCliquee());
+	SourisPosition();
+	return;
 }
 
 void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
-	FermerGraphique();
-	InitialiserGraphique();
-	CreerFenetre(500, 300, 60*14, 40*14);
-	ChoisirEcran(0);
+	int width = 60 * 14;
+	int height = 40 * 14;
+	int touche = 0;
 
-	while(!SourisCliquee()) {
-		ChargerImage("src/settings.png", 14 * 22, 14 * 28, 0, 0, 225, 52);
-	}
+	EffacerEcran(CouleurParNom("forestgreen"));
+	ChargerImage("src/fonts/settings_title.png", 14 * 16.5, 14 * 5, 0, 0, 390, 45);
 
-	FermerGraphique();
-	dispMenu(G, B, A, W, S);
+	/* Code */
+
+	CopierZone(2, 0, 0, 0, width, height, 0, 0);
+
+	while(touche != XK_Escape)
+		touche = Touche();
+
+	while(SourisCliquee());
+	SourisPosition();
+	return;
 }
 
 void quit () {
@@ -165,6 +263,7 @@ void quit () {
 	exit(0);
 }
 
+// On initialise tous les paramètres (pré)définis
 void setSettings (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
 
 	*G = S.setG;
@@ -181,4 +280,99 @@ void setSettings (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
 	W->spawn = S.setW.spawn;
 	W->x = malloc(W->spawn * sizeof(int));
 	W->y = malloc(W->spawn * sizeof(int));
+}
+
+void setScore (Game G) {
+
+	// Si le score est inférieur à 1 | son pseudo est déjà inscrit avec le même score
+	if(G.score < 1 || verifScore(getenv("USER"), G.score))
+		return;
+
+	FILE* fichier = NULL;
+	fichier = fopen("src/scores", "a");
+
+	// Le score et le nom d'utilisateur sont inscrits
+	fprintf(fichier, "%d %s\n", G.score, getenv("USER"));
+
+	fclose(fichier);
+}
+
+int verifScore (char *pseudo, int score) {
+
+	char c = 0;
+	char ps[11];
+	int tmp;
+	FILE* fichier = NULL;
+	fichier = fopen("src/scores", "r+");
+
+	// Si le score et le pseudo correspondent à une entrée, on n'inscrit rien
+	while(c != EOF) {
+
+		fscanf(fichier, "%d %s", &tmp, ps);
+		//printf("score: %d ps: %s\n", tmp, ps);
+		if(tmp == score && !strcmp(pseudo, ps))
+			return 1;
+
+		fseek(fichier, 1, SEEK_CUR);
+
+		c = fgetc(fichier);
+		if(c != EOF)
+			fseek(fichier, -1, SEEK_CUR);
+	}
+
+	fclose(fichier);
+	return 0;
+}
+
+// b : Background | d : Dessin | p : Pause
+couleur choisirCouleur (Theme T, char type) {
+
+	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0;
+	static int random = 35;
+	if(random > 35)
+		random = 0;
+
+	couleur C;
+
+	if(T == RETRO) {
+		if(type == 'b')
+			C = CouleurParNom("NULL");
+		if(type == 'd')
+			C = CouleurParNom("NULL");
+		if(type == 'p')
+			C = CouleurParNom("NULL");
+	}
+	if(T == CLASSIC) {
+		if(type == 'b')
+			C = CouleurParNom("NULL");
+		if(type == 'd')
+			C = CouleurParNom("NULL");
+		if(type == 'p')
+			C = CouleurParNom("NULL");
+	}
+	if(T == MODERN) {
+		if(type == 'b')
+			C = CouleurParComposante(44, 109, 80);
+		if(type == 'd')
+			C = CouleurParComposante(179, 155, 0);
+		if(type == 'p')
+			C = CouleurParComposante(30, 72, 54);
+	}
+	if(T == RANDOM) {
+		if(random == 35)
+			randr = rand()%255, randv = rand()%255, randb = rand()%255;
+		if(type == 'b')
+			C = CouleurParComposante(randr, randv, randb);
+
+		if(random == 35)
+			randr1 = rand()%255, randv1 = rand()%255, randb1 = rand()%255;
+		if(type == 'd')
+			C = CouleurParComposante(randr1, randv1, randb1);
+
+		if(type == 'p')
+			C = CouleurParComposante(0, 0, 0);
+		random++;
+	}
+
+	return C;
 }

@@ -1,6 +1,4 @@
 #include "main.h"
-//#define DEV
-//#define DEBUG
 
 int forcexit(int touche) {
 
@@ -19,6 +17,7 @@ void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *te
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
 
+  ChoisirCouleurDessin(choisirCouleur(G.variant, 'p'));
   EcrireTexte(width/2 - 40, height/2 -20, "PAUSE", 2);
   EcrireTexte(width/2 - 42, height/2, "Press SPACE", 0);
 
@@ -64,8 +63,8 @@ void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps) {
   randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
 
-  EffacerEcran(CouleurParNom("goldenrod"));
-  ChoisirCouleurDessin(CouleurParNom("darkred"));
+  EffacerEcran(choisirCouleur(G->variant, 'b'));
+  ChoisirCouleurDessin(choisirCouleur(G->variant, 'p'));
   EcrireTexte(width / 2, height / 2 - 20, "NEXT LEVEL!", 2);
   EcrireTexte(width / 2 + 1, height / 2 - 20, "NEXT LEVEL!", 2);
   sleep(1);
@@ -111,25 +110,25 @@ void timer (Game G, unsigned long temps) {
   ChargerImage(png, 126, G.height * G.tcase - 40, 0, 0, 23, 31);
 }
 
-void printscore (Game G) {
+/* void printscore (Game G) {
 
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
   char buf[6];
 
   ChoisirEcran(1);
-  ChoisirCouleurDessin(CouleurParNom("black"));
+  ChoisirCouleurDessin(choisirCouleur("black"));
 
   EcrireTexte(width / 3, height / 2, "YOUR SCORE: ", 2);
   sprintf(buf, "%d", G.score);
   EcrireTexte(width / 3 + TailleChaineEcran("YOUR SCORE: 0", 2), height / 2, buf, 2);
 
   ChoisirEcran(0);
-  EffacerEcran(CouleurParNom("seagreen"));
+  EffacerEcran(choisirCouleur("seagreen"));
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
 
   sleep(2);
-}
+} */
 
 void move_forward (Game G, Body *B) {
 
@@ -167,8 +166,8 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
   bufwall[10] = G.tcase%10 + '0';
 
   ChoisirEcran(1);
-  EffacerEcran(CouleurParNom("goldenrod"));
-  ChoisirCouleurDessin(CouleurParNom("seagreen"));
+  EffacerEcran(choisirCouleur(G.variant, 'b'));
+  ChoisirCouleurDessin(choisirCouleur(G.variant, 'd'));
 
   for(i = 0 ; i < B.nbrseg ; i++) {
     RemplirRectangle(B.s_seg[i].x, B.s_seg[i].y, G.tcase - 2, G.tcase - 2);
@@ -185,7 +184,6 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
   // Chargement du Temps - Score
   timer(G, temps);
 
-  ChoisirCouleurDessin(CouleurParNom("black"));
   ChoisirEcran(0);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
 }
@@ -218,7 +216,7 @@ int verif (Game G, Body B, Wall W) {
   for(i = 4 ; i <= B.nbrseg ; i++) {
     if(x == B.s_seg[i].x && y == B.s_seg[i].y) {
       //printf("Collision bloc %d : %d | %d\n", i+1, x, y);
-      ChoisirCouleurDessin(CouleurParNom("red"));
+      ChoisirCouleurDessin(choisirCouleur(G.variant, 'd'));
       RemplirRectangle(B.s_seg[i].x, B.s_seg[i].y, G.tcase - 2, G.tcase - 2);
       return 1;
     }
@@ -400,6 +398,7 @@ int main () {
     }
 
     FermerGraphique();
+    setScore(G);
     dispMenu(&G, &B, &A, &W, &S);
     temps = Microsecondes();
     old_dir = B.dir;
