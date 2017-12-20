@@ -65,7 +65,7 @@ List* insertion (List* L, int elt, int p) {
 
   List *res = malloc(sizeof(List));
   res->elt = elt;
-    
+
   res->prev = tmp->prev;
   tmp->prev->next = res;
   tmp->prev = res;
@@ -121,11 +121,16 @@ void reverse_display (List *L) {
 
 List *supprimer_premier (List *L) {
 
+  //La liste est vide
   if(L == NULL) {
     return L;
   }
 
-  if(L->next == NULL
+  //La liste contient 1 élément
+  if(L->next == NULL) {
+    free(L);
+    return NULL;
+  }
 
   L = L->next;
 
@@ -136,14 +141,160 @@ List *supprimer_premier (List *L) {
   return L;
 }
 
+List *supprimer_dernier (List *L) {
+
+  //La liste est vide
+  if(L == NULL) {
+    return L;
+  }
+
+  //La liste contient 1 élément
+  if(L->next == NULL) {
+    return supprimer_premier(L);
+  }
+
+  List *tmp = L;
+
+  while(tmp->next != NULL)
+    tmp = tmp->next;
+
+  tmp->prev->next = NULL;
+
+  free(tmp);
+
+  return L;
+}
+
+List* supprimer (List *L, int p) {
+
+  if(p < 0)
+    return L;
+
+  //La liste est vide
+  if(L == NULL) {
+    return L;
+  }
+
+  if(p == 0) {
+    return supprimer_premier(L);
+  }
+
+  List *tmp = L;
+
+  int i;
+  for(i = 0 ; i < p ; i++) {
+    tmp = tmp->next;
+    if(tmp == NULL)
+      return L;
+  }
+
+  if(tmp->next == NULL)
+    tmp->prev->next = NULL;
+  else {
+    tmp->prev->next = tmp->next;
+    tmp->next->prev = tmp->prev;
+  }
+
+  free(tmp);
+
+  return L;
+}
+
+int nb_occ (List* L, int elt) {
+
+  //La liste est vide
+  if(L == NULL) {
+    return 0;
+  }
+
+  if(L->next == NULL && L->elt == elt) {
+    return 1;
+  }
+
+  List *tmp = L;
+  int count = 0;
+
+  while(tmp != NULL) {
+    if(tmp->elt == elt)
+      count++;
+    tmp = tmp->next;
+  }
+
+  return count;
+}
+
+int first_occ (List *L, int elt) {
+
+  //La liste est vide
+  if(L == NULL) {
+    return -1;
+  }
+
+  List *tmp = L;
+  int count = -1;
+
+  while(tmp != NULL) {
+    count ++;
+    if(tmp->elt == elt)
+      return count;
+    tmp = tmp->next;
+  }
+
+  return (-1);
+}
+
+List* supprimer_tout(List* L, int elt) {
+
+  //La liste est vide
+  if(L == NULL) {
+    return L;
+  }
+
+  while(nb_occ(L, elt) != 0)
+    L = supprimer(L, first_occ(L, elt));
+
+  return L;
+}
+
+List* trier(List* L) {
+
+  if(L == NULL || L->next == NULL) {
+    return L;
+  }
+
+  List *tmp = L;
+  int temp = 0;
+  int count = 0;
+
+  while(tmp->next != NULL) {
+    if(tmp->elt > tmp->next->elt) {
+      temp = tmp->elt; 
+      tmp->elt = tmp->next->elt;
+      tmp->next->elt = temp;
+    }
+    tmp = tmp->next;
+  }
+
+  tmp = L;
+  while(tmp->next != NULL) {
+    if(tmp->elt > tmp->next->elt)
+      return trier(L);
+    tmp = tmp->next;
+  }
+
+  return L;
+}
+
 void main () {
   List* l = NULL;
 
-  l = ajout_tete(l, 5);
+  l = ajout_tete(l, 7);
+  l = ajout_tete(l, 6);
+  l = ajout_tete(l, 8);
   
-  reverse_display(l);
+  printf("init:"); display(l);
 
-  l = supprimer_premier(l);
+  l = trier(l);
 
-  display(l);
+  printf("end:"); display(l);
 }

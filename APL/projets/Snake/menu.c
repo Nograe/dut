@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "main.h"
 #include "snake.h"
+//#define DEV
 
 void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
@@ -10,7 +11,7 @@ void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	fclose(fichier);
 
   // Attribution VARIABLES DEFAUT
-  S->setG.variant = RANDOM;
+  S->setG.variant = MODERN;
 	S->setG.tcase = 14;
 	S->setG.width = 60;
 	S->setG.height = 40;
@@ -39,8 +40,10 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	CreerFenetre(500, 300, width, height);
 	ChoisirEcran(2);
 
-	//DessinerSegment(width/2, 0, width/2, height);
-	//DessinerSegment(0, height/2, width, height/2);
+	#ifdef DEV
+		DessinerSegment(width/2, 0, width/2, height);
+		DessinerSegment(0, height/2, width, height/2);
+	#endif
 
 	while (1) {
 
@@ -120,7 +123,6 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 				quit();
 		}
 	}
-	printf("Le menu a été quitté\n");
 }
 
 void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
@@ -150,13 +152,13 @@ void dispHighscore (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	FILE* fichier = NULL;
 	fichier = fopen("src/scores", "r");
 
-	char c = 0;
+	int c = 0;
 	int line = 0, i = 0, j = 0;
 
 	// On compte les lignes
 	while(c != EOF) {
 		c = fgetc(fichier);
-		if(c == '\n')
+		if((char)c == '\n')
 			line++;
 	}
 
@@ -214,7 +216,8 @@ void dispHighscore (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 		EcrireTexte(posx, posy, buf, 2);
 	}
 
-	ChargerImage("src/redcross.png", 5, height-37, 0, 0, 32, 32);
+	EcrireTexte(50, height-18, "Delete", 1);
+	ChargerImage("src/redcross.png", 8, height-40, 0, 0, 32, 32);
 
 	CopierZone(2, 0, 0, 0, width, height, 0, 0);
 
@@ -239,17 +242,60 @@ void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
-	int touche = 0;
+	int touche = 0, adv_settings = 0;
+	char buf[5];
 
-	EffacerEcran(CouleurParNom("forestgreen"));
-	ChargerImage("src/fonts/settings_title.png", 14 * 16.5, 14 * 5, 0, 0, 390, 45);
+	while(touche != XK_Escape) {
 
-	/* Code */
+		if(ToucheEnAttente())
+			touche = Touche();
 
-	CopierZone(2, 0, 0, 0, width, height, 0, 0);
+		EffacerEcran(CouleurParNom("forestgreen"));
 
-	while(touche != XK_Escape)
-		touche = Touche();
+		#ifdef DEV
+			DessinerSegment(width/2, 0, width/2, height);
+			DessinerSegment(0, height/2, width, height/2);
+		#endif
+
+		ChargerImage("src/fonts/settings_title.png", 14 * 16.5, 14 * 5, 0, 0, 390, 45);
+
+		ChargerImage("src/fonts/width.png", 220, 200, 0, 0, 69, 18);
+		ChargerImage("src/plus.png", 315, 200+32, 0, 0, 32, 32);
+		ChargerImage("src/minus.png", 165, 200+32, 0, 0, 32, 32);
+		sprintf(buf, "%d", S->setG.width);
+		EcrireTexte(240, 250, buf, 2);
+
+		ChargerImage("src/fonts/height.png", 550, 200, 0, 0, 85, 20);
+		ChargerImage("src/plus.png", 650, 200+32, 0, 0, 32, 32);
+		ChargerImage("src/minus.png", 500, 200+32, 0, 0, 32, 32);
+
+		ChargerImage("src/fonts/startingsize.png", 155, 400, 0, 0, 175, 17);
+		ChargerImage("src/plus.png", 320, 400+32, 0, 0, 32, 32);
+		ChargerImage("src/minus.png", 130, 400+32, 0, 0, 32, 32);
+
+		ChargerImage("src/fonts/apples.png", 550, 400, 0, 0, 93, 17);
+		ChargerImage("src/plus.png", 650, 400+32, 0, 0, 32, 32);
+		ChargerImage("src/minus.png", 510, 400+32, 0, 0, 32, 32);
+
+		SourisCliquee();
+
+		if(_X >= 315 && _X <= 315+32 && _Y >= 232 && _Y <= 232+32) {
+			printf("Add 2 to width\n");
+			S->setG.width += 2;
+			if(S->setG.width > 200)
+				S->setG.width = 200;
+		}
+		if(_X >= 165 && _X <= 165+32 && _Y >= 232 && _Y <= 232+32) {
+			printf("Remove 2 to width\n");
+			S->setG.width -= 2;
+			if(S->setG.width < 24)
+				S->setG.width = 24;
+		}
+
+		_X = 0;
+		_Y = 0;
+		CopierZone(2, 0, 0, 0, width, height, 0, 0);
+	}
 
 	while(SourisCliquee());
 	SourisPosition();
@@ -276,6 +322,7 @@ void setSettings (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
 	A->spawn = S.setA.spawn;
 	A->x = malloc(A->spawn * sizeof(int));
 	A->y = malloc(A->spawn * sizeof(int));
+	A->exist = malloc(A->spawn * sizeof(int));
 
 	W->spawn = S.setW.spawn;
 	W->x = malloc(W->spawn * sizeof(int));
@@ -299,14 +346,14 @@ void setScore (Game G) {
 
 int verifScore (char *pseudo, int score) {
 
-	char c = 0;
+	int c = 0;
 	char ps[11];
 	int tmp;
 	FILE* fichier = NULL;
 	fichier = fopen("src/scores", "r+");
 
 	// Si le score et le pseudo correspondent à une entrée, on n'inscrit rien
-	while(c != EOF) {
+	while((char)c != EOF) {
 
 		fscanf(fichier, "%d %s", &tmp, ps);
 		//printf("score: %d ps: %s\n", tmp, ps);
@@ -324,7 +371,7 @@ int verifScore (char *pseudo, int score) {
 	return 0;
 }
 
-// b : Background | d : Dessin | p : Pause
+// b : Background | d : Dessin | p : Pause | t : timer/score
 couleur choisirCouleur (Theme T, char type) {
 
 	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0;
@@ -352,11 +399,13 @@ couleur choisirCouleur (Theme T, char type) {
 	}
 	if(T == MODERN) {
 		if(type == 'b')
-			C = CouleurParComposante(44, 109, 80);
+			C = CouleurParComposante(24, 89, 60);
 		if(type == 'd')
-			C = CouleurParComposante(179, 155, 0);
+			C = CouleurParComposante(200, 145, 0);
 		if(type == 'p')
 			C = CouleurParComposante(30, 72, 54);
+		if(type == 't')
+			C = CouleurParComposante(4, 69, 40);
 	}
 	if(T == RANDOM) {
 		if(random == 35)

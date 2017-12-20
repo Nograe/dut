@@ -20,6 +20,7 @@ void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *te
   ChoisirCouleurDessin(choisirCouleur(G.variant, 'p'));
   EcrireTexte(width/2 - 40, height/2 -20, "PAUSE", 2);
   EcrireTexte(width/2 - 42, height/2, "Press SPACE", 0);
+  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
 
   do {
     *touche = Touche();
@@ -28,30 +29,35 @@ void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *te
   int diff = Microsecondes() - tmp;
 
   draw(G, B, A, W, *temps+diff);
+  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
   EcrireTexte(width/2 - 20, height/2 -20, "3", 2);
   usleep(600000);
   draw(G, B, A, W, *temps+diff+600000);
+  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
   EcrireTexte(width/2 - 20, height/2 -20, "2", 2);
   usleep(600000);
   draw(G, B, A, W, *temps+diff+1200000);
+  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
   EcrireTexte(width/2 - 20,height/2 -20,"1",2);
   usleep(600000);
 
   *temps += diff+1800000;
-  while(ToucheEnAttente() == 1)
+  while(ToucheEnAttente())
     Touche();
   *touche = 0;
 }
 
-void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps) {
+void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
 
   G->level++;
+  B->nbrseg = S.setB.nbrseg;
   B->dir = 4;
   B->speed -= 6500;
   A->spawn++;
   A->eaten = 0;
   A->x = malloc(A->spawn * sizeof(int));
   A->y = malloc(A->spawn * sizeof(int));
+  A->exist = malloc(A->spawn * sizeof(int));
   W->spawn++;
   W->x = malloc(W->spawn * sizeof(int));
   W->y = malloc(W->spawn * sizeof(int));
@@ -86,6 +92,9 @@ void timer (Game G, unsigned long temps) {
   DessinerRectangle((G.width * G.tcase) - 145, (G.height * G.tcase) - 55, 145, 55);
   DessinerRectangle(0, (G.height * G.tcase) - 55, 165, 55);
   #endif
+
+  ChoisirCouleurDessin(choisirCouleur(G.variant, 't'));
+  RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
 
   png[11] = (min / 10) + '0';
   ChargerImage(png, G.width * G.tcase - 135, G.height * G.tcase - 40, 0, 0, 23, 31);
@@ -206,7 +215,7 @@ int verif (Game G, Body B, Wall W) {
   // Verification bordures
   int x = B.s_seg[0].x;
   int y = B.s_seg[0].y;
-  if(x <= 0 || x >= (G.width * G.tcase) || y <= 0 || y >= (G.height * G.tcase)) {
+  if(x <= 0 || x >= (G.width * G.tcase) || y <= 0 || y >= (G.height * G.tcase)-55) {
     //printf("Coords: %d | %d", x, y);
     return 1;
   }
@@ -231,21 +240,24 @@ int verif (Game G, Body B, Wall W) {
   return 0;
 }
 
-int verif_apple (Game *G, Body *B, Apple *A) {
+void verif_apple (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
 
   if(A->eaten == A->spawn)
-    return 1;
+    return next_level(G, B, A, W, temps, S);
 
-  int i;
+  int i, j;
   for(i = 0 ; i < A->spawn ; i++) {
     if(B->s_seg[0].x == A->x[i]+1 && B->s_seg[0].y == A->y[i]+1){
+      G->score += 5;
       A->x[i] = -G->tcase;
       A->y[i] = -G->tcase;
-      eat_apple(G, B, A);
+      A->eaten++;
+      B->nbrseg += 2;
+      B->s_seg = realloc(B->s_seg, sizeof(Segment) * (B->nbrseg + 1));
+      for(j = B->nbrseg-2 ; j < B->nbrseg ; j++)
+        B->s_seg[j] = B->s_seg[j-1];
     }
   }
-
-  return 0;
 }
 
 void randomApple (Game G, Body B, Apple *A) {
@@ -265,10 +277,11 @@ void randomApple (Game G, Body B, Apple *A) {
     posy = rand() % (G.height * G.tcase);
     A->x[j] = (posx - posx % G.tcase);
     A->y[j] = (posy - posy % G.tcase);
+    A->exist[j] = 1;
     posx = A->x[j]; posy = A->y[j];
 
     // Vérification du spawn avec le score | timer
-    if( (posx >= 0 && posx <= 165 && posy >= height - 55 - G.tcase && posy <= height) || (posx >= width - 145 - G.tcase && posx <= width && posy >= height - 55 - G.tcase && posy <= height) )
+    if( posy > (G.height * G.tcase)-55-G.tcase )
       continue;
 
     // Vérification du spawn avec Body
@@ -302,7 +315,7 @@ void randomWall (Game G, Body B, Apple A, Wall *W) {
     posx = W->x[j]; posy = W->y[j]; 
 
   // Vérification du spawn avec le score | timer
-    if( (posx >= 0 && posx <= 165 && posy >= height - 55 - G.tcase && posy <= height) || (posx >= width - 145 - G.tcase && posx <= width && posy >= height - 55 - G.tcase && posy <= height) )
+    if( posy > (G.height * G.tcase)-55-G.tcase )
       continue;
 
   // Vérification du spawn avec Wall | Body | Apple (On évite le spawn-kill)
@@ -325,21 +338,6 @@ void randomWall (Game G, Body B, Apple A, Wall *W) {
   }
 }
 
-void eat_apple (Game *G, Body *B, Apple *A) {
-
-  G->score += 5;
-  B->nbrseg += 2;
-  A->eaten++;
-
-  B->s_seg = realloc(B->s_seg, sizeof(Segment) * (B->nbrseg + 1));
-
-  int i = B->nbrseg-2;
-  for(; i < B->nbrseg ; i++){
-    //printf("[%d] prend : [%d]\n", i, B->nbrseg-2-1);
-    B->s_seg[i] = B->s_seg[i-1];
-  }
-}
-
 int main () {
 
   unsigned long temps = Microsecondes();
@@ -358,15 +356,6 @@ int main () {
   while(1) {
 
     while(!verif(G, B, W) && touche != XK_Escape) {
-
-      if(verif_apple(&G, &B, &A)) {
-        next_level(&G, &B, &A, &W, &temps);
-        old_dir = B.dir;
-      }
-
-      draw(G, B, A, W, temps);
-
-      usleep(B.speed);
 
       if(ToucheEnAttente()) {
         touche = Touche();
@@ -388,13 +377,14 @@ int main () {
 
         if(old_dir+B.dir == 3 || old_dir+B.dir == 7)
           B.dir = old_dir;
-
-        old_dir = B.dir;
       }
 
       verifpause(G, B, A, W, &touche, &temps);
-
       move_forward(G, &B);
+      verif_apple(&G, &B, &A, &W, &temps, S);
+      draw(G, B, A, W, temps);
+      old_dir = B.dir;
+      usleep(B.speed);
     }
 
     FermerGraphique();

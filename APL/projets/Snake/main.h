@@ -15,14 +15,13 @@
 
 int forcexit(int touche);
 void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *temps);
-void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps);
+void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps, Settings S);
 void move_forward (Game G, Body *B);
 void draw (Game G, Body B, Apple A, Wall W, unsigned long temps);
 void body_init (Game G, Body *B);
 int verif (Game G, Body S, Wall W);
-int verif_apple (Game *G, Body *B, Apple *A);
+void verif_apple (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps, Settings S);
 void randomApple (Game G, Body B, Apple *A);
 void randomWall (Game G, Body B, Apple A, Wall *W);
-void eat_apple (Game *G, Body *B, Apple *A);
 
 #endif
