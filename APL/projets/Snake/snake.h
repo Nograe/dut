@@ -1,38 +1,13 @@
 #ifndef DEF_SNAKE
 
 #define DEF_SNAKE
+#include "struct.h"
 
-typedef enum {
-  UP = 1,
-  DOWN,
-  LEFT,
-  RIGHT
-} Direction;
-
-typedef struct {
-  int x;
-  int y;
-} Segment;
-
-typedef struct {
-  Segment *s_seg;
-  Direction dir;
-  int speed;
-  int nbrseg;
-} Body;
-
-typedef struct {
-  int *x;
-  int *y;
-  int *exist;
-  int eaten;
-  int spawn;
-} Apple;
-
-typedef struct {
-  int *x;
-  int *y;
-  int spawn;
-} Wall;
+void move_forward (Game G, Body *B);
+void body_init (Game G, Body *B);
+int verif (Game G, Body S, Wall W);
+void verif_apple (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps, Settings S);
+void randomApple (Game G, Body B, Apple *A);
+void randomWall (Game G, Body B, Apple A, Wall *W);
 
 #endif

@@ -1,6 +1,5 @@
 #include "menu.h"
-#include "main.h"
-#include "snake.h"
+#include "settings.h"
 //#define DEV
 
 void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
@@ -19,7 +18,7 @@ void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	S->setG.level = 0;
 
 	S->setB.nbrseg = 10;
-	S->setB.speed = 90000;
+	S->setB.speed = 70000;
 
 	S->setA.eaten = 0;
 	S->setA.spawn = 5;
@@ -62,7 +61,7 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 
 		if(touche == XK_Escape)
 			quit();
-		if(touche == XK_Down) {
+		if(touche == XK_Down || touche == XK_s) {
 			if(old == 3)
 				old = 4;
 			if(old == 2)
@@ -70,7 +69,7 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 			if(old == 1)
 				old = 2;
 		}
-		if(touche == XK_Up) {
+		if(touche == XK_Up || touche == XK_z) {
 			if(old == 2)
 				old = 1;
 			if(old == 3)
@@ -238,97 +237,6 @@ void dispHighscore (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	return;
 }
 
-void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
-
-	int width = 60 * 14;
-	int height = 40 * 14;
-	int touche = 0, adv_settings = 0;
-	char buf[5];
-
-	while(touche != XK_Escape) {
-
-		if(ToucheEnAttente())
-			touche = Touche();
-
-		EffacerEcran(CouleurParNom("forestgreen"));
-
-		#ifdef DEV
-			DessinerSegment(width/2, 0, width/2, height);
-			DessinerSegment(0, height/2, width, height/2);
-		#endif
-
-		ChargerImage("src/fonts/settings_title.png", 14 * 16.5, 14 * 5, 0, 0, 390, 45);
-
-		ChargerImage("src/fonts/width.png", 220, 200, 0, 0, 69, 18);
-		ChargerImage("src/plus.png", 315, 200+32, 0, 0, 32, 32);
-		ChargerImage("src/minus.png", 165, 200+32, 0, 0, 32, 32);
-		sprintf(buf, "%d", S->setG.width);
-		EcrireTexte(240, 250, buf, 2);
-
-		ChargerImage("src/fonts/height.png", 550, 200, 0, 0, 85, 20);
-		ChargerImage("src/plus.png", 650, 200+32, 0, 0, 32, 32);
-		ChargerImage("src/minus.png", 500, 200+32, 0, 0, 32, 32);
-
-		ChargerImage("src/fonts/startingsize.png", 155, 400, 0, 0, 175, 17);
-		ChargerImage("src/plus.png", 320, 400+32, 0, 0, 32, 32);
-		ChargerImage("src/minus.png", 130, 400+32, 0, 0, 32, 32);
-
-		ChargerImage("src/fonts/apples.png", 550, 400, 0, 0, 93, 17);
-		ChargerImage("src/plus.png", 650, 400+32, 0, 0, 32, 32);
-		ChargerImage("src/minus.png", 510, 400+32, 0, 0, 32, 32);
-
-		SourisCliquee();
-
-		if(_X >= 315 && _X <= 315+32 && _Y >= 232 && _Y <= 232+32) {
-			printf("Add 2 to width\n");
-			S->setG.width += 2;
-			if(S->setG.width > 200)
-				S->setG.width = 200;
-		}
-		if(_X >= 165 && _X <= 165+32 && _Y >= 232 && _Y <= 232+32) {
-			printf("Remove 2 to width\n");
-			S->setG.width -= 2;
-			if(S->setG.width < 24)
-				S->setG.width = 24;
-		}
-
-		_X = 0;
-		_Y = 0;
-		CopierZone(2, 0, 0, 0, width, height, 0, 0);
-	}
-
-	while(SourisCliquee());
-	SourisPosition();
-	return;
-}
-
-void quit () {
-
-	FermerGraphique();
-	printf("▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué ! █ ▇ ▆ ▅ ▄ ▂ ▁\n");
-	exit(0);
-}
-
-// On initialise tous les paramètres (pré)définis
-void setSettings (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
-
-	*G = S.setG;
-
-	B->nbrseg = S.setB.nbrseg;
-	B->speed = S.setB.speed;
-	B->s_seg = malloc((B->nbrseg+1) * sizeof(Segment));
-
-	A->eaten = S.setA.eaten;
-	A->spawn = S.setA.spawn;
-	A->x = malloc(A->spawn * sizeof(int));
-	A->y = malloc(A->spawn * sizeof(int));
-	A->exist = malloc(A->spawn * sizeof(int));
-
-	W->spawn = S.setW.spawn;
-	W->x = malloc(W->spawn * sizeof(int));
-	W->y = malloc(W->spawn * sizeof(int));
-}
-
 void setScore (Game G) {
 
 	// Si le score est inférieur à 1 | son pseudo est déjà inscrit avec le même score
@@ -424,4 +332,11 @@ couleur choisirCouleur (Theme T, char type) {
 	}
 
 	return C;
+}
+
+void quit () {
+
+	FermerGraphique();
+	printf("▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué ! █ ▇ ▆ ▅ ▄ ▂ ▁\n");
+	exit(0);
 }
