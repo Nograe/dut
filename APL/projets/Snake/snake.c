@@ -32,7 +32,7 @@ void move_forward (Game G, Bodies *B) {
   for(i = 0 ; i < B->nbrBot ; i++) {
     old_dir = B->bot[i].dir;
     if(rand()%15 == 0) {
-      B->bot[i].dir = rand() % 3 + 1;
+      B->bot[i].dir = rand() % 4 + 1;
       if(old_dir+B->bot[i].dir == 3 || old_dir+B->bot[i].dir == 7)
         B->bot[i].dir = old_dir;
     }
@@ -101,19 +101,15 @@ int verif (Game G, Bodies B, Wall W) {
     boty = B.bot[i].s_seg[0].y;
     if(botx <= 0) {
       B.bot[i].s_seg[0].x = (G.width * G.tcase) - (G.tcase-1);
-      printf("Teleport 1 x: %d | y: %d\n", B.bot[i].s_seg[0].x, B.bot[i].s_seg[0].y);
     }
     if(botx >= (G.width * G.tcase)) {
       B.bot[i].s_seg[0].x = 1;
-      printf("Teleport 2 x: %d | y: %d\n", B.bot[i].s_seg[0].x, B.bot[i].s_seg[0].y);
     }
     if(boty <= 0) {
       B.bot[i].s_seg[0].y = ((G.height * G.tcase)-55) - (G.tcase);
-      printf("Teleport 3 x: %d | y: %d\n", B.bot[i].s_seg[0].x, B.bot[i].s_seg[0].y);
     }
     if(boty >= (G.height * G.tcase)-55) {
       B.bot[i].s_seg[0].y = 1;
-      printf("Teleport 4 x: %d | y: %d\n", B.bot[i].s_seg[0].x, B.bot[i].s_seg[0].y);
     }
   }
 
