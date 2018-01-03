@@ -159,6 +159,9 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
   for(i = 0 ; i < B.nbrseg ; i++)
     RemplirRectangle(B.s_seg[i].x, B.s_seg[i].y, G.tcase - 2, G.tcase - 2);
 
+  for(i = 0 ; i < B.bots.nbrBot ; i++)
+    RemplirRectangle(B.bots.seg[i].x, B.bots.seg[i].y, G.tcase - 2, G.tcase - 2);
+
   ChoisirCouleurDessin(CouleurParNom("black"));
   if(B.dir == UP) {
     RemplirRectangle(B.s_seg[0].x+2, B.s_seg[0].y+2, 3, 3);

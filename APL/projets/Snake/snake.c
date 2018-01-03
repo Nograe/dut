@@ -37,6 +37,12 @@ void body_init (Game G, Body *B) {
     posx -= G.tcase;
   }
   B->dir = 4;
+
+  for(i = 0 ; i < B->bots.nbrBot ; i++) {
+    B->bots.seg[i].x = G.tcase*10;
+    B->s_seg[i].y = G.tcase*10;
+  }
+  B->dir = 4;
 }
 
 int verif (Game G, Body B, Wall W) {
