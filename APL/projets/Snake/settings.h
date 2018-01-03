@@ -7,7 +7,7 @@
 #include <graph.h>
 #include "struct.h"
 
-void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S);
-void setSettings (Game *G, Body *B, Apple *A, Wall *W, Settings S);
+void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S);
+void setSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings S);
 
 #endif

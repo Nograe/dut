@@ -9,7 +9,7 @@ int forcexit(int touche) {
     return 0;
 }
 
-void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *temps) {
+void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
 
   if(*touche != XK_space)
     return;
@@ -30,16 +30,16 @@ void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *te
   int diff = Microsecondes() - tmp;
 
   draw(G, B, A, W, *temps+diff);
-  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
-  EcrireTexte(width/2 - 20, height/2 -20, "3", 2);
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+  ChargerImage("src/digits/3.png", (width/2) - 23/2, (height/2) - 31, 0, 0, 23, 31);
   usleep(600000);
   draw(G, B, A, W, *temps+diff+600000);
-  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
-  EcrireTexte(width/2 - 20, height/2 -20, "2", 2);
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+  ChargerImage("src/digits/2.png", (width/2) - 23/2, (height/2) - 31, 0, 0, 23, 31);
   usleep(600000);
   draw(G, B, A, W, *temps+diff+1200000);
-  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
-  EcrireTexte(width/2 - 20,height/2 -20,"1",2);
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+  ChargerImage("src/digits/1.png", (width/2) - 27/2, (height/2) - 31, 0, 0, 23, 31);
   usleep(600000);
 
   *temps += diff+1800000;
@@ -48,17 +48,16 @@ void verifpause (Game G, Body B, Apple A, Wall W, int *touche, unsigned long *te
   *touche = 0;
 }
 
-void next_level (Game *G, Body *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
+void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
 
   G->level++;
-  B->nbrseg = S.setB.nbrseg;
-  B->dir = 4;
-  B->speed -= 6500;
+  B->snake.nbrseg = S.setB.snake.nbrseg;
+  B->snake.dir = 4;
+  B->snake.speed -= 6500;
   A->spawn++;
   A->eaten = 0;
   A->x = malloc(A->spawn * sizeof(int));
   A->y = malloc(A->spawn * sizeof(int));
-  A->exist = malloc(A->spawn * sizeof(int));
   W->spawn++;
   W->x = malloc(W->spawn * sizeof(int));
   W->y = malloc(W->spawn * sizeof(int));
@@ -140,11 +139,11 @@ void timer (Game G, unsigned long temps) {
   sleep(2);
 } */
 
-void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
+void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
 
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
-  int i;
+  int i, j;
   unsigned long tmp = (Microsecondes() - temps)/1000000;
   char bufapple[17] = "src/apple_1X.png";
   char bufwall[16] = "src/wall_1X.png";
@@ -153,31 +152,36 @@ void draw (Game G, Body B, Apple A, Wall W, unsigned long temps) {
 
   ChoisirEcran(1);
   EffacerEcran(choisirCouleur(G.variant, 'b'));
+
+  // Chargement du Snake
   ChoisirCouleurDessin(choisirCouleur(G.variant, 'd'));
+  for(i = 0 ; i < B.snake.nbrseg ; i++)
+    RemplirRectangle(B.snake.s_seg[i].x, B.snake.s_seg[i].y, G.tcase - 2, G.tcase - 2);
 
-  // Chargement du Body
-  for(i = 0 ; i < B.nbrseg ; i++)
-    RemplirRectangle(B.s_seg[i].x, B.s_seg[i].y, G.tcase - 2, G.tcase - 2);
+  // Chargement des Bots
+  ChoisirCouleurDessin(choisirCouleur(G.variant, 'r'));
+  for(i = 0 ; i < B.nbrBot ; i++) {
+    for(j = 0; j < 5 ; j++)
+      RemplirRectangle(B.bot[i].s_seg[j].x, B.bot[i].s_seg[j].y, G.tcase - 2, G.tcase - 2);
+  }
 
-  for(i = 0 ; i < B.bots.nbrBot ; i++)
-    RemplirRectangle(B.bots.seg[i].x, B.bots.seg[i].y, G.tcase - 2, G.tcase - 2);
-
+  // Yeux
   ChoisirCouleurDessin(CouleurParNom("black"));
-  if(B.dir == UP) {
-    RemplirRectangle(B.s_seg[0].x+2, B.s_seg[0].y+2, 3, 3);
-    RemplirRectangle(B.s_seg[0].x+7, B.s_seg[0].y+2, 3, 3);
+  if(B.snake.dir == UP) {
+    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.s_seg[0].x+7, B.snake.s_seg[0].y+2, 3, 3);
   }
-  if(B.dir == DOWN) {
-    RemplirRectangle(B.s_seg[0].x+2, B.s_seg[0].y+6, 3, 3);
-    RemplirRectangle(B.s_seg[0].x+7, B.s_seg[0].y+6, 3, 3);
+  if(B.snake.dir == DOWN) {
+    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+6, 3, 3);
+    RemplirRectangle(B.snake.s_seg[0].x+7, B.snake.s_seg[0].y+6, 3, 3);
   }
-  if(B.dir == LEFT) {
-    RemplirRectangle(B.s_seg[0].x+2, B.s_seg[0].y+2, 3, 3);
-    RemplirRectangle(B.s_seg[0].x+2, B.s_seg[0].y+7, 3, 3);
+  if(B.snake.dir == LEFT) {
+    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+7, 3, 3);
   }
-  if(B.dir == RIGHT) {
-    RemplirRectangle(B.s_seg[0].x+6, B.s_seg[0].y+2, 3, 3);
-    RemplirRectangle(B.s_seg[0].x+6, B.s_seg[0].y+7, 3, 3);
+  if(B.snake.dir == RIGHT) {
+    RemplirRectangle(B.snake.s_seg[0].x+6, B.snake.s_seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.s_seg[0].x+6, B.snake.s_seg[0].y+7, 3, 3);
   }
 
   // Chargement des Apple
@@ -202,7 +206,7 @@ int main () {
 
   Settings S;
   Game G;
-  Body B;
+  Bodies B;
   Apple A;
   Wall W;
 
@@ -214,36 +218,36 @@ int main () {
 
     while(!verif(G, B, W) && touche != XK_Escape) {
 
-      usleep(B.speed);
+      usleep(B.snake.speed);
       
       if(ToucheEnAttente()) {
         touche = Touche();
 
         if(touche == XK_Up || touche == XK_z)
-          B.dir = UP;
+          B.snake.dir = UP;
         if(touche == XK_Down || touche == XK_s)
-          B.dir = DOWN;
+          B.snake.dir = DOWN;
         if(touche == XK_Right || touche == XK_d)
-          B.dir = RIGHT;
+          B.snake.dir = RIGHT;
         if(touche == XK_Left || touche == XK_q)
-          B.dir = LEFT;
+          B.snake.dir = LEFT;
 
-        if(old_dir+B.dir == 3 || old_dir+B.dir == 7)
-          B.dir = old_dir;
+        if(old_dir+B.snake.dir == 3 || old_dir+B.snake.dir == 7)
+          B.snake.dir = old_dir;
       }
 
       verifpause(G, B, A, W, &touche, &temps);
       move_forward(G, &B);
       verif_apple(&G, &B, &A, &W, &temps, S);
       draw(G, B, A, W, temps);
-      old_dir = B.dir;
+      old_dir = B.snake.dir;
     }
 
     FermerGraphique();
     setScore(G);
     dispMenu(&G, &B, &A, &W, &S);
     temps = Microsecondes();
-    old_dir = B.dir;
+    old_dir = B.snake.dir;
     touche = 0;
   }
 }

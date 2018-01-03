@@ -1,6 +1,6 @@
 #include "settings.h"
 
-void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
+void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
@@ -23,7 +23,7 @@ void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 		// Décalage du texte (détail)
 		(S->setG.width >= 100) ? (decalW = 6) : (decalW = 0);
 		(S->setG.height >= 100) ? (decalH = 6) : (decalH = 0);
-		(S->setB.nbrseg >= 100) ? (decalB = 6) : (decalB = 0);
+		(S->setB.snake.nbrseg >= 100) ? (decalB = 6) : (decalB = 0);
 		(S->setA.spawn >= 10) ? (decalA = 6) : (decalA = 0);
 
 		ChargerImage("src/fonts/settings_title.png", 14 * 16.5, 14 * 5, 0, 0, 390, 45);
@@ -43,7 +43,7 @@ void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 		ChargerImage("src/fonts/startingsize.png", 155, 370, 0, 0, 175, 17);
 		ChargerImage("src/minus.png", 185, 370+32, 0, 0, 32, 32);
 		ChargerImage("src/plus.png", 285, 370+32, 0, 0, 32, 32);
-		sprintf(buf, "%d", S->setB.nbrseg);
+		sprintf(buf, "%d", S->setB.snake.nbrseg);
 		EcrireTexte(240-decalB, 425, buf, 2);
 
 		ChargerImage("src/fonts/apples.png", 550, 370, 0, 0, 93, 17);
@@ -87,12 +87,12 @@ void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 		}
 
 		if(_X >= 185 && _X <= 185+32 && _Y >= 402 && _Y <= 402 +32) {
-			S->setB.nbrseg -= 1;
-			if(S->setB.nbrseg < 1)
-				S->setB.nbrseg = 1;
+			S->setB.snake.nbrseg -= 1;
+			if(S->setB.snake.nbrseg < 1)
+				S->setB.snake.nbrseg = 1;
 		}
 		if(_X >= 285 && _X <= 285+32 && _Y >= 402 && _Y <= 402+32) {
-			S->setB.nbrseg += 1;
+			S->setB.snake.nbrseg += 1;
 		}
 
 		if(_X >= 525 && _X <= 525+32 && _Y >= 402 && _Y <= 402+32) {
@@ -117,13 +117,18 @@ void dispSettings (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 }
 
 // On initialise tous les paramètres (pré)définis
-void setSettings (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
+void setSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
 
 	*G = S.setG;
 
-	B->nbrseg = S.setB.nbrseg;
-	B->speed = S.setB.speed;
-	B->s_seg = malloc((B->nbrseg+1) * sizeof(Segment));
+	B->snake.nbrseg = S.setB.snake.nbrseg;
+	B->snake.speed = S.setB.snake.speed;
+	B->snake.s_seg = malloc((B->snake.nbrseg+1) * sizeof(Segment));
+	B->nbrBot = S.setB.nbrBot;
+	B->bot = malloc(B->nbrBot * sizeof(Body));
+	int i;
+	for(i = 0; i < B->nbrBot; i++)
+		B->bot[i].s_seg = malloc(5 * sizeof(Segment));
 
 	A->eaten = S.setA.eaten;
 	A->spawn = S.setA.spawn;

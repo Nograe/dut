@@ -2,7 +2,7 @@
 #include "settings.h"
 //#define DEV
 
-void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
+void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	// Vérification (création si NULL) du fichier 'scores'
 	FILE *fichier = NULL;
@@ -17,18 +17,19 @@ void initgame (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	S->setG.score = 0;
 	S->setG.level = 0;
 
-	S->setB.nbrseg = 10;
-	S->setB.speed = 70000;
+	S->setB.snake.nbrseg = 10;
+	S->setB.snake.speed = 70000;
+	S->setB.nbrBot = 1;
 
 	S->setA.eaten = 0;
 	S->setA.spawn = 5;
 
-	S->setW.spawn = 10;
+	S->setW.spawn = 0;
 
 	dispMenu(G, B, A, W, S);
 }
 
-void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
+void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
@@ -124,7 +125,7 @@ void dispMenu (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
 	}
 }
 
-void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
+void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
 
 	FermerGraphique();
 
@@ -137,7 +138,7 @@ void dispPlay (Game *G, Body *B, Apple *A, Wall *W, Settings S) {
 	CreerFenetre(500, 300, G->width * G->tcase, G->height * G->tcase);
 }
 
-void dispHighscore (Game *G, Body *B, Apple *A, Wall *W, Settings *S) {
+void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
@@ -279,7 +280,7 @@ int verifScore (char *pseudo, int score) {
 	return 0;
 }
 
-// b : Background | d : Dessin | p : Pause | t : timer/score
+// b : Background | d : Dessin | p : Pause | t : timer/score | r : bots
 couleur choisirCouleur (Theme T, char type) {
 
 	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0;
@@ -314,18 +315,18 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(30, 72, 54);
 		if(type == 't')
 			C = CouleurParComposante(4, 69, 40);
+		if(type == 'r')
+			C = CouleurParComposante(255, 65, 0);
 	}
 	if(T == RANDOM) {
 		if(random == 35)
 			randr = rand()%255, randv = rand()%255, randb = rand()%255;
 		if(type == 'b')
 			C = CouleurParComposante(randr, randv, randb);
-
 		if(random == 35)
 			randr1 = rand()%255, randv1 = rand()%255, randb1 = rand()%255;
 		if(type == 'd')
 			C = CouleurParComposante(randr1, randv1, randb1);
-
 		if(type == 'p')
 			C = CouleurParComposante(0, 0, 0);
 		random++;

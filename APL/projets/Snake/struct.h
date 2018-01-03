@@ -15,21 +15,15 @@ typedef struct {
 } Segment;
 
 typedef struct {
-  Segment *seg;
-  int nbrBot;
-} Bot;
-
-typedef struct {
   Segment *s_seg;
   Direction dir;
   int speed;
   int nbrseg;
-  Bot bots;
 } Body;
 
 typedef struct {
   Body snake;
-  Bot *bots;
+  Body *bot;
   int nbrBot;
 } Bodies;
 
@@ -65,7 +59,7 @@ typedef struct {
 
 typedef struct {
   Game setG;
-  Body setB;
+  Bodies setB;
   Apple setA;
   Wall setW;
 } Settings;
