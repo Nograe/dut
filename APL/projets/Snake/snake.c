@@ -2,40 +2,36 @@
 #include "main.h"
 #include "menu.h"
 
-void move_forward (Game G, Bodies *B) {
+void move_forward (Game G, Bodies *B, Wall W) {
 
+  // Sauvegarde dans le segment "invisible" du dernier segment
   B->snake.s_seg[B->snake.nbrseg] = B->snake.s_seg[B->snake.nbrseg-1];
+
   int i, j, old_dir;
+
+  // Chaque segment prend la valeur du segment précédent, excepté le premier
   for(i = B->snake.nbrseg-1 ; i >= 1 ; i--)
     B->snake.s_seg[i] = B->snake.s_seg[i-1];
 
-  switch(B->snake.dir) {
-    case 1:
+  // Déplacement du segment en tête en fonction de la direction
+  if(B->snake.dir == 1)
     B->snake.s_seg[0].y -= G.tcase;
-    break;
-    case 2:
+  if(B->snake.dir == 2)
     B->snake.s_seg[0].y += G.tcase;
-    break;
-    case 3:
+  if(B->snake.dir == 3)
     B->snake.s_seg[0].x -= G.tcase;
-    break;
-    case 4:
+  if(B->snake.dir == 4)
     B->snake.s_seg[0].x += G.tcase;
-    break;
-  }
 
+  // Déplacement de chaque segments de chaque bot
   for(i = 0 ; i < B->nbrBot ; i++) {
     for(j = 4; j >= 1; j--)
       B->bot[i].s_seg[j] = B->bot[i].s_seg[j-1];
   }
 
+  // Direction de chaque bot selon proximité du joueur/obstacles, random sinon
   for(i = 0 ; i < B->nbrBot ; i++) {
-    old_dir = B->bot[i].dir;
-    if(rand()%15 == 0) {
-      B->bot[i].dir = rand() % 4 + 1;
-      if(old_dir+B->bot[i].dir == 3 || old_dir+B->bot[i].dir == 7)
-        B->bot[i].dir = old_dir;
-    }
+    dirBot(B, W, i);
   }
 
   for(i = 0 ; i < B->nbrBot ; i++) {
@@ -61,7 +57,11 @@ void body_init (Game G, Bodies *B) {
   int i, j;
   int posx = G.width * G.tcase / 2 + 1;
   int posy = G.height * G.tcase / 2 + 1;
+
+  #ifdef DEV
   printf("Snake: x: %d | y: %d\n", posx, posy);
+  #endif
+
   for(i = 0 ; i < B->snake.nbrseg ; i++) {
     B->snake.s_seg[i].x = posx;
     B->snake.s_seg[i].y = posy;
@@ -74,7 +74,11 @@ void body_init (Game G, Bodies *B) {
     posy = rand() % (G.height * G.tcase);
     posx = (posx - (posx % G.tcase)) + 1;
     posy = (posy - (posy % G.tcase)) + 1;
+
+    #ifdef DEV
     printf("Bot %d | x: %d | y: %d\n", i, posx, posy);
+    #endif
+
     for(j = 0; j < 5; j++) {
       B->bot[i].s_seg[j].x = posx;
       B->bot[i].s_seg[j].y = posy;
@@ -82,6 +86,44 @@ void body_init (Game G, Bodies *B) {
     }
     B->bot[i].dir = rand() % 3 + 1;
   }
+}
+
+void dirBot (Bodies *B, Wall W, int botNum) {
+
+  Direction D = 0;
+  Direction prevDir = B->bot[botNum].dir;
+  int i, distWall = 0;
+
+  int posx = B->bot[botNum].s_seg[0].x;
+  int posy = B->bot[botNum].s_seg[0].y;
+
+  // Vérification des obstacles et du joueur
+  for(i = 0; i < W.spawn; i++) {
+
+    if(prevDir == UP && W.x[i] == posx-1) {
+      distWall = W.y[i] - posy;
+    }
+    if(prevDir == DOWN && W.x[i] == posx-1) {
+      distWall = posy - W.y[i];
+    }
+    if(prevDir == LEFT && W.y[i] == posy) {
+      distWall = posx - W.x[i];
+    }
+    if(prevDir == RIGHT && W.y[i] == posy) {
+      distWall = W.x[i] - posx;
+    }
+
+    //printf("Wall %d | distWall: %d\n", i, distWall);
+  }
+
+  // Mouvement aléatoire sinon
+  if(rand()%10 == 0) {
+    do {
+      D = rand() % 4 + 1;
+    } while(prevDir + D == 3 || prevDir + D == 7);
+    B->bot[botNum].dir = D;
+  }
+
 }
 
 int verif (Game G, Bodies B, Wall W) {

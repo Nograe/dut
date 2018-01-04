@@ -1,5 +1,6 @@
 #include "main.h"
 #include "menu.h"
+#define TEST
 
 int forcexit(int touche) {
 
@@ -17,6 +18,8 @@ void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   unsigned long tmp = Microsecondes();
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
+  int i;
+  *touche = 0;
 
   ChoisirCouleurDessin(choisirCouleur(G.variant, 'p'));
   EcrireTexte(width/2 - 40, height/2 -20, "PAUSE", 2);
@@ -24,7 +27,25 @@ void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
 
   do {
-    *touche = Touche();
+    if(ToucheEnAttente())
+      *touche = Touche();
+
+    #ifdef TEST
+      SourisPosition();
+      for(i = 0; i < W.spawn; i++) {
+        if(_X > W.x[i] && _X < W.x[i]+G.tcase && _Y > W.y[i] && _Y < W.y[i]+G.tcase)
+          printf("Wall %d | x: %d | y: %d\n", i, W.x[i], W.y[i]);
+      }
+      for(i = 0; i < B.snake.nbrseg; i++) {
+        if(_X > B.snake.s_seg[i].x && _X < B.snake.s_seg[i].x+G.tcase && _Y > B.snake.s_seg[i].y && _Y < B.snake.s_seg[i].y+G.tcase)
+          printf("Segment %d | x: %d | y: %d\n", i, B.snake.s_seg[i].x, B.snake.s_seg[i].y);
+      }
+      for(i = 0; i < B.nbrBot; i++) {
+        if(_X > B.bot[i].s_seg[0].x && _X < B.bot[i].s_seg[0].x+G.tcase && _Y > B.bot[i].s_seg[0].y && _Y < B.bot[i].s_seg[0].y+G.tcase)
+          printf("Bot %d | x: %d | y: %d\n", i, B.bot[i].s_seg[0].x, B.bot[i].s_seg[0].y);
+      }
+    #endif
+
   } while (*touche != XK_space);
 
   int diff = Microsecondes() - tmp;
@@ -237,7 +258,7 @@ int main () {
       }
 
       verifpause(G, B, A, W, &touche, &temps);
-      move_forward(G, &B);
+      move_forward(G, &B, W);
       verif_apple(&G, &B, &A, &W, &temps, S);
       draw(G, B, A, W, temps);
       old_dir = B.snake.dir;

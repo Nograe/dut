@@ -24,7 +24,7 @@ void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	S->setA.eaten = 0;
 	S->setA.spawn = 5;
 
-	S->setW.spawn = 0;
+	S->setW.spawn = 100;
 
 	dispMenu(G, B, A, W, S);
 }
