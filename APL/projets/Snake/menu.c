@@ -11,6 +11,7 @@ void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
   // Attribution VARIABLES DEFAUT
   S->setG.variant = MODERN;
+  // Fonctionnalité BETA
 	S->setG.tcase = 14;
 	S->setG.width = 60;
 	S->setG.height = 40;
@@ -19,12 +20,12 @@ void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	S->setB.snake.nbrseg = 10;
 	S->setB.snake.speed = 70000;
-	S->setB.nbrBot = 1;
+	S->setB.nbrBot = 5;
 
 	S->setA.eaten = 0;
-	S->setA.spawn = 5;
+	S->setA.spawn = 55;
 
-	S->setW.spawn = 100;
+	S->setW.spawn = 0;
 
 	dispMenu(G, B, A, W, S);
 }

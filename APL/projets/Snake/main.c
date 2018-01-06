@@ -48,22 +48,22 @@ void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
 
   } while (*touche != XK_space);
 
-  int diff = Microsecondes() - tmp;
+  *temps += Microsecondes() - tmp;
 
-  draw(G, B, A, W, *temps+diff);
+  draw(G, B, A, W, *temps);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   ChargerImage("src/digits/3.png", (width/2) - 23/2, (height/2) - 31, 0, 0, 23, 31);
   usleep(600000);
-  draw(G, B, A, W, *temps+diff+600000);
+  draw(G, B, A, W, *temps+600000);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   ChargerImage("src/digits/2.png", (width/2) - 23/2, (height/2) - 31, 0, 0, 23, 31);
   usleep(600000);
-  draw(G, B, A, W, *temps+diff+1200000);
+  draw(G, B, A, W, *temps+1200000);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   ChargerImage("src/digits/1.png", (width/2) - 27/2, (height/2) - 31, 0, 0, 23, 31);
   usleep(600000);
 
-  *temps += diff+1800000;
+  *temps += 1800000;
   while(ToucheEnAttente())
     Touche();
   *touche = 0;
@@ -117,6 +117,7 @@ void timer (Game G, unsigned long temps) {
   ChoisirCouleurDessin(choisirCouleur(G.variant, 't'));
   RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
 
+  // Affichage temps
   png[11] = (min / 10) + '0';
   ChargerImage(png, G.width * G.tcase - 135, G.height * G.tcase - 40, 0, 0, 23, 31);
   png[11] = (min % 10) + '0';
@@ -128,6 +129,7 @@ void timer (Game G, unsigned long temps) {
   png[11] = (sec % 10) + '0';
   ChargerImage(png, G.width * G.tcase - 35, G.height * G.tcase - 40, 0, 0, 23, 31);
 
+  // Affichage score
   png[11] = (G.score / 10000) + '0';
   ChargerImage(png, 14, G.height * G.tcase - 40, 0, 0, 23, 31);
   png[11] = (G.score / 1000 % 10) + '0';
@@ -179,13 +181,6 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   for(i = 0 ; i < B.snake.nbrseg ; i++)
     RemplirRectangle(B.snake.s_seg[i].x, B.snake.s_seg[i].y, G.tcase - 2, G.tcase - 2);
 
-  // Chargement des Bots
-  ChoisirCouleurDessin(choisirCouleur(G.variant, 'r'));
-  for(i = 0 ; i < B.nbrBot ; i++) {
-    for(j = 0; j < 5 ; j++)
-      RemplirRectangle(B.bot[i].s_seg[j].x, B.bot[i].s_seg[j].y, G.tcase - 2, G.tcase - 2);
-  }
-
   // Yeux
   ChoisirCouleurDessin(CouleurParNom("black"));
   if(B.snake.dir == UP) {
@@ -205,9 +200,19 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
     RemplirRectangle(B.snake.s_seg[0].x+6, B.snake.s_seg[0].y+7, 3, 3);
   }
 
+  // Chargement des Bots
+  ChoisirCouleurDessin(choisirCouleur(G.variant, 'r'));
+  for(i = 0 ; i < B.nbrBot ; i++) {
+    for(j = 0; j < 5 ; j++)
+      RemplirRectangle(B.bot[i].s_seg[j].x, B.bot[i].s_seg[j].y, G.tcase - 2, G.tcase - 2);
+  }
+
   // Chargement des Apple
-  for(i = 0 ; i < A.spawn ; i++)
+  for(i = 0 ; i < A.spawn ; i++) {
+    if(A.x[i] == -G.tcase)
+      continue;
     ChargerImage(bufapple, A.x[i], A.y[i], 0, 0, G.tcase, G.tcase);
+  }
 
   // Chargement des Wall
   for(i = 0 ; i < W.spawn ; i++)
@@ -237,7 +242,7 @@ int main () {
 
   while(1) {
 
-    while(!verif(G, B, W) && touche != XK_Escape) {
+    while(!verif(G, &B, W) && touche != XK_Escape) {
 
       usleep(B.snake.speed);
       
