@@ -1,0 +1,42 @@
+	GREP
+
+-E : utilise expressions régulières
+	. : caractère quelconque
+	^ : début de ligne		ex: "^X" 
+	$ : fin de ligne		ex: "X$"
+	[] : un des caractères entre crochets		ex: "[Aa]lias"
+		[:upper:]
+		[:lower:]
+		[:digits:]
+		[^0-9] : pas de chiffre
+		[^aeiou] : pas de voyelles
+	? : élément précent optionnel, présent 0 ou 1 fois		ex: "te?xt" reconnait: text et txt
+	* : élément précédent peut être présent 0, 1 ou plusieurs fois		ex: "ay*" reconnait: a, ay, ayy, ayyy...
+	+ : élément précédent présent 1 ou plusieurs fois		ex: "ay+"		reconnait: ay, ayy, ayyy...
+	| : ou
+	() : groupe d'expressions		ex: "t(ee)?xt"	reconnait: txt, teext
+	{} : compte groupe d'éléments		ex: "a{3}" 'a' présent 3 fois à la suite
+		{X} : élément présent X fois
+		{X,} : élément présent X fois ou plus
+		{X,Y} : élément présent entre X et Y fois
+		{,Y} : élément présent 0 ou Y fois maximum
+
+-i : ignore MAJ/min
+-v : inverse séléction: affiche ligne qui ne correspondent pas
+-w : sélectionne seulement les correspondances qui forment 1 mot complet  
+-c : affiche nbr de lignes qui correspondent
+-n : affiche en préfix le num de la ligne
+-L : affiche les fichiers où aucun résultat n'a été trouvé
+-l : affiche les fichiers où un résultat a été trouvé
+-r : lis tous les fichiers du dossier spécifié
+
+
+	SED
+
+sed 's/motif/replace/OPTION' FICHIER
+
+OPTIONS:
+	g : applique le remplacement à toutes les occurences
+	X : applique le remplacement à la Xe occurence
+	p : affiche le résultat de la substitution
+	w FICHIER : applique le résultats des remplacements dans le FICHIER
