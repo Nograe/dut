@@ -1,6 +1,5 @@
 #include "main.h"
 #include "menu.h"
-#define TEST
 
 int forcexit(int touche) {
 
@@ -21,46 +20,60 @@ void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   int i;
   *touche = 0;
 
-  ChoisirCouleurDessin(choisirCouleur(G.variant, 'p'));
-  EcrireTexte(width/2 - 40, height/2 -20, "PAUSE", 2);
-  EcrireTexte(width/2 - 42, height/2, "Press SPACE", 0);
-  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChoisirEcran(0);
 
-  do {
+  while(*touche != XK_space) {
+
     if(ToucheEnAttente())
       *touche = Touche();
+  #ifdef TEST
 
-    #ifdef TEST
-      SourisPosition();
-      for(i = 0; i < W.spawn; i++) {
-        if(_X > W.x[i] && _X < W.x[i]+G.tcase && _Y > W.y[i] && _Y < W.y[i]+G.tcase)
+    static int varW = -1, varS = -1, varB = -1;
+    SourisPosition();
+    for(i = 0; i < W.spawn; i++) {
+      if(_X > W.x[i] && _X < W.x[i]+G.tcase && _Y > W.y[i] && _Y < W.y[i]+G.tcase) {
+        if(varW != i)
           printf("Wall %d | x: %d | y: %d\n", i, W.x[i], W.y[i]);
+        varW = i;
       }
-      for(i = 0; i < B.snake.nbrseg; i++) {
-        if(_X > B.snake.s_seg[i].x && _X < B.snake.s_seg[i].x+G.tcase && _Y > B.snake.s_seg[i].y && _Y < B.snake.s_seg[i].y+G.tcase)
+    }
+    for(i = 0; i < B.snake.nbrseg; i++) {
+      if(_X > B.snake.s_seg[i].x && _X < B.snake.s_seg[i].x+G.tcase && _Y > B.snake.s_seg[i].y && _Y < B.snake.s_seg[i].y+G.tcase) {
+        if(varS != i)
           printf("Segment %d | x: %d | y: %d\n", i, B.snake.s_seg[i].x, B.snake.s_seg[i].y);
+        varS = i;
       }
-      for(i = 0; i < B.nbrBot; i++) {
-        if(_X > B.bot[i].s_seg[0].x && _X < B.bot[i].s_seg[0].x+G.tcase && _Y > B.bot[i].s_seg[0].y && _Y < B.bot[i].s_seg[0].y+G.tcase)
+    }
+    for(i = 0; i < B.nbrBot; i++) {
+      if(_X > B.bot[i].s_seg[0].x && _X < B.bot[i].s_seg[0].x+G.tcase && _Y > B.bot[i].s_seg[0].y && _Y < B.bot[i].s_seg[0].y+G.tcase) {
+        if(varB != i)
           printf("Bot %d | x: %d | y: %d\n", i, B.bot[i].s_seg[0].x, B.bot[i].s_seg[0].y);
+        varB = i;
       }
-    #endif
+    }
+  #else
 
-  } while (*touche != XK_space);
+  if(Microsecondes()/500000%2 == 1)
+    ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
+  if(Microsecondes()/500000%2 == 0)
+    draw(G, B, A, W, *temps+(Microsecondes()-tmp));
+  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
+  #endif
+  }
 
   *temps += Microsecondes() - tmp;
 
   draw(G, B, A, W, *temps);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
-  ChargerImage("src/digits/3.png", (width/2) - 23/2, (height/2) - 31, 0, 0, 23, 31);
+  ChargerImage("src/digits/3pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
   usleep(600000);
   draw(G, B, A, W, *temps+600000);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
-  ChargerImage("src/digits/2.png", (width/2) - 23/2, (height/2) - 31, 0, 0, 23, 31);
+  ChargerImage("src/digits/2pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
   usleep(600000);
   draw(G, B, A, W, *temps+1200000);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
-  ChargerImage("src/digits/1.png", (width/2) - 27/2, (height/2) - 31, 0, 0, 23, 31);
+  ChargerImage("src/digits/1pause.png", (width/2) - 50/2, (height/2) - 50, 0, 0, 67, 67);
   usleep(600000);
 
   *temps += 1800000;
@@ -73,15 +86,20 @@ void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Se
 
   G->level++;
   B->snake.nbrseg = S.setB.snake.nbrseg;
-  B->snake.dir = 4;
+  B->snake.s_seg = realloc(B->snake.s_seg, (B->snake.nbrseg+1) * sizeof(Segment));
   B->snake.speed -= 6500;
+  int i;
+  for(i = 0; i < B->nbrBot; i++) {
+    B->bot[i].nbrseg++;
+    B->bot[i].s_seg = realloc(B->bot[i].s_seg, (B->bot[i].nbrseg) * sizeof(Segment));
+  }
   A->spawn++;
   A->eaten = 0;
-  A->x = malloc(A->spawn * sizeof(int));
-  A->y = malloc(A->spawn * sizeof(int));
+  A->x = realloc(A->x, A->spawn * sizeof(int));
+  A->y = realloc(A->y, A->spawn * sizeof(int));
   W->spawn++;
-  W->x = malloc(W->spawn * sizeof(int));
-  W->y = malloc(W->spawn * sizeof(int));
+  W->x = realloc(W->x, W->spawn * sizeof(int));
+  W->y = realloc(W->y, W->spawn * sizeof(int));
 
   int width = G->width * G->tcase;
   int height = G->height * G->tcase;
@@ -90,8 +108,8 @@ void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Se
   randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
 
-  EffacerEcran(choisirCouleur(G->variant, 'b'));
-  ChoisirCouleurDessin(choisirCouleur(G->variant, 'p'));
+  EffacerEcran(choisirCouleur(G->theme, 'b'));
+  ChoisirCouleurDessin(choisirCouleur(G->theme, 'p'));
   EcrireTexte(width / 2, height / 2 - 20, "NEXT LEVEL!", 2);
   EcrireTexte(width / 2 + 1, height / 2 - 20, "NEXT LEVEL!", 2);
   sleep(1);
@@ -114,7 +132,7 @@ void timer (Game G, unsigned long temps) {
   DessinerRectangle(0, (G.height * G.tcase) - 55, 165, 55);
   #endif
 
-  ChoisirCouleurDessin(choisirCouleur(G.variant, 't'));
+  ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
   RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
 
   // Affichage temps
@@ -167,21 +185,20 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
   int i, j;
-  unsigned long tmp = (Microsecondes() - temps)/1000000;
   char bufapple[17] = "src/apple_1X.png";
   char bufwall[16] = "src/wall_1X.png";
   bufapple[11] = G.tcase%10 + '0';
   bufwall[10] = G.tcase%10 + '0';
 
   ChoisirEcran(1);
-  EffacerEcran(choisirCouleur(G.variant, 'b'));
+  EffacerEcran(choisirCouleur(G.theme, 'b'));
 
-  // Chargement du Snake
-  ChoisirCouleurDessin(choisirCouleur(G.variant, 'd'));
+  // Dessin des Segments du Snake
+  ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
   for(i = 0 ; i < B.snake.nbrseg ; i++)
     RemplirRectangle(B.snake.s_seg[i].x, B.snake.s_seg[i].y, G.tcase - 2, G.tcase - 2);
 
-  // Yeux
+  // Dessin des Yeux du Snake
   ChoisirCouleurDessin(CouleurParNom("black"));
   if(B.snake.dir == UP) {
     RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+2, 3, 3);
@@ -200,11 +217,32 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
     RemplirRectangle(B.snake.s_seg[0].x+6, B.snake.s_seg[0].y+7, 3, 3);
   }
 
-  // Chargement des Bots
-  ChoisirCouleurDessin(choisirCouleur(G.variant, 'r'));
+  // Dessin des Segments des Bots
+  ChoisirCouleurDessin(choisirCouleur(G.theme, 'r'));
   for(i = 0 ; i < B.nbrBot ; i++) {
-    for(j = 0; j < 5 ; j++)
+    for(j = 0; j < B.bot[i].nbrseg ; j++)
       RemplirRectangle(B.bot[i].s_seg[j].x, B.bot[i].s_seg[j].y, G.tcase - 2, G.tcase - 2);
+  }
+
+  // Dessin des Yeux des Bots
+  ChoisirCouleurDessin(CouleurParNom("brown4"));
+  for(i = 0 ; i < B.nbrBot ; i++) {
+    if(B.bot[i].dir == UP) {
+      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].s_seg[0].x+7, B.bot[i].s_seg[0].y+2, 3, 3);
+    }
+    if(B.bot[i].dir == DOWN) {
+      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+6, 3, 3);
+      RemplirRectangle(B.bot[i].s_seg[0].x+7, B.bot[i].s_seg[0].y+6, 3, 3);
+    }
+    if(B.bot[i].dir == LEFT) {
+      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+7, 3, 3);
+    }
+    if(B.bot[i].dir == RIGHT) {
+      RemplirRectangle(B.bot[i].s_seg[0].x+6, B.bot[i].s_seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].s_seg[0].x+6, B.bot[i].s_seg[0].y+7, 3, 3);
+    }
   }
 
   // Chargement des Apple

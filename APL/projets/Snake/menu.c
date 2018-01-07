@@ -10,7 +10,7 @@ void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	fclose(fichier);
 
   // Attribution VARIABLES DEFAUT
-  S->setG.variant = MODERN;
+  S->setG.theme = MODERN;
   // Fonctionnalité BETA
 	S->setG.tcase = 14;
 	S->setG.width = 60;
@@ -20,12 +20,12 @@ void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	S->setB.snake.nbrseg = 10;
 	S->setB.snake.speed = 70000;
-	S->setB.nbrBot = 5;
+	S->setB.nbrBot = 0;
 
 	S->setA.eaten = 0;
-	S->setA.spawn = 55;
+	S->setA.spawn = 5;
 
-	S->setW.spawn = 0;
+	S->setW.spawn = 10;
 
 	dispMenu(G, B, A, W, S);
 }
@@ -281,7 +281,7 @@ int verifScore (char *pseudo, int score) {
 	return 0;
 }
 
-// b : Background | d : Dessin | p : Pause | t : timer/score | r : bots
+// b : Background | d : Dessin | t : timer/score | r : bots
 couleur choisirCouleur (Theme T, char type) {
 
 	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0;
@@ -312,12 +312,10 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(24, 89, 60);
 		if(type == 'd')
 			C = CouleurParComposante(200, 145, 0);
-		if(type == 'p')
-			C = CouleurParComposante(30, 72, 54);
 		if(type == 't')
 			C = CouleurParComposante(4, 69, 40);
 		if(type == 'r')
-			C = CouleurParComposante(255, 65, 0);
+			C = CouleurParComposante(255, 65, 30);
 	}
 	if(T == RANDOM) {
 		if(random == 35)

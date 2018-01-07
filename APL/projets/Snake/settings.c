@@ -4,7 +4,7 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
-	int touche = 0, adv_settings = 0, decalW, decalH, decalB, decalA;
+	int touche = 0, decalW, decalH, decalB, decalA;
 	char buf[5];
 
 	while(touche != XK_Escape) {
@@ -52,11 +52,14 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 		sprintf(buf, "%d", S->setA.spawn);
 		EcrireTexte(585-decalA, 425, buf, 2);
 
-		ChargerImage("src/fonts/advancedsettings.png", width/2-264/2, height-35, 0, 0, 264, 25);
+		ChargerImage("src/fonts/advancedsettings.png", (width-264)/2, height-35, 0, 0, 264, 25);
 
 		SourisCliquee();
 
-		if(_X >= 185 && _X <= 185+32 && _Y >= 232 && _Y <= 232 +32) {
+		if(_X >= (width-264)/2 && _X <= (width-264)/2+264 && _Y >= height-35 && _Y <= height-10)
+			advSettings(G, B, S);
+
+		if(_X >= 185 && _X <= 185+32 && _Y >= 232 && _Y <= 232+32) {
 			S->setG.width -= 2;
 			if(S->setG.width < 24 && S->setG.tcase == 14)
 				S->setG.width = 24;
@@ -116,6 +119,17 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	return;
 }
 
+// Fenêtre des paramètres avancés
+void advSettings (Game *G, Bodies *B, Settings *S) {
+	/*
+	Vitesse
+	Theme
+	NbrWalls
+	NbrBots
+			TailleCase
+	*/
+}
+
 // On initialise tous les paramètres (pré)définis
 void setSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
 
@@ -127,14 +141,15 @@ void setSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
 	B->nbrBot = S.setB.nbrBot;
 	B->bot = malloc(B->nbrBot * sizeof(Body));
 	int i;
-	for(i = 0; i < B->nbrBot; i++)
+	for(i = 0; i < B->nbrBot; i++) {
+    B->bot[i].nbrseg = 5;
 		B->bot[i].s_seg = malloc(5 * sizeof(Segment));
+	}
 
 	A->eaten = S.setA.eaten;
 	A->spawn = S.setA.spawn;
 	A->x = malloc(A->spawn * sizeof(int));
 	A->y = malloc(A->spawn * sizeof(int));
-	A->exist = malloc(A->spawn * sizeof(int));
 
 	W->spawn = S.setW.spawn;
 	W->x = malloc(W->spawn * sizeof(int));

@@ -30,7 +30,6 @@ typedef struct {
 typedef struct {
   int *x;
   int *y;
-  int *exist;
   int eaten;
   int spawn;
 } Apple;
@@ -54,7 +53,7 @@ typedef struct {
   int tcase;
   int score;
   int level;
-  Theme variant;
+  Theme theme;
 } Game;
 
 typedef struct {

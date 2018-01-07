@@ -24,13 +24,13 @@ void move_forward (Game G, Bodies *B, Wall W) {
     B->snake.s_seg[0].x += G.tcase;
 
 
-  // Déplacement de chaque segments de chaque bot
+  // Déplacement de chaque segment de chaque bot
   for(i = 0 ; i < B->nbrBot; i++) {
     if(B->bot[i].s_seg[0].x == (-G.tcase)) {
       //printf("Bot %d in wall\n", i);
       continue;
     }
-    for(j = 4; j >= 1; j--)
+    for(j = B->bot[i].nbrseg-1; j >= 1; j--)
       B->bot[i].s_seg[j] = B->bot[i].s_seg[j-1];
   }
 
@@ -88,13 +88,14 @@ void body_init (Game G, Bodies *B) {
     printf("Bot %d | x: %d | y: %d\n", i, posx, posy);
     #endif
 
-    for(j = 0; j < 5; j++) {
+    for(j = 0; j < B->bot[i].nbrseg; j++) {
       B->bot[i].s_seg[j].x = posx;
       B->bot[i].s_seg[j].y = posy;
       posx -= G.tcase;
     }
-    B->bot[i].nbrseg = 5;
-    B->bot[i].dir = rand() % 3 + 1;
+    B->bot[i].dir = rand() % 4 + 1;
+    if(B->bot[i].dir = 3)
+      B->bot[i].dir = rand() % 2 + 1;
   }
 }
 
@@ -102,12 +103,12 @@ void dirBot (Game G, Bodies *B, Wall W, int botNum) {
 
   Direction D = 0;
   Direction prevDir = B->bot[botNum].dir;
-  int i, distWall;
+  int i, distWall, distPx, distPy;
 
   int posx = B->bot[botNum].s_seg[0].x;
   int posy = B->bot[botNum].s_seg[0].y;
 
-  // Vérification des obstacles et du joueur
+  // Vérification des obstacles
   for(i = 0; i < W.spawn; i++) {
 
     distWall = 0;
@@ -142,7 +143,18 @@ void dirBot (Game G, Bodies *B, Wall W, int botNum) {
     }
   }
 
-  // Mouvement aléatoire sinon
+  // Recherche du joueur sinon
+  /* int Sx = B->snake.s_seg[0].x;
+  int Sy = B->snake.s_seg[0].y;
+  if(abs(posx - Sx) < abs(Sx - posx))
+   distPx = abs(posx - Sx);
+  else
+    distPx = abs(Sx - posx);
+  if(abs(posy - Sy) < abs(Sy - posy))
+   distPy = abs(posy - Sy);
+  else
+    distPy = abs(Sy - posy); */
+
   if(rand()%10 == 0) {
     do {
       D = rand() % 4 + 1;
@@ -195,7 +207,7 @@ int verif (Game G, Bodies *B, Wall W) {
   for(i = 4 ; i <= B->snake.nbrseg ; i++) {
     if(x == B->snake.s_seg[i].x && y == B->snake.s_seg[i].y) {
       //printf("Collision bloc %d : %d | %d\n", i+1, x, y);
-      ChoisirCouleurDessin(choisirCouleur(G.variant, 'd'));
+      ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
       RemplirRectangle(B->snake.s_seg[i].x, B->snake.s_seg[i].y, G.tcase - 2, G.tcase - 2);
       return 1;
     }
@@ -260,10 +272,6 @@ void verif_apple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, S
           G->score--;
         A->x[j] = -G->tcase;
         A->eaten++;
-        B->snake.nbrseg++;
-        B->snake.s_seg = realloc(B->snake.s_seg, sizeof(Segment) * (B->snake.nbrseg + 1));
-        for(j = B->snake.nbrseg-2 ; j < B->snake.nbrseg ; j++)
-          B->snake.s_seg[j] = B->snake.s_seg[j-1];
       }
     }
   }
@@ -286,7 +294,6 @@ void randomApple (Game G, Bodies B, Apple *A) {
     posy = rand() % (G.height * G.tcase);
     A->x[j] = (posx - posx % G.tcase);
     A->y[j] = (posy - posy % G.tcase);
-    A->exist[j] = 1;
     posx = A->x[j]; posy = A->y[j];
 
     // Vérification du spawn avec le score | timer
