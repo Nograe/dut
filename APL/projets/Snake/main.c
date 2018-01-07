@@ -103,16 +103,17 @@ void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Se
 
   int width = G->width * G->tcase;
   int height = G->height * G->tcase;
+  char buf[10];
 
   body_init(*G, B);
   randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
 
   EffacerEcran(choisirCouleur(G->theme, 'b'));
-  ChoisirCouleurDessin(choisirCouleur(G->theme, 'p'));
-  EcrireTexte(width / 2, height / 2 - 20, "NEXT LEVEL!", 2);
-  EcrireTexte(width / 2 + 1, height / 2 - 20, "NEXT LEVEL!", 2);
-  sleep(1);
+  ChoisirCouleurDessin(CouleurParNom("black"));
+  sprintf(buf, "LEVEL: %d", G->level+1);
+  EcrireTexte(width/2 - TailleChaineEcran("LEVEL: 00", 2)/2, height/2, buf, 2);
+  sleep(2);
   draw(*G, *B, *A, *W, *temps);
 
   int touche = XK_space;
