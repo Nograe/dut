@@ -137,13 +137,13 @@ void setSettings (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
 
 	B->snake.nbrseg = S.setB.snake.nbrseg;
 	B->snake.speed = S.setB.snake.speed;
-	B->snake.s_seg = malloc((B->snake.nbrseg+1) * sizeof(Segment));
+	B->snake.seg = malloc((B->snake.nbrseg+1) * sizeof(Segment));
 	B->nbrBot = S.setB.nbrBot;
 	B->bot = malloc(B->nbrBot * sizeof(Body));
 	int i;
 	for(i = 0; i < B->nbrBot; i++) {
     B->bot[i].nbrseg = 5;
-		B->bot[i].s_seg = malloc(5 * sizeof(Segment));
+		B->bot[i].seg = malloc(5 * sizeof(Segment));
 	}
 
 	A->eaten = S.setA.eaten;

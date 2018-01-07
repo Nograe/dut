@@ -15,7 +15,7 @@ typedef struct {
 } Segment;
 
 typedef struct {
-  Segment *s_seg;
+  Segment *seg;
   Direction dir;
   int speed;
   int nbrseg;

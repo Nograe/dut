@@ -38,16 +38,16 @@ void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
       }
     }
     for(i = 0; i < B.snake.nbrseg; i++) {
-      if(_X > B.snake.s_seg[i].x && _X < B.snake.s_seg[i].x+G.tcase && _Y > B.snake.s_seg[i].y && _Y < B.snake.s_seg[i].y+G.tcase) {
+      if(_X > B.snake.seg[i].x && _X < B.snake.seg[i].x+G.tcase && _Y > B.snake.seg[i].y && _Y < B.snake.seg[i].y+G.tcase) {
         if(varS != i)
-          printf("Segment %d | x: %d | y: %d\n", i, B.snake.s_seg[i].x, B.snake.s_seg[i].y);
+          printf("Segment %d | x: %d | y: %d\n", i, B.snake.seg[i].x, B.snake.seg[i].y);
         varS = i;
       }
     }
     for(i = 0; i < B.nbrBot; i++) {
-      if(_X > B.bot[i].s_seg[0].x && _X < B.bot[i].s_seg[0].x+G.tcase && _Y > B.bot[i].s_seg[0].y && _Y < B.bot[i].s_seg[0].y+G.tcase) {
+      if(_X > B.bot[i].seg[0].x && _X < B.bot[i].seg[0].x+G.tcase && _Y > B.bot[i].seg[0].y && _Y < B.bot[i].seg[0].y+G.tcase) {
         if(varB != i)
-          printf("Bot %d | x: %d | y: %d\n", i, B.bot[i].s_seg[0].x, B.bot[i].s_seg[0].y);
+          printf("Bot %d | x: %d | y: %d\n", i, B.bot[i].seg[0].x, B.bot[i].seg[0].y);
         varB = i;
       }
     }
@@ -86,12 +86,12 @@ void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Se
 
   G->level++;
   B->snake.nbrseg = S.setB.snake.nbrseg;
-  B->snake.s_seg = realloc(B->snake.s_seg, (B->snake.nbrseg+1) * sizeof(Segment));
+  B->snake.seg = realloc(B->snake.seg, (B->snake.nbrseg+1) * sizeof(Segment));
   B->snake.speed -= 6500;
   int i;
   for(i = 0; i < B->nbrBot; i++) {
     B->bot[i].nbrseg++;
-    B->bot[i].s_seg = realloc(B->bot[i].s_seg, (B->bot[i].nbrseg) * sizeof(Segment));
+    B->bot[i].seg = realloc(B->bot[i].seg, (B->bot[i].nbrseg) * sizeof(Segment));
   }
   A->spawn++;
   A->eaten = 0;
@@ -196,52 +196,52 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   // Dessin des Segments du Snake
   ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
   for(i = 0 ; i < B.snake.nbrseg ; i++)
-    RemplirRectangle(B.snake.s_seg[i].x, B.snake.s_seg[i].y, G.tcase - 2, G.tcase - 2);
+    RemplirRectangle(B.snake.seg[i].x, B.snake.seg[i].y, G.tcase - 2, G.tcase - 2);
 
   // Dessin des Yeux du Snake
   ChoisirCouleurDessin(CouleurParNom("black"));
   if(B.snake.dir == UP) {
-    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+2, 3, 3);
-    RemplirRectangle(B.snake.s_seg[0].x+7, B.snake.s_seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+7, B.snake.seg[0].y+2, 3, 3);
   }
   if(B.snake.dir == DOWN) {
-    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+6, 3, 3);
-    RemplirRectangle(B.snake.s_seg[0].x+7, B.snake.s_seg[0].y+6, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+6, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+7, B.snake.seg[0].y+6, 3, 3);
   }
   if(B.snake.dir == LEFT) {
-    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+2, 3, 3);
-    RemplirRectangle(B.snake.s_seg[0].x+2, B.snake.s_seg[0].y+7, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+7, 3, 3);
   }
   if(B.snake.dir == RIGHT) {
-    RemplirRectangle(B.snake.s_seg[0].x+6, B.snake.s_seg[0].y+2, 3, 3);
-    RemplirRectangle(B.snake.s_seg[0].x+6, B.snake.s_seg[0].y+7, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+6, B.snake.seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+6, B.snake.seg[0].y+7, 3, 3);
   }
 
   // Dessin des Segments des Bots
   ChoisirCouleurDessin(choisirCouleur(G.theme, 'r'));
   for(i = 0 ; i < B.nbrBot ; i++) {
     for(j = 0; j < B.bot[i].nbrseg ; j++)
-      RemplirRectangle(B.bot[i].s_seg[j].x, B.bot[i].s_seg[j].y, G.tcase - 2, G.tcase - 2);
+      RemplirRectangle(B.bot[i].seg[j].x, B.bot[i].seg[j].y, G.tcase - 2, G.tcase - 2);
   }
 
   // Dessin des Yeux des Bots
   ChoisirCouleurDessin(CouleurParNom("brown4"));
   for(i = 0 ; i < B.nbrBot ; i++) {
     if(B.bot[i].dir == UP) {
-      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+2, 3, 3);
-      RemplirRectangle(B.bot[i].s_seg[0].x+7, B.bot[i].s_seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+7, B.bot[i].seg[0].y+2, 3, 3);
     }
     if(B.bot[i].dir == DOWN) {
-      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+6, 3, 3);
-      RemplirRectangle(B.bot[i].s_seg[0].x+7, B.bot[i].s_seg[0].y+6, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+6, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+7, B.bot[i].seg[0].y+6, 3, 3);
     }
     if(B.bot[i].dir == LEFT) {
-      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+2, 3, 3);
-      RemplirRectangle(B.bot[i].s_seg[0].x+2, B.bot[i].s_seg[0].y+7, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+7, 3, 3);
     }
     if(B.bot[i].dir == RIGHT) {
-      RemplirRectangle(B.bot[i].s_seg[0].x+6, B.bot[i].s_seg[0].y+2, 3, 3);
-      RemplirRectangle(B.bot[i].s_seg[0].x+6, B.bot[i].s_seg[0].y+7, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+6, B.bot[i].seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+6, B.bot[i].seg[0].y+7, 3, 3);
     }
   }
 
