@@ -73,6 +73,7 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
     }
   }
   #else
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
   while(*touche != XK_space)
     *touche = Touche();

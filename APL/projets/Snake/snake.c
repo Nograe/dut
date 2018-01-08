@@ -254,14 +254,8 @@ int verif (Game G, Bodies *B, Wall W) {
       continue;
     botx = B->bot[i].seg[0].x;
     boty = B->bot[i].seg[0].y;
-    if(botx <= 0)
-      B->bot[i].seg[0].x = (G.width * G.tcase) - (G.tcase-1);
-    if(botx >= (G.width * G.tcase))
-      B->bot[i].seg[0].x = 1;
-    if(boty <= 0)
-      B->bot[i].seg[0].y = ((G.height * G.tcase)-55) - (G.tcase);
-    if(boty >= (G.height * G.tcase)-55)
-      B->bot[i].seg[0].y = 1;
+    if(botx <= 0 || botx >= (G.width * G.tcase) || boty <= 0 || boty >= (G.height * G.tcase)-55)
+      B->bot[i].seg[0].x = (-G.tcase);
   }
 
   #ifdef DEV
@@ -366,14 +360,13 @@ void randomApple (Game G, Bodies B, Apple *A) {
     #endif
 
     verif = 1;
-    posx = rand() % (G.width * G.tcase);
-    posy = rand() % (G.height * G.tcase);
-    A->x[j] = (posx - posx % G.tcase);
-    A->y[j] = (posy - posy % G.tcase);
-    posx = A->x[j]; posy = A->y[j];
+    posx = (rand() % G.width) * G.tcase;
+    posy = (rand() % G.height) * G.tcase;
+    A->x[j] = posx;
+    A->y[j] = posy;
 
     // Vérification du spawn avec le score | timer
-    if( posy > (G.height * G.tcase)-55-G.tcase )
+    if(posy > (G.height * G.tcase)-55-G.tcase)
       continue;
 
     // Vérification du spawn avec les autres Apple et la ligne de départ
@@ -403,11 +396,10 @@ void randomWall (Game G, Bodies B, Apple A, Wall *W) {
     #endif
 
     verif = 1;
-    posx = rand() % (G.width * G.tcase);
-    posy = rand() % (G.height * G.tcase);
-    W->x[j] = (posx - posx % G.tcase);
-    W->y[j] = (posy - posy % G.tcase);
-    posx = W->x[j]; posy = W->y[j]; 
+    posx = (rand() % G.width) * G.tcase;
+    posy = (rand() % G.height) * G.tcase;
+    W->x[j] = posx;
+    W->y[j] = posy; 
 
   // Vérification du spawn avec le score | timer
     if( posy > (G.height * G.tcase)-55-G.tcase )

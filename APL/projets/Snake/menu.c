@@ -25,9 +25,9 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	B->initSpeed = 70000;
 
 	// BETA
-	B->nbrBot = 1;
+	B->nbrBot = 0;
 
-	A->initSpawn = 5;
+	A->initSpawn = 10;
 
 	W->initSpawn = 10;
 
