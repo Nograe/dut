@@ -1,6 +1,5 @@
 #include "main.h"
 #include "menu.h"
-#define TEST
 //#define DEBUG
 //#define DEV
 
@@ -15,14 +14,14 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   int i;
   *touche = 0;
 
-  ChoisirEcran(1);
+  ChoisirEcran(0);
 
   while(*touche != XK_space) {
 
     if(ToucheEnAttente())
       *touche = Touche();
 
-  #ifdef TEST
+  #ifdef DEV
     static int varA = -1, varW = -1, varS = -1, varB = -1;
     SourisPosition();
     for(i = 0; i < A.spawn; i++) {
@@ -65,29 +64,30 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
         varS = -1;
       }
     }
+    for(i = 0; i < W.spawn; i++) {
+      ChoisirCouleurDessin(CouleurParNom("red"));
+      DessinerRectangle(W.x[i], W.y[i]-3*G.tcase, G.tcase, 2*G.tcase);
+      DessinerRectangle(W.x[i], W.y[i]+2*G.tcase, G.tcase, 2*G.tcase);
+      DessinerRectangle(W.x[i]-3*G.tcase-1, W.y[i], 2*G.tcase, G.tcase);
+      DessinerRectangle(W.x[i]+2*G.tcase, W.y[i], 2*G.tcase, G.tcase);
+    }
   #else
-    if(Microsecondes()/500000%2 == 1)
+    if((Microsecondes()-tmp)/900000%2 == 0)
       ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
-    if(Microsecondes()/500000%2 == 0)
-      draw(G, B, A, W, *temps+(Microsecondes()-tmp));
-    ChargerImage("src/digits/:.png", G.width * G.tcase - 85, height - 40, 0, 0, 23, 31);
-
-    CopierZone(1, 0, 0, 0, 0, 0, width, height);
+    if((Microsecondes()-tmp)/900000%2 == 1)
+      CopierZone(1, 0, 0, 0, width, height, 0, 0);
   #endif
   }
 
   *temps += Microsecondes() - tmp;
 
-  draw(G, B, A, W, *temps);
-  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+  CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/3pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
   usleep(600000);
-  draw(G, B, A, W, *temps+600000);
-  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+  CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/2pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
   usleep(600000);
-  draw(G, B, A, W, *temps+1200000);
-  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+  CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/1pause.png", (width/2) - 50/2, (height/2) - 50, 0, 0, 67, 67);
   usleep(600000);
 
@@ -158,8 +158,6 @@ void timer (Game G, Apple A, unsigned long temps) {
   ChargerImage(png, width - 135, height - 40, 0, 0, 23, 31);
   png[11] = (min % 10) + '0';
   ChargerImage(png, width - 107, height - 40, 0, 0, 23, 31);
-  if(Microsecondes()/300000%2 == 0)
-    ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   png[11] = (sec / 10) + '0';
   ChargerImage(png, width - 63, height - 40, 0, 0, 23, 31);
   png[11] = (sec % 10) + '0';
@@ -293,6 +291,8 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
 
   // Chargement du Temps - Score - Apple
   timer(G, A, temps);
+  if(Microsecondes()/300000%2 == 0)
+    ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
 
   ChoisirEcran(0);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);

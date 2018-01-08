@@ -27,9 +27,9 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	// BETA
 	B->nbrBot = 1;
 
-	A->initSpawn = 10;
+	A->initSpawn = 5;
 
-	W->initSpawn = 0;
+	W->initSpawn = 10;
 
 	dispMenu(G, B, A, W, S);
 }
