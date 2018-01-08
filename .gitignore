@@ -12,6 +12,10 @@
 # Windows bash
 .bashrc
 
+# Projet Snake
+APL/projets/Snake/src/scores
+APL/projets/Snake/src/settings
+
 # Temp files
 .temp/*
 !.temp/help*
