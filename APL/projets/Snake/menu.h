@@ -8,7 +8,7 @@
 #include <graph.h>
 #include "snake.h"
 
-void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S);
+void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S);
 void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S);
 void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W, Settings S);
 void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S);

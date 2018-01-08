@@ -2,30 +2,34 @@
 #include "settings.h"
 //#define DEV
 
-void initgame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
+void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	// Vérification (création si NULL) du fichier 'scores'
 	FILE *fichier = NULL;
 	fichier = fopen("src/scores", "a");
 	fclose(fichier);
+	fichier = fopen("src/settings", "a");
+	fclose(fichier);
 
   // Attribution VARIABLES DEFAUT
-  S->setG.theme = MODERN;
-  // Fonctionnalité BETA
-	S->setG.tcase = 14;
-	S->setG.width = 60;
-	S->setG.height = 40;
-	S->setG.score = 0;
-	S->setG.level = 0;
+  G->theme = MODERN;
 
-	S->setB.snake.nbrseg = 10;
-	S->setB.snake.speed = 70000;
-	S->setB.nbrBot = 0;
+  // BETA
+	G->tcase = 14;
 
-	S->setA.eaten = 0;
-	S->setA.spawn = 5;
+	G->width = 60;
+	G->height = 40;
+	G->initLevel = 0;
 
-	S->setW.spawn = 10;
+	B->initSize = 10;
+	B->initSpeed = 70000;
+
+	// BETA
+	B->nbrBot = 1;
+
+	A->initSpawn = 10;
+
+	W->initSpawn = 0;
 
 	dispMenu(G, B, A, W, S);
 }
@@ -130,11 +134,32 @@ void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
 
 	FermerGraphique();
 
-	// Initialisation des paramètres / snake / pommes / murs / création de la fenêtre
-	setSettings(G, B, A, W, S);
-	body_init(*G, B);
+	// Initialisation des Snake / Bots / Apple / Wall / Création de la fenêtre
+	G->score = 0;
+	G->level = G->initLevel;
+
+	B->snake.speed = B->initSpeed;
+	B->snake.nbrseg = B->initSize;
+	B->snake.seg = malloc((B->snake.nbrseg+1) * sizeof(Segment));
+	B->bot = malloc(B->nbrBot * sizeof(Body));
+	int i;
+	for(i = 0; i < B->nbrBot; i++) {
+    B->bot[i].nbrseg = 5;
+		B->bot[i].seg = malloc(5 * sizeof(Segment));
+	}
+	bodyInit(*G, B);
+
+	A->eaten = 0;
+	A->spawn = A->initSpawn;
+	A->x = malloc(A->spawn * sizeof(int));
+	A->y = malloc(A->spawn * sizeof(int));
 	randomApple(*G, *B, A);
+
+	W->spawn = W->initSpawn;
+	W->x = malloc(W->spawn * sizeof(int));
+	W->y = malloc(W->spawn * sizeof(int));
 	randomWall(*G, *B, *A, W);
+
 	InitialiserGraphique();
 	CreerFenetre(500, 300, G->width * G->tcase, G->height * G->tcase);
 }
@@ -236,7 +261,6 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	fclose(fichier);
 	while(SourisCliquee());
 	SourisPosition();
-	return;
 }
 
 void setScore (Game G) {

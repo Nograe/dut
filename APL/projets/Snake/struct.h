@@ -25,6 +25,8 @@ typedef struct {
   Body snake;
   Body *bot;
   int nbrBot;
+  int initSize;
+  int initSpeed;
 } Bodies;
 
 typedef struct {
@@ -32,12 +34,14 @@ typedef struct {
   int *y;
   int eaten;
   int spawn;
+  int initSpawn;
 } Apple;
 
 typedef struct {
   int *x;
   int *y;
   int spawn;
+  int initSpawn;
 } Wall;
 
 typedef enum {
@@ -53,6 +57,7 @@ typedef struct {
   int tcase;
   int score;
   int level;
+  int initLevel;
   Theme theme;
 } Game;
 

@@ -1,5 +1,8 @@
 #include "main.h"
 #include "menu.h"
+#define TEST
+//#define DEBUG
+//#define DEV
 
 void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
 
@@ -12,21 +15,34 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   int i;
   *touche = 0;
 
-  ChoisirEcran(0);
+  ChoisirEcran(1);
 
   while(*touche != XK_space) {
 
     if(ToucheEnAttente())
       *touche = Touche();
-  #ifdef TEST
 
-    static int varW = -1, varS = -1, varB = -1;
+  #ifdef TEST
+    static int varA = -1, varW = -1, varS = -1, varB = -1;
     SourisPosition();
+    for(i = 0; i < A.spawn; i++) {
+      if(_X > A.x[i] && _X < A.x[i]+G.tcase && _Y > A.y[i] && _Y < A.y[i]+G.tcase) {
+        if(varA != i)
+          printf("Apple %d | x: %d | y: %d\n", i, A.x[i], A.y[i]);
+        varA = i;
+        varW = -1;
+        varS = -1;
+        varB = -1;
+      }
+    }
     for(i = 0; i < W.spawn; i++) {
       if(_X > W.x[i] && _X < W.x[i]+G.tcase && _Y > W.y[i] && _Y < W.y[i]+G.tcase) {
         if(varW != i)
           printf("Wall %d | x: %d | y: %d\n", i, W.x[i], W.y[i]);
         varW = i;
+        varA = -1;
+        varS = -1;
+        varB = -1;
       }
     }
     for(i = 0; i < B.snake.nbrseg; i++) {
@@ -34,6 +50,9 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
         if(varS != i)
           printf("Segment %d | x: %d | y: %d\n", i, B.snake.seg[i].x, B.snake.seg[i].y);
         varS = i;
+        varA = -1;
+        varW = -1;
+        varB = -1;
       }
     }
     for(i = 0; i < B.nbrBot; i++) {
@@ -41,15 +60,19 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
         if(varB != i)
           printf("Bot %d | x: %d | y: %d\n", i, B.bot[i].seg[0].x, B.bot[i].seg[0].y);
         varB = i;
+        varA = -1;
+        varW = -1;
+        varS = -1;
       }
     }
   #else
+    if(Microsecondes()/500000%2 == 1)
+      ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
+    if(Microsecondes()/500000%2 == 0)
+      draw(G, B, A, W, *temps+(Microsecondes()-tmp));
+    ChargerImage("src/digits/:.png", G.width * G.tcase - 85, height - 40, 0, 0, 23, 31);
 
-  if(Microsecondes()/500000%2 == 1)
-    ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
-  if(Microsecondes()/500000%2 == 0)
-    draw(G, B, A, W, *temps+(Microsecondes()-tmp));
-  ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
+    CopierZone(1, 0, 0, 0, 0, 0, width, height);
   #endif
   }
 
@@ -77,7 +100,7 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
 void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
 
   G->level++;
-  B->snake.nbrseg = S.setB.snake.nbrseg;
+  B->snake.nbrseg = B->initSize;
   B->snake.seg = realloc(B->snake.seg, (B->snake.nbrseg+1) * sizeof(Segment));
   B->snake.speed -= 6500;
   int i;
@@ -97,7 +120,7 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Set
   int height = G->height * G->tcase;
   char buf[10];
 
-  body_init(*G, B);
+  bodyInit(*G, B);
   randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
 
@@ -112,17 +135,19 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Set
   verifPause(*G, *B, *A, *W, &touche, temps);
 }
 
-void timer (Game G, unsigned long temps) {
+void timer (Game G, Apple A, unsigned long temps) {
 
   int var = (Microsecondes() - temps)/1000000;
   int sec = var % 60;
   int min = var / 60;
+  int width = G.width * G.tcase;
+  int height = G.height * G.tcase;
   char png[17] = "src/digits/X.png";
 
   #ifdef DEV
   ChoisirCouleurDessin(CouleurParNom("red"));
-  DessinerRectangle((G.width * G.tcase) - 145, (G.height * G.tcase) - 55, 145, 55);
-  DessinerRectangle(0, (G.height * G.tcase) - 55, 165, 55);
+  DessinerRectangle((width) - 145, (height) - 55, 145, 55);
+  DessinerRectangle(0, (height) - 55, 165, 55);
   #endif
 
   ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
@@ -130,27 +155,44 @@ void timer (Game G, unsigned long temps) {
 
   // Affichage temps
   png[11] = (min / 10) + '0';
-  ChargerImage(png, G.width * G.tcase - 135, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, width - 135, height - 40, 0, 0, 23, 31);
   png[11] = (min % 10) + '0';
-  ChargerImage(png, G.width * G.tcase - 107, G.height * G.tcase - 40, 0, 0, 23, 31);
-  if(var % 2 == 0)
-    ChargerImage("src/digits/:.png", G.width * G.tcase - 85, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, width - 107, height - 40, 0, 0, 23, 31);
+  if(Microsecondes()/300000%2 == 0)
+    ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   png[11] = (sec / 10) + '0';
-  ChargerImage(png, G.width * G.tcase - 63, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, width - 63, height - 40, 0, 0, 23, 31);
   png[11] = (sec % 10) + '0';
-  ChargerImage(png, G.width * G.tcase - 35, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, width - 35, height - 40, 0, 0, 23, 31);
 
   // Affichage score
   png[11] = (G.score / 10000) + '0';
-  ChargerImage(png, 14, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, 14, height - 40, 0, 0, 23, 31);
   png[11] = (G.score / 1000 % 10) + '0';
-  ChargerImage(png, 42, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, 42, height - 40, 0, 0, 23, 31);
   png[11] = (G.score / 100 % 10) + '0';
-  ChargerImage(png, 70, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, 70, height - 40, 0, 0, 23, 31);
   png[11] = (G.score / 10 % 10) + '0';
-  ChargerImage(png, 98, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, 98, height - 40, 0, 0, 23, 31);
   png[11] = (G.score % 10) + '0';
-  ChargerImage(png, 126, G.height * G.tcase - 40, 0, 0, 23, 31);
+  ChargerImage(png, 126, height - 40, 0, 0, 23, 31);
+
+  // Affichage Apple restantes
+  ChoisirCouleurDessin(CouleurParNom("black"));
+  char buf[10];
+  sprintf(buf, "%d/%d", A.eaten, A.spawn);
+  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, height-15, buf, 2);
+  ChargerImage("src/applecount.png",width/2+TailleChaineEcran(buf, 2)/2+5, height - 39, 0, 0, 24, 24);
+  /*png[11] = (A.eaten / 10) + '0';
+  ChargerImage(png, width/2 - 71, height - 40, 0, 0, 23, 31);
+  png[11] = (A.eaten % 10) + '0';
+  ChargerImage(png, width/2 - 43, height - 40, 0, 0, 23, 31);
+  ChargerImage("src/fonts/slash.png", width/2 - 10, height - 41, 0, 0, 16, 32);
+  png[11] = (A.spawn / 10) + '0';
+  ChargerImage(png, width/2 + 13, height - 40, 0, 0, 23, 31);
+  png[11] = (A.spawn % 10) + '0';
+  ChargerImage(png, width/2 + 41, height - 40, 0, 0, 23, 31);
+  //ChargerImage("src/apple_14.png", width/2 + 71, height - 40, 0, 0, 14, 14);*/
 }
 
 /* void printscore (Game G) {
@@ -249,8 +291,8 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   for(i = 0 ; i < W.spawn ; i++)
     ChargerImage(bufwall, W.x[i], W.y[i], 0, 0, G.tcase, G.tcase);
 
-  // Chargement du Temps - Score
-  timer(G, temps);
+  // Chargement du Temps - Score - Apple
+  timer(G, A, temps);
 
   ChoisirEcran(0);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
@@ -267,7 +309,7 @@ int main () {
   Apple A;
   Wall W;
 
-  initgame(&G, &B, &A, &W, &S);
+  initGame(&G, &B, &A, &W, &S);
 
   int touche, old_dir = 4;
 
@@ -294,8 +336,8 @@ int main () {
       }
 
       verifPause(G, B, A, W, &touche, &temps);
-      move_forward(G, &B, W);
-      verif_apple(&G, &B, &A, &W, &temps, S);
+      moveForward(G, &B, A, W);
+      verifApple(&G, &B, &A, &W, &temps, S);
       draw(G, B, A, W, temps);
       old_dir = B.snake.dir;
     }

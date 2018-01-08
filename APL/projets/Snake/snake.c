@@ -2,7 +2,7 @@
 #include "main.h"
 #include "menu.h"
 
-void move_forward (Game G, Bodies *B, Wall W) {
+void moveForward (Game G, Bodies *B, Apple A, Wall W) {
 
   // Sauvegarde dans le segment "invisible" du dernier segment
   B->snake.seg[B->snake.nbrseg] = B->snake.seg[B->snake.nbrseg-1];
@@ -38,7 +38,7 @@ void move_forward (Game G, Bodies *B, Wall W) {
   for(i = 0 ; i < B->nbrBot; i++) {
     if(B->bot[i].seg[0].x == (-G.tcase))
       continue;
-    dirBot(G, B, W, i);
+    dirBot(G, B, A, W, i);
   }
 
   for(i = 0 ; i < B->nbrBot; i++) {
@@ -61,7 +61,7 @@ void move_forward (Game G, Bodies *B, Wall W) {
   }
 }
 
-void body_init (Game G, Bodies *B) {
+void bodyInit (Game G, Bodies *B) {
 
   int i, j;
   int posx = G.width * G.tcase / 2 + 1;
@@ -99,7 +99,7 @@ void body_init (Game G, Bodies *B) {
   }
 }
 
-void dirBot (Game G, Bodies *B, Wall W, int botNum) {
+void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
 
   Direction D = 0;
   Direction prevDir = B->bot[botNum].dir;
@@ -141,6 +141,30 @@ void dirBot (Game G, Bodies *B, Wall W, int botNum) {
       }  
       return;
     }
+  }
+
+  for(i = 0; i < A.spawn; i++) {
+
+    if(A.x[i] == (-G.tcase))
+      continue;
+
+    if(posx == A.x[i]+1 && (prevDir == LEFT || prevDir == RIGHT) && rand()%3 == 0) {
+      if(posy - A.y[i]+1 > 0)
+        B->bot[botNum].dir = UP;
+      if(posy - A.y[i]+1 < 0)
+        B->bot[botNum].dir = DOWN;
+      printf("Apple detected ! Direction: %d\n", B->bot[botNum].dir);
+      return;
+    }
+    if(posy == A.y[i]+1 && (prevDir == UP || prevDir == DOWN) && rand()%3 == 0) {
+      if(posx - A.x[i]+1 > 0)
+        B->bot[botNum].dir = LEFT;
+      if(posx - A.x[i]+1 < 0)
+        B->bot[botNum].dir = RIGHT;
+      printf("Apple detected ! Direction: %d\n", B->bot[botNum].dir);
+      return;
+    }
+
   }
 
   // Recherche du joueur sinon
@@ -245,16 +269,18 @@ int verif (Game G, Bodies *B, Wall W) {
   return 0;
 }
 
-void verif_apple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
+void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
 
   if(A->eaten == A->spawn)
     return nextLevel(G, B, A, W, temps, S);
 
   int i, j;
   for(i = 0 ; i < A->spawn ; i++) {
+    if(A->x[i] == (-G->tcase))
+      continue;
     if(B->snake.seg[0].x == A->x[i]+1 && B->snake.seg[0].y == A->y[i]+1) {
       G->score += 5;
-      A->x[i] = -G->tcase;
+      A->x[i] = (-G->tcase);
       A->eaten++;
       B->snake.nbrseg += 2;
       B->snake.seg = realloc(B->snake.seg, sizeof(Segment) * (B->snake.nbrseg + 1));
@@ -265,12 +291,14 @@ void verif_apple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, S
 
   for(i = 0; i < B->nbrBot; i++) {
     for(j = 0; j < A->spawn; j++) {
+      if(A->x[j] == (-G->tcase))
+        continue;
       if(B->bot[i].seg[0].x == A->x[j]+1 && B->bot[i].seg[0].y == A->y[j]+1) {
         if(G->score >= 2)
           G->score -= 2;
         else if(G->score = 1)
           G->score--;
-        A->x[j] = -G->tcase;
+        A->x[j] = (-G->tcase);
         A->eaten++;
       }
     }
@@ -300,11 +328,14 @@ void randomApple (Game G, Bodies B, Apple *A) {
     if( posy > (G.height * G.tcase)-55-G.tcase )
       continue;
 
-    // Vérification du spawn avec Body
-    for(i = 0 ; i < B.snake.nbrseg ; i++){
-      if(A->x[j]+1 == B.snake.seg[i].x && A->y[j]+1 == B.snake.seg[i].y)
+    // Vérification du spawn avec les autres Apple et la ligne de départ
+    for(i = 0; i < j; i++) {
+      if(A->x[j] == A->x[i] && A->y[j] == A->y[i]) 
         verif = 0;
     }
+
+    if(A->y[j]+1 == B.snake.seg[0].y)
+      continue;
 
     if(verif)
       j++;
@@ -334,7 +365,7 @@ void randomWall (Game G, Bodies B, Apple A, Wall *W) {
     if( posy > (G.height * G.tcase)-55-G.tcase )
       continue;
 
-  // Vérification du spawn avec Wall | Body | Apple (On évite le spawn-kill)
+  // Vérification du spawn avec les autres Wall | Body | Apple (On évite le spawn-kill)
     for(i = 0 ; i < j ; i++) {
       if(W->x[j] == W->x[i] && W->y[j] == W->y[i]) 
         verif = 0;
