@@ -16,12 +16,12 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
 
   ChoisirEcran(0);
 
+  #ifdef DEV
   while(*touche != XK_space) {
 
     if(ToucheEnAttente())
       *touche = Touche();
 
-  #ifdef DEV
     static int varA = -1, varW = -1, varS = -1, varB = -1;
     SourisPosition();
     for(i = 0; i < A.spawn; i++) {
@@ -71,13 +71,12 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
       DessinerRectangle(W.x[i]-3*G.tcase-1, W.y[i], 2*G.tcase, G.tcase);
       DessinerRectangle(W.x[i]+2*G.tcase, W.y[i], 2*G.tcase, G.tcase);
     }
-  #else
-    if((Microsecondes()-tmp)/900000%2 == 0)
-      ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
-    if((Microsecondes()-tmp)/900000%2 == 1)
-      CopierZone(1, 0, 0, 0, width, height, 0, 0);
-  #endif
   }
+  #else
+  ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
+  while(*touche != XK_space)
+    *touche = Touche();
+  #endif
 
   *temps += Microsecondes() - tmp;
 

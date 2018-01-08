@@ -104,7 +104,7 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
 
   Direction D = 0;
   Direction prevDir = B->bot[botNum].dir;
-  int i, distWall, distPx, distPy;
+  int i;
 
   int posx = B->bot[botNum].seg[0].x;
   int posy = B->bot[botNum].seg[0].y;
@@ -154,7 +154,7 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     if(prevDir == UP && posx == sx && posy - sy < 3*G.tcase && posy - sy > G.tcase) {
       B->bot[botNum].dir = rand()%2+3;
       #ifdef DEV
-        printf("Bot x:%d | y: %d to wall %d | x: %d | y: %d\n", posx, posy, i, sx, W.y[i]);
+        printf("Bot x:%d | y: %d to snake | x: %d | y: %d\n", posx, posy, i, sx, sy);
         Touche();
       #endif
       return;
@@ -162,7 +162,7 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     if(prevDir == DOWN && posx == sx && sy - posy < 3*G.tcase && sy - posy > G.tcase) {
       B->bot[botNum].dir = rand()%2+3;
       #ifdef DEV
-        printf("Bot x:%d | y: %d to wall %d | x: %d | y: %d\n", posx, posy, i, sx, W.y[i]);
+        printf("Bot x:%d | y: %d to snake | x: %d | y: %d\n", posx, posy, i, sx, sy);
         Touche();
       #endif
       return;
@@ -170,7 +170,7 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     if(prevDir == LEFT && posy == sy && posx - sx < 3*G.tcase && posx - sx > G.tcase) {
       B->bot[botNum].dir = rand()%2+1;
       #ifdef DEV
-        printf("Bot x:%d | y: %d to wall %d | x: %d | y: %d\n", posx, posy, i, sx, W.y[i]);
+        printf("Bot x:%d | y: %d to snake | x: %d | y: %d\n", posx, posy, i, sx, sy);
         Touche();
       #endif
       return;
@@ -178,11 +178,29 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     if(prevDir == RIGHT && posy == sy && sx - posx < 3*G.tcase && sx - posx > G.tcase) {
       B->bot[botNum].dir = rand()%2+1;
       #ifdef DEV
-        printf("Bot x:%d | y: %d to wall %d | x: %d | y: %d\n", posx, posy, i, sx, W.y[i]);
+        printf("Bot x:%d | y: %d to snake | x: %d | y: %d\n", posx, posy, i, sx, sy);
         Touche();
       #endif
       return;
     }
+  }
+
+  // Vérification des bordures
+  if(prevDir == UP && posy <= G.tcase*2) {
+    B->bot[botNum].dir = rand()%2+3;
+    return;
+  }
+  if(prevDir == DOWN && posy >= (G.height * G.tcase)-55-G.tcase*2) {
+    B->bot[botNum].dir = rand()%2+3;
+    return;
+  }
+  if(prevDir == LEFT && posx <= G.tcase*2) {
+    B->bot[botNum].dir = rand()%2+1;
+    return;
+  }
+  if(prevDir == RIGHT && posx >= (G.width * G.tcase)-G.tcase*2) {
+    B->bot[botNum].dir = rand()%2+1;
+    return;
   }
 
   // Une pomme est sur la même ligne ou la même colonne
@@ -207,7 +225,7 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     }
   }
 
-  if(rand()%5 == 0) {
+  if(rand()%4 == 0) {
     do {
       D = rand() % 4 + 1;
     } while(prevDir + D == 3 || prevDir + D == 7);
