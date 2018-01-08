@@ -248,7 +248,7 @@ int verif (Game G, Bodies *B, Wall W) {
 void verif_apple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
 
   if(A->eaten == A->spawn)
-    return next_level(G, B, A, W, temps, S);
+    return nextLevel(G, B, A, W, temps, S);
 
   int i, j;
   for(i = 0 ; i < A->spawn ; i++) {

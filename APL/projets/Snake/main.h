@@ -9,9 +9,8 @@
 #include <string.h>
 #include "struct.h"
 
-int forcexit(int touche);
-void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps);
-void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S);
+void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps);
+void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S);
 void timer (Game G, unsigned long temps);
 void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps);
 

@@ -1,15 +1,7 @@
 #include "main.h"
 #include "menu.h"
 
-int forcexit(int touche) {
-
-  if(touche == XK_Escape)
-    return 1;
-  else
-    return 0;
-}
-
-void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
+void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
 
   if(*touche != XK_space)
     return;
@@ -82,7 +74,7 @@ void verifpause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   *touche = 0;
 }
 
-void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
+void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
 
   G->level++;
   B->snake.nbrseg = S.setB.snake.nbrseg;
@@ -117,7 +109,7 @@ void next_level (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Se
   draw(*G, *B, *A, *W, *temps);
 
   int touche = XK_space;
-  verifpause(*G, *B, *A, *W, &touche, temps);
+  verifPause(*G, *B, *A, *W, &touche, temps);
 }
 
 void timer (Game G, unsigned long temps) {
@@ -301,7 +293,7 @@ int main () {
           B.snake.dir = old_dir;
       }
 
-      verifpause(G, B, A, W, &touche, &temps);
+      verifPause(G, B, A, W, &touche, &temps);
       move_forward(G, &B, W);
       verif_apple(&G, &B, &A, &W, &temps, S);
       draw(G, B, A, W, temps);
