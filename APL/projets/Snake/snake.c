@@ -92,6 +92,8 @@ void bodyInit (Game G, Bodies *B) {
       B->bot[i].seg[0].y = (rand() % G.height) * G.tcase + 1;
       B->bot[i].dir = RIGHT;
     }
+    for(j = 1; j < B->bot[i].nbrseg; j++)
+      B->bot[i].seg[j].x = (-G.tcase);
   }
 }
 
@@ -220,12 +222,12 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     }
   }
 
-  if(rand()%20 == 0) {
+  /*if(rand()%20 == 0) {
     do {
       D = rand() % 4 + 1;
     } while(prevDir + D == 3 || prevDir + D == 7);
     B->bot[botNum].dir = D;
-  }
+  }*/
 }
 
 int verif (Game *G, Bodies *B, Wall W) {
