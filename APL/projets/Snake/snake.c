@@ -74,21 +74,21 @@ void bodyInit (Game G, Bodies *B) {
     var = rand()%4 + 1;
     if(var == 1) {
       B->bot[i].seg[0].x = (rand() % G.width) * G.tcase + 1;
-      B->bot[i].seg[0].y = 1;
+      B->bot[i].seg[0].y = 1 + G.tcase;
       B->bot[i].dir = DOWN;
     }
     if(var == 2) {
-      B->bot[i].seg[0].x = ((G.width-1) * G.tcase) + 1;
+      B->bot[i].seg[0].x = ((G.width-2) * G.tcase) + 1;
       B->bot[i].seg[0].y = (rand() % G.height) * G.tcase + 1;
       B->bot[i].dir = LEFT;
     }
     if(var == 3) {
       B->bot[i].seg[0].x = (rand() % G.width) * G.tcase + 1;
-      B->bot[i].seg[0].y = ((G.height-1) * G.tcase) - 55;
+      B->bot[i].seg[0].y = ((G.height-2) * G.tcase) - 55;
       B->bot[i].dir = UP;
     }
     if(var == 4) {
-      B->bot[i].seg[0].x = 1;
+      B->bot[i].seg[0].x = 1 + G.tcase;
       B->bot[i].seg[0].y = (rand() % G.height) * G.tcase + 1;
       B->bot[i].dir = RIGHT;
     }
