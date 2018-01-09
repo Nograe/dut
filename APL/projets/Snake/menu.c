@@ -27,7 +27,7 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	// BETA
 	B->nbrBot = 1;
 
-	A->initSpawn = 10;
+	A->initSpawn = 5;
 
 	W->initSpawn = 10;
 
@@ -287,7 +287,7 @@ int verifScore (char *pseudo, int score) {
 	fichier = fopen("src/scores", "r+");
 
 	// Si le score et le pseudo correspondent à une entrée, on n'inscrit rien
-	while((char)c != EOF) {
+	while(c != EOF) {
 
 		fscanf(fichier, "%d %s", &tmp, ps);
 		//printf("score: %d ps: %s\n", tmp, ps);
