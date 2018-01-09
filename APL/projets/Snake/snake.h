@@ -2,6 +2,7 @@
 
 #define DEF_SNAKE
 #include "struct.h"
+#include <graph.h>
 
 void moveForward (Game G, Bodies *B, Apple A, Wall W);
 void bodyInit (Game G, Bodies *B);

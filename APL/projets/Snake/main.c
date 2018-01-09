@@ -127,11 +127,11 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Set
   randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
 
-  EffacerEcran(choisirCouleur(G->theme, 'b'));
+  /*EffacerEcran(choisirCouleur(G->theme, 'b'));
   ChoisirCouleurDessin(CouleurParNom("black"));
   sprintf(buf, "LEVEL: %d", G->level+1);
   EcrireTexte(width/2 - TailleChaineEcran("LEVEL: 00", 2)/2, height/2, buf, 2);
-  sleep(2);
+  sleep(2);*/
   draw(*G, *B, *A, *W, *temps);
 
   int touche = XK_space;
@@ -182,8 +182,10 @@ void timer (Game G, Apple A, unsigned long temps) {
   ChoisirCouleurDessin(CouleurParNom("black"));
   char buf[10];
   sprintf(buf, "%d/%d", A.eaten, A.spawn);
-  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, height-15, buf, 2);
-  ChargerImage("src/applecount.png",width/2+TailleChaineEcran(buf, 2)/2+5, height - 39, 0, 0, 24, 24);
+  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2-120, height-15, buf, 2);
+  //ChargerImage("src/apple_18.png",width/2+TailleChaineEcran(buf, 2)/2-100, height - 39, 0, 0, 18, 18);
+  sprintf(buf, "Level: %d", G.level+1);
+  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2+100, height-15, buf, 2);
   /*png[11] = (A.eaten / 10) + '0';
   ChargerImage(png, width/2 - 71, height - 40, 0, 0, 23, 31);
   png[11] = (A.eaten % 10) + '0';
@@ -232,7 +234,7 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   // Dessin des Segments du Snake
   ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
   for(i = 0 ; i < B.snake.nbrseg ; i++)
-    RemplirRectangle(B.snake.seg[i].x, B.snake.seg[i].y, G.tcase - 2, G.tcase - 2);
+    RemplirRectangle(B.snake.seg[i].x+1, B.snake.seg[i].y+1, G.tcase - 2, G.tcase - 2);
 
   // Dessin des Yeux du Snake
   ChoisirCouleurDessin(CouleurParNom("black"));
