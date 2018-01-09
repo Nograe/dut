@@ -2,7 +2,7 @@
 #include "main.h"
 #include "menu.h"
 //#define DEV
-#define DEBUG
+//#define DEBUG
 
 void moveForward (Game G, Bodies *B, Apple A, Wall W) {
 
@@ -76,37 +76,21 @@ void bodyInit (Game G, Bodies *B) {
       B->bot[i].seg[0].x = (rand() % G.width) * G.tcase + 1;
       B->bot[i].seg[0].y = 1;
       B->bot[i].dir = DOWN;
-      for(j = 1; j < B->bot[i].nbrseg; j++) {
-        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x;
-        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y-G.tcase;
-      }
     }
     if(var == 2) {
       B->bot[i].seg[0].x = ((G.width-1) * G.tcase) + 1;
       B->bot[i].seg[0].y = (rand() % G.height) * G.tcase + 1;
       B->bot[i].dir = LEFT;
-      for(j = 1; j < B->bot[i].nbrseg; j++) {
-        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x+G.tcase;
-        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y;
-      }
     }
     if(var == 3) {
       B->bot[i].seg[0].x = (rand() % G.width) * G.tcase + 1;
       B->bot[i].seg[0].y = ((G.height-1) * G.tcase) - 55;
       B->bot[i].dir = UP;
-      for(j = 1; j < B->bot[i].nbrseg; j++) {
-        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x;
-        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y+G.tcase;
-      }
     }
     if(var == 4) {
       B->bot[i].seg[0].x = 1;
       B->bot[i].seg[0].y = (rand() % G.height) * G.tcase + 1;
       B->bot[i].dir = RIGHT;
-      for(j = 1; j < B->bot[i].nbrseg; j++) {
-        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x-G.tcase;
-        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y;
-      }
     }
   }
 }

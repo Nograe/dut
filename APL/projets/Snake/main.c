@@ -1,7 +1,7 @@
 #include "main.h"
 #include "menu.h"
 //#define DEBUG
-#define DEV
+//#define DEV
 
 void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
 
@@ -83,12 +83,15 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
 
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/3pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   usleep(600000);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/2pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   usleep(600000);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/1pause.png", (width/2) - 50/2, (height/2) - 50, 0, 0, 67, 67);
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   usleep(600000);
 
   *temps += 1800000;
