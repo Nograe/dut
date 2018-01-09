@@ -2,6 +2,7 @@
 #include "main.h"
 #include "menu.h"
 //#define DEV
+#define DEBUG
 
 void moveForward (Game G, Bodies *B, Apple A, Wall W) {
 
@@ -15,15 +16,14 @@ void moveForward (Game G, Bodies *B, Apple A, Wall W) {
     B->snake.seg[i] = B->snake.seg[i-1];
 
   // Déplacement du segment en tête en fonction de la direction
-  if(B->snake.dir == 1)
+  if(B->snake.dir == UP)
     B->snake.seg[0].y -= G.tcase;
-  if(B->snake.dir == 2)
+  if(B->snake.dir == DOWN)
     B->snake.seg[0].y += G.tcase;
-  if(B->snake.dir == 3)
+  if(B->snake.dir == LEFT)
     B->snake.seg[0].x -= G.tcase;
-  if(B->snake.dir == 4)
+  if(B->snake.dir == RIGHT)
     B->snake.seg[0].x += G.tcase;
-
 
   // Déplacement de chaque segment de chaque bot
   for(i = 0 ; i < B->nbrBot; i++) {
@@ -45,32 +45,22 @@ void moveForward (Game G, Bodies *B, Apple A, Wall W) {
   for(i = 0 ; i < B->nbrBot; i++) {
     if(B->bot[i].seg[0].x == (-G.tcase))
       continue;
-    switch(B->bot[i].dir) {
-      case 1:
+    if(B->bot[i].dir == UP)
       B->bot[i].seg[0].y -= G.tcase;
-      break;
-      case 2:
+    if(B->bot[i].dir == DOWN)
       B->bot[i].seg[0].y += G.tcase;
-      break;
-      case 3:
+    if(B->bot[i].dir == LEFT)
       B->bot[i].seg[0].x -= G.tcase;
-      break;
-      case 4:
+    if(B->bot[i].dir == RIGHT)
       B->bot[i].seg[0].x += G.tcase;
-      break;
-    }
   }
 }
 
 void bodyInit (Game G, Bodies *B) {
 
-  int i, j;
+  int i, j, var;
   int posx = G.width * G.tcase / 2 + 1;
   int posy = G.height * G.tcase / 2 + 1;
-
-  #ifdef DEBUG
-  printf("Snake: x: %d | y: %d\n", posx, posy);
-  #endif
 
   for(i = 0 ; i < B->snake.nbrseg ; i++) {
     B->snake.seg[i].x = posx;
@@ -80,23 +70,44 @@ void bodyInit (Game G, Bodies *B) {
   B->snake.dir = 4;
 
   for(i = 0 ; i < B->nbrBot ; i++) {
-    posx = rand() % (G.width * G.tcase);
-    posy = rand() % (G.height * G.tcase);
-    posx = (posx - (posx % G.tcase)) + 1;
-    posy = (posy - (posy % G.tcase)) + 1;
 
-    #ifdef DEBUG
-    printf("Bot %d | x: %d | y: %d\n", i, posx, posy);
-    #endif
-
-    for(j = 0; j < B->bot[i].nbrseg; j++) {
-      B->bot[i].seg[j].x = posx;
-      B->bot[i].seg[j].y = posy;
-      posx -= G.tcase;
+    var = rand()%4 + 1;
+    if(var == 1) {
+      B->bot[i].seg[0].x = (rand() % G.width) * G.tcase + 1;
+      B->bot[i].seg[0].y = 1;
+      B->bot[i].dir = DOWN;
+      for(j = 1; j < B->bot[i].nbrseg; j++) {
+        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x;
+        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y-G.tcase;
+      }
     }
-    B->bot[i].dir = rand() % 4 + 1;
-    if(B->bot[i].dir = 3)
-      B->bot[i].dir = rand() % 2 + 1;
+    if(var == 2) {
+      B->bot[i].seg[0].x = ((G.width-1) * G.tcase) + 1;
+      B->bot[i].seg[0].y = (rand() % G.height) * G.tcase + 1;
+      B->bot[i].dir = LEFT;
+      for(j = 1; j < B->bot[i].nbrseg; j++) {
+        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x+G.tcase;
+        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y;
+      }
+    }
+    if(var == 3) {
+      B->bot[i].seg[0].x = (rand() % G.width) * G.tcase + 1;
+      B->bot[i].seg[0].y = ((G.height-1) * G.tcase) - 55;
+      B->bot[i].dir = UP;
+      for(j = 1; j < B->bot[i].nbrseg; j++) {
+        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x;
+        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y+G.tcase;
+      }
+    }
+    if(var == 4) {
+      B->bot[i].seg[0].x = 1;
+      B->bot[i].seg[0].y = (rand() % G.height) * G.tcase + 1;
+      B->bot[i].dir = RIGHT;
+      for(j = 1; j < B->bot[i].nbrseg; j++) {
+        B->bot[i].seg[j].x = B->bot[i].seg[j-1].x-G.tcase;
+        B->bot[i].seg[j].y = B->bot[i].seg[j-1].y;
+      }
+    }
   }
 }
 
@@ -225,37 +236,34 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     }
   }
 
-  if(rand()%4 == 0) {
+  if(rand()%20 == 0) {
     do {
       D = rand() % 4 + 1;
     } while(prevDir + D == 3 || prevDir + D == 7);
     B->bot[botNum].dir = D;
   }
-
-  B->bot[botNum].dir = prevDir;
-
 }
 
-int verif (Game G, Bodies *B, Wall W) {
+int verif (Game *G, Bodies *B, Wall W) {
 
   int i, j;
   // Verification collision Wall / Bot
   for(i = 0 ; i < B->nbrBot; i++) {
     for(j = 0 ; j < W.spawn ; j++) {
       if(B->bot[i].seg[0].x == W.x[j]+1 && B->bot[i].seg[0].y == W.y[j]+1) 
-        B->bot[i].seg[0].x = (-G.tcase);
+        B->bot[i].seg[0].x = (-G->tcase);
     }
   }
 
   // Téléportation bots
   int botx, boty;
   for(i = 0; i < B->nbrBot; i++) {
-    if(B->bot[i].seg[0].x == (-G.tcase))
+    if(B->bot[i].seg[0].x == (-G->tcase))
       continue;
     botx = B->bot[i].seg[0].x;
     boty = B->bot[i].seg[0].y;
-    if(botx <= 0 || botx >= (G.width * G.tcase) || boty <= 0 || boty >= (G.height * G.tcase)-55)
-      B->bot[i].seg[0].x = (-G.tcase);
+    if(botx <= 0 || botx >= (G->width * G->tcase) || boty <= 0 || boty >= (G->height * G->tcase)-55)
+      B->bot[i].seg[0].x = (-G->tcase);
   }
 
   #ifdef DEV
@@ -265,7 +273,7 @@ int verif (Game G, Bodies *B, Wall W) {
   // Verification bordures
   int x = B->snake.seg[0].x;
   int y = B->snake.seg[0].y;
-  if(x <= 0 || x >= (G.width * G.tcase) || y <= 0 || y >= (G.height * G.tcase)-55) {
+  if(x <= 0 || x >= (G->width * G->tcase) || y <= 0 || y >= (G->height * G->tcase)-55) {
     return 1;
   }
 
@@ -273,8 +281,8 @@ int verif (Game G, Bodies *B, Wall W) {
   for(i = 4 ; i <= B->snake.nbrseg ; i++) {
     if(x == B->snake.seg[i].x && y == B->snake.seg[i].y) {
       //printf("Collision bloc %d : %d | %d\n", i+1, x, y);
-      ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
-      RemplirRectangle(B->snake.seg[i].x, B->snake.seg[i].y, G.tcase - 2, G.tcase - 2);
+      ChoisirCouleurDessin(choisirCouleur(G->theme, 'd'));
+      RemplirRectangle(B->snake.seg[i].x, B->snake.seg[i].y, G->tcase - 2, G->tcase - 2);
       return 1;
     }
   }
@@ -296,15 +304,17 @@ int verif (Game G, Bodies *B, Wall W) {
   // Verification collision Bot / Snake
   for(i = 0; i < B->nbrBot; i++) {
     for(j = 0; j < B->snake.nbrseg; j++)
-      if(B->bot[i].seg[0].x == B->snake.seg[j].x && B->bot[i].seg[0].y == B->snake.seg[j].y)
-        B->bot[i].seg[0].x = (-G.tcase);
+      if(B->bot[i].seg[0].x == B->snake.seg[j].x && B->bot[i].seg[0].y == B->snake.seg[j].y) {
+        G->score+=10;
+        B->bot[i].seg[0].x = (-G->tcase);
+      }
   }
 
   // Suppression du bot
   for(i = 0; i < B->nbrBot; i++) {
-    if(B->bot[i].seg[0].x == (-G.tcase)) {
+    if(B->bot[i].seg[0].x == (-G->tcase)) {
       for(j = 0; j < B->bot[i].nbrseg; j++)
-        B->bot[i].seg[j].x = (-G.tcase);
+        B->bot[i].seg[j].x = (-G->tcase);
     }
   }
 
@@ -355,10 +365,6 @@ void randomApple (Game G, Bodies B, Apple *A) {
 
   while (j < A->spawn) {
 
-    #ifdef DEBUG
-    printf("Apple: %d\n", j);
-    #endif
-
     verif = 1;
     posx = (rand() % G.width) * G.tcase;
     posy = (rand() % G.height) * G.tcase;
@@ -390,10 +396,6 @@ void randomWall (Game G, Bodies B, Apple A, Wall *W) {
   int posx, posy, i, j = 0, verif = 1;
 
   while (j < W->spawn) {
-
-    #ifdef DEBUG
-    printf("Wall: %d\n", j);
-    #endif
 
     verif = 1;
     posx = (rand() % G.width) * G.tcase;

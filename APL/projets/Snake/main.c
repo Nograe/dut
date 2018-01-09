@@ -1,7 +1,7 @@
 #include "main.h"
 #include "menu.h"
 //#define DEBUG
-//#define DEV
+#define DEV
 
 void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
 
@@ -315,7 +315,7 @@ int main () {
 
   while(1) {
 
-    while(!verif(G, &B, W) && touche != XK_Escape) {
+    while(!verif(&G, &B, W) && touche != XK_Escape) {
 
       usleep(B.snake.speed);
       
