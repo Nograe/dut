@@ -32,9 +32,8 @@ function myFunction(e) {
     if (e.button == 2) {
         console.log("Bouton droit pressé!");
         // On vérifie que chaque Child de l'élément est de type texte, puis on supprime l'élément
-        if(e.target.childNodes.length == 0) { {
+        if(e.target.childNodes.length == 0)
             verif = 1;
-        }
         var echild = e.target.childNodes;
         for (var i = 0; i < e.target.childElementCount; i++) {
             if (echild[i].nodeType != Node.TEXT_NODE) {
