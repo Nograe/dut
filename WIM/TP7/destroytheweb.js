@@ -17,8 +17,6 @@ function myFunction (e) {
 		verif = 0;
 	    }
 	}
-	if(e.target.nodeType != Node.TEXT_NODE)
-	    verif = 0;
 	if(verif)
 	    e.target.remove();
     }
