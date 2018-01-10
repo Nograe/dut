@@ -20,6 +20,7 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	G->width = 60;
 	G->height = 40;
 	G->initLevel = 0;
+	G->dispApple = 0;
 
 	B->initSize = 10;
 	B->initSpeed = 70000;
@@ -52,7 +53,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 	while (1) {
 
-		EffacerEcran(CouleurParNom("forestgreen"));
+		EffacerEcran(CouleurParComposante(21, 97, 49));
 		ChargerImage("src/fonts/snake.png", tcase * 15.5, tcase * 4, 0, 0, 421, 72);
 		ChargerImage("src/fonts/play.png", tcase * 25.5, tcase * 14, 0, 0, 128, 52);
 		ChargerImage("src/fonts/highscores.png", tcase * 19, tcase * 21, 0, 0, 328, 52);

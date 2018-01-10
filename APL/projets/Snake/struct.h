@@ -58,6 +58,7 @@ typedef struct {
   int score;
   int level;
   int initLevel;
+  int dispApple;
   Theme theme;
 } Game;
 

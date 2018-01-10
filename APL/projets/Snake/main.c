@@ -146,6 +146,7 @@ void timer (Game G, Apple A, unsigned long temps) {
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
   char png[17] = "src/digits/X.png";
+  char buf[10];
 
   #ifdef DEV
   ChoisirCouleurDessin(CouleurParNom("red"));
@@ -178,24 +179,17 @@ void timer (Game G, Apple A, unsigned long temps) {
   png[11] = (G.score % 10) + '0';
   ChargerImage(png, 126, height - 40, 0, 0, 23, 31);
 
-  // Affichage Apple restantes
   ChoisirCouleurDessin(CouleurParNom("black"));
-  char buf[10];
-  sprintf(buf, "%d/%d", A.eaten, A.spawn);
-  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2-120, height-15, buf, 2);
-  //ChargerImage("src/apple_18.png",width/2+TailleChaineEcran(buf, 2)/2-100, height - 39, 0, 0, 18, 18);
+  int decal = 100;
+  // Affichage Apple restantes
+  if(G.dispApple) {
+    sprintf(buf, "%d/%d", A.eaten, A.spawn);
+    EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2-120, height-15, buf, 2);
+    //ChargerImage("src/apple_18.png",width/2+TailleChaineEcran(buf, 2)/2-100, height - 39, 0, 0, 18, 18);
+    decal = 0;
+  }
   sprintf(buf, "Level: %d", G.level+1);
-  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2+100, height-15, buf, 2);
-  /*png[11] = (A.eaten / 10) + '0';
-  ChargerImage(png, width/2 - 71, height - 40, 0, 0, 23, 31);
-  png[11] = (A.eaten % 10) + '0';
-  ChargerImage(png, width/2 - 43, height - 40, 0, 0, 23, 31);
-  ChargerImage("src/fonts/slash.png", width/2 - 10, height - 41, 0, 0, 16, 32);
-  png[11] = (A.spawn / 10) + '0';
-  ChargerImage(png, width/2 + 13, height - 40, 0, 0, 23, 31);
-  png[11] = (A.spawn % 10) + '0';
-  ChargerImage(png, width/2 + 41, height - 40, 0, 0, 23, 31);
-  //ChargerImage("src/apple_14.png", width/2 + 71, height - 40, 0, 0, 14, 14);*/
+  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2+100-decal, height-15, buf, 2);
 }
 
 /* void printscore (Game G) {
