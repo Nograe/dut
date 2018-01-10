@@ -7,21 +7,21 @@ function myFunction(e) {
     var verif = 1;
     if (e.button == 0) {
         console.log("Bouton gauche pressé!");
-        var para = document.createElement("p");
         var node = document.createTextNode("DESTROY THE WEB.");
-        para.appendChild(node);
-        e.target.appendChild(para);
+        e.target.appendChild(node);
     }
     if (e.button == 1) {
         console.log("Bouton du milieu pressé!");
-        if (e.target.childNodes[0] == Node.TEXT_NODE) {
+        if(e.target.childNodes.length == 0)
+           return;
+        if (e.target.childNodes[0].nodeType == Node.TEXT_NODE) {
             console.log("Le premier Node de cet élémént est un élément texte!");
-            e.target.replaceChild(e.target.ChildNodes[0], document.createTextNode("DESTROY THE WEB."));
+            var newel = document.createElement("h3");
+            newel.appendChild(e.target.childNodes[0]);
+            e.target.insertBefore(newel, e.target.childNodes[0]);
         }
-        if (e.target.childElementCount == 0) {
-            console.log("Cet élément ne contient pas de ChildNodes!");
-            e.target.replaceChild(e.target, document.createTextNode("DESTROY THE WEB."));
-        }
+        else if (e.target.childNodes[0] != Node.TEXT_NODE)
+            console.log("Le premier Node de cet élémént n'est pas un élément texte!");
     }
     if (e.button == 2) {
         console.log("Bouton droit pressé!");
