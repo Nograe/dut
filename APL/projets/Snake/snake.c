@@ -91,7 +91,7 @@ void bodyInit (Game G, Bodies *B) {
     }
     for(j = 1; j < B->bot[i].nbrseg; j++)
       B->bot[i].seg[j].x = (-G.tcase);
-    printf("x: %d | y: %d | dir: %d\n", B->bot[i].seg[0].x, B->bot[i].seg[0].y, B->bot[i].dir);
+    //printf("x: %d | y: %d | dir: %d\n", B->bot[i].seg[0].x, B->bot[i].seg[0].y, B->bot[i].dir);
   }
 }
 

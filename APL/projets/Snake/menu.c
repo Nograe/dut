@@ -10,10 +10,44 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 	fclose(fichier);
 	fichier = fopen("src/settings", "a");
 	fclose(fichier);
+	fichier = fopen("src/settings", "r+");
+
+	int i, var;
+	for(i = 0; i < 11; i++) {
+		if(i == 0) {
+			fscanf(fichier, "%d", &G->width);
+		printf("%d: %d\n", i, G->width);
+		}
+		if(i == 1)
+			fscanf(fichier, "%d", &G->height);
+		printf("%d: %d\n", i, G->height);
+		if(i == 2)
+			fscanf(fichier, "%d", &G->tcase);
+		printf("%d: %d\n", i, G->tcase);
+		if(i == 3)
+			fscanf(fichier, "%d", &G->dispApple);
+		if(i == 4 && fgetc(fichier) == '.') 
+			strncpy(G->pseudo, getenv("USER"), 11);
+		else {
+			fseek(fichier, -1, SEEK_CUR);
+			fscanf(fichier, "%s", G->pseudo);
+		}
+		if(i == 5)
+			fscanf(fichier, "%u", &G->theme);
+		if(i == 6)
+			fscanf(fichier, "%d", &B->initSize);
+		if(i == 7)
+			fscanf(fichier, "%d", &B->initSpeed);
+		if(i == 8)
+			fscanf(fichier, "%d", &B->nbrBot);
+		if(i == 9)
+			fscanf(fichier, "%d", &A->initSpawn);
+		if(i == 10)
+			fscanf(fichier, "%d", &W->initSpawn);
+		while(fgetc(fichier) != '\n');
+	}
 
   // Attribution VARIABLES DEFAUT
-  G->theme = MODERN;
-
   // BETA
 	G->tcase = 14;
 
@@ -21,16 +55,17 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 	G->height = 40;
 	G->dispApple = 0;
 	strncpy(G->pseudo, getenv("USER"), 11);
+  G->theme = MODERN;
 
 	B->initSize = 10;
 	B->initSpeed = 70004;
-
-	// BETA
 	B->nbrBot = 0;
 
 	A->initSpawn = 5;
 
 	W->initSpawn = 10;
+
+	fclose(fichier);
 
 	dispMenu(G, B, A, W);
 }
