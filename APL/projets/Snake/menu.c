@@ -2,7 +2,7 @@
 #include "settings.h"
 //#define DEV
 
-void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
+void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	// Vérification (création si NULL) du fichier 'scores'
 	FILE *fichier = NULL;
@@ -21,21 +21,22 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	G->height = 40;
 	G->initLevel = 0;
 	G->dispApple = 0;
+	strncpy(G->pseudo, getenv("USER"), 11);
 
 	B->initSize = 10;
-	B->initSpeed = 70000;
+	B->initSpeed = 70004;
 
 	// BETA
-	B->nbrBot = 1;
+	B->nbrBot = 0;
 
 	A->initSpawn = 5;
 
 	W->initSpawn = 10;
 
-	dispMenu(G, B, A, W, S);
+	dispMenu(G, B, A, W);
 }
 
-void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
+void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
@@ -86,11 +87,11 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 		}
 		if(touche == XK_Return) {
 			if(old == 1)
-				return dispPlay(G, B, A, W, *S);
+				return dispPlay(G, B, A, W);
 			if(old == 2)
-				dispHighscore(G, B, A, W, S);
+				dispHighscore(G, B, A, W);
 			if(old == 3)
-				dispSettings(G, B, A, W, S);
+				dispSettings(G, B, A, W);
 			if(old == 4)
 				quit();
 		}
@@ -116,22 +117,24 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 
 		if(SourisCliquee()) {
 			if(_X >= (tcase * 25.5) && _X <= (tcase * 25.5 + 128) && _Y >= (tcase * 14) && _Y <= (tcase * 14 + 52))
-				return dispPlay(G, B, A, W, *S);
+				return dispPlay(G, B, A, W);
 			if(_X >= (tcase * 19) && _X <= (tcase * 19 + 328) && _Y >= (tcase * 21) && _Y <= (tcase * 21 + 52)) {
-				dispHighscore(G, B, A, W, S);
+				dispHighscore(G, B, A, W);
 				continue;
 			}
 			if(_X >= (tcase * 22) && _X <= (tcase * 22 + 225) && _Y >= (tcase * 28) && _Y <= (tcase * 28 + 52)) {
-				dispSettings(G, B, A, W, S);
+				dispSettings(G, B, A, W);
 				continue;
 			}
 			if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42))
 				quit();
+			_X = 0;
+			_Y = 0;
 		}
 	}
 }
 
-void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
+void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	FermerGraphique();
 
@@ -165,14 +168,14 @@ void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W, Settings S) {
 	CreerFenetre(500, 300, G->width * G->tcase, G->height * G->tcase);
 }
 
-void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
+void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
 	int touche = 0, temp, temp_l, posy = 120, posx = 320;
 	char buf[6], player[11];
 
-	EffacerEcran(CouleurParNom("forestgreen"));
+	EffacerEcran(CouleurParComposante(21, 97, 49));
 	ChargerImage("src/fonts/highscores_title.png", 14 * 11.75, 14 * 4, 0, 0, 523, 45);
 	ChoisirCouleurDessin(CouleurParNom("black"));
 
@@ -215,11 +218,10 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 		}
 	}
 
-			#ifdef DEV
-	for(i = 0 ; i < line ; i++) {
-		printf("score %d: %d\n", scores[i][1], scores[i][0]);
-	}
-			#endif
+	#ifdef DEV
+		for(i = 0 ; i < line ; i++)
+			printf("score %d: %d\n", scores[i][1], scores[i][0]);
+	#endif
 
 	// Récupération et affichage du pseudo | score
 	for(i = line-1 ; i >= 0 ; i--) {
@@ -243,6 +245,14 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 		EcrireTexte(posx, posy, buf, 2);
 	}
 
+	if(line >= 1)
+		ChargerImage("src/crown.png", 127, 132, 0, 0, 32, 32);
+	if(line >= 2)
+		EcrireTexte(137, 204, "2.", 2);
+	if(line >= 3)
+		EcrireTexte(137, 246, "3.", 2);
+
+
 	EcrireTexte(50, height-18, "Delete", 1);
 	ChargerImage("src/redcross.png", 8, height-40, 0, 0, 32, 32);
 
@@ -260,13 +270,11 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W, Settings *S) {
 	}
 
 	fclose(fichier);
-	while(SourisCliquee());
-	SourisPosition();
 }
 
 void setScore (Game G) {
 
-	// Si le score est inférieur à 1 | son pseudo est déjà inscrit avec le même score
+	// On quitte si le score est inférieur à 1 ou son pseudo est déjà inscrit avec le même score
 	if(G.score < 1 || verifScore(getenv("USER"), G.score))
 		return;
 
@@ -274,7 +282,7 @@ void setScore (Game G) {
 	fichier = fopen("src/scores", "a");
 
 	// Le score et le nom d'utilisateur sont inscrits
-	fprintf(fichier, "%d %s\n", G.score, getenv("USER"));
+	fprintf(fichier, "%d %s\n", G.score, G.pseudo);
 
 	fclose(fichier);
 }

@@ -6,9 +6,6 @@
 
 void moveForward (Game G, Bodies *B, Apple A, Wall W) {
 
-  // Sauvegarde dans le segment "invisible" du dernier segment
-  B->snake.seg[B->snake.nbrseg] = B->snake.seg[B->snake.nbrseg-1];
-
   int i, j, old_dir;
 
   // Chaque segment prend la valeur du segment précédent, excepté le premier
@@ -67,34 +64,34 @@ void bodyInit (Game G, Bodies *B) {
     B->snake.seg[i].y = posy;
     posx -= G.tcase;
   }
-  B->snake.dir = 4;
+  B->snake.dir = RIGHT;
 
   for(i = 0 ; i < B->nbrBot ; i++) {
 
     var = rand()%4 + 1;
     if(var == 1) {
-      B->bot[i].seg[0].x = (rand() % G.width) * G.tcase;
-      B->bot[i].seg[0].y = 0;
+      B->bot[i].seg[0].x = rand() % (G.width-4) * G.tcase + 2*G.tcase;
+      B->bot[i].seg[0].y = G.tcase;
       B->bot[i].dir = DOWN;
     }
     if(var == 2) {
-      B->bot[i].seg[0].x = G.width * G.tcase;
-      B->bot[i].seg[0].y = rand() % (G.height-5) * G.tcase;
+      B->bot[i].seg[0].x = G.width * G.tcase - G.tcase*2;
+      B->bot[i].seg[0].y = rand() % (G.height-9) * G.tcase + 2*G.tcase;
       B->bot[i].dir = LEFT;
     }
     if(var == 3) {
-      B->bot[i].seg[0].x = (rand() % G.width) * G.tcase;
+      B->bot[i].seg[0].x = rand() % (G.width-4) * G.tcase + 2*G.tcase;
       B->bot[i].seg[0].y = (G.height-1) * G.tcase - 56;
       B->bot[i].dir = UP;
     }
     if(var == 4) {
-      B->bot[i].seg[0].x = 0;
-      B->bot[i].seg[0].y = rand() % (G.height-5) * G.tcase;
+      B->bot[i].seg[0].x = G.tcase;
+      B->bot[i].seg[0].y = rand() % (G.height-9) * G.tcase + 2*G.tcase;
       B->bot[i].dir = RIGHT;
     }
     for(j = 1; j < B->bot[i].nbrseg; j++)
       B->bot[i].seg[j].x = (-G.tcase);
-    //printf("x: %d | y: %d | dir: %d\n", B->bot[i].seg[0].x, B->bot[i].seg[0].y, B->bot[i].dir);
+    printf("x: %d | y: %d | dir: %d\n", B->bot[i].seg[0].x, B->bot[i].seg[0].y, B->bot[i].dir);
   }
 }
 
@@ -189,14 +186,14 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     if(A.x[i] == (-G.tcase))
       continue;
 
-    if(posx == A.x[i] && (prevDir == LEFT || prevDir == RIGHT) && rand()%3 == 0) {
+    if(posx == A.x[i] && (prevDir == LEFT || prevDir == RIGHT) && rand()%2 == 0) {
       if(posy > A.y[i])
         B->bot[botNum].dir = UP;
       if(posy < A.y[i])
         B->bot[botNum].dir = DOWN;
       return;
     }
-    if(posy == A.y[i] && (prevDir == UP || prevDir == DOWN) && rand()%3 == 0) {
+    if(posy == A.y[i] && (prevDir == UP || prevDir == DOWN) && rand()%2 == 0) {
       if(posx > A.x[i])
         B->bot[botNum].dir = LEFT;
       if(posx < A.x[i])
@@ -206,19 +203,19 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
   }
 
   // Vérification des bordures
-  if(prevDir == UP && posy <= G.tcase*2) {
+  if(prevDir == UP && posy <= G.tcase*4) {
     B->bot[botNum].dir = rand()%2+3;
     return;
   }
-  if(prevDir == DOWN && posy >= (G.height * G.tcase)-55-G.tcase*2) {
+  if(prevDir == DOWN && posy >= (G.height * G.tcase)-55-G.tcase*4) {
     B->bot[botNum].dir = rand()%2+3;
     return;
   }
-  if(prevDir == LEFT && posx <= G.tcase*2) {
+  if(prevDir == LEFT && posx <= G.tcase*4) {
     B->bot[botNum].dir = rand()%2+1;
     return;
   }
-  if(prevDir == RIGHT && posx >= (G.width * G.tcase)-G.tcase*2) {
+  if(prevDir == RIGHT && posx >= (G.width * G.tcase)-G.tcase*4) {
     B->bot[botNum].dir = rand()%2+1;
     return;
   }
@@ -249,7 +246,7 @@ int verif (Game *G, Bodies *B, Wall W) {
       continue;
     botx = B->bot[i].seg[0].x;
     boty = B->bot[i].seg[0].y;
-    if(botx < 0 || botx > (G->width * G->tcase) || boty < 0 || boty > (G->height-1)*G->tcase-55)
+    if(botx < G->tcase || botx > (G->width-2) * G->tcase || boty < G->tcase || boty > (G->height-1)*G->tcase-55)
       B->bot[i].seg[0].x = (-G->tcase);
   }
 
@@ -260,12 +257,11 @@ int verif (Game *G, Bodies *B, Wall W) {
   // Verification bordures
   int x = B->snake.seg[0].x;
   int y = B->snake.seg[0].y;
-  if(x < 0 || x >= (G->width * G->tcase) || y < 0 || y > (G->height-1)*G->tcase-55) {
+  if(x < G->tcase || x > (G->width-2) * G->tcase || y < G->tcase || y > (G->height-1)*G->tcase-55)
     return 1;
-  }
 
   // Verification collision Body
-  for(i = 4 ; i <= B->snake.nbrseg ; i++) {
+  for(i = 4 ; i < B->snake.nbrseg ; i++) {
     if(x == B->snake.seg[i].x && y == B->snake.seg[i].y) {
       //printf("Collision bloc %d : %d | %d\n", i+1, x, y);
       //ChoisirCouleurDessin(choisirCouleur(G->theme, 'd'));
@@ -308,10 +304,10 @@ int verif (Game *G, Bodies *B, Wall W) {
   return 0;
 }
 
-void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
+void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 
   if(A->eaten == A->spawn)
-    return nextLevel(G, B, A, W, temps, S);
+    return nextLevel(G, B, A, W, temps);
 
   int i, j;
   for(i = 0 ; i < A->spawn ; i++) {
@@ -353,8 +349,8 @@ void randomApple (Game G, Bodies B, Apple *A) {
   while (j < A->spawn) {
 
     verif = 1;
-    posx = (rand() % G.width) * G.tcase;
-    posy = (rand() % G.height) * G.tcase;
+    posx = rand() % (G.width-2) * G.tcase + G.tcase;
+    posy = rand() % (G.height-4) * G.tcase + G.tcase;
     A->x[j] = posx;
     A->y[j] = posy;
 
@@ -385,8 +381,8 @@ void randomWall (Game G, Bodies B, Apple A, Wall *W) {
   while (j < W->spawn) {
 
     verif = 1;
-    posx = (rand() % G.width) * G.tcase;
-    posy = (rand() % G.height) * G.tcase;
+    posx = rand() % (G.width-2) * G.tcase + G.tcase;
+    posy = rand() % (G.height-4) * G.tcase + G.tcase;
     W->x[j] = posx;
     W->y[j] = posy; 
 

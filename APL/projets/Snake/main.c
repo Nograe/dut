@@ -12,12 +12,20 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
   int i;
+  char buf[10];
   *touche = 0;
 
   ChoisirEcran(0);
 
+  // Affichage du level
+  ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
+  sprintf(buf, "Level: %d", G.level+1);
+  RemplirRectangle(width/2-TailleChaineEcran(buf, 2)/2-20, 0, TailleChaineEcran(buf, 2)+40, 40);
+  ChoisirCouleurDessin(CouleurParNom("black"));
+  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, 30, buf, 2);
+
   #ifdef DEV
-  while(*touche != XK_space) {
+  while(*touche != XK_space && *touche != XK_Escape) {
 
     if(ToucheEnAttente())
       *touche = Touche();
@@ -75,11 +83,9 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   #else
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
-  while(*touche != XK_space)
+  while(*touche != XK_space && *touche != XK_Escape)
     *touche = Touche();
   #endif
-
-  *temps += Microsecondes() - tmp;
 
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/3pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
@@ -94,13 +100,13 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   usleep(600000);
 
-  *temps += 1800000;
+  *temps += Microsecondes() - tmp;
   while(ToucheEnAttente())
     Touche();
   *touche = 0;
 }
 
-void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S) {
+void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 
   G->level++;
   B->snake.nbrseg = B->initSize;
@@ -126,12 +132,6 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Set
   bodyInit(*G, B);
   randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
-
-  /*EffacerEcran(choisirCouleur(G->theme, 'b'));
-  ChoisirCouleurDessin(CouleurParNom("black"));
-  sprintf(buf, "LEVEL: %d", G->level+1);
-  EcrireTexte(width/2 - TailleChaineEcran("LEVEL: 00", 2)/2, height/2, buf, 2);
-  sleep(2);*/
   draw(*G, *B, *A, *W, *temps);
 
   int touche = XK_space;
@@ -155,7 +155,9 @@ void timer (Game G, Apple A, unsigned long temps) {
   #endif
 
   ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
-  RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
+  RemplirRectangle(0, 0, G.width*G.tcase, G.tcase);
+  RemplirRectangle(0, 0, G.tcase, G.height*G.tcase);
+  RemplirRectangle(G.width*G.tcase-G.tcase+1, 0, G.tcase, G.height*G.tcase);
 
   // Affichage temps
   png[11] = (min / 10) + '0';
@@ -179,17 +181,13 @@ void timer (Game G, Apple A, unsigned long temps) {
   png[11] = (G.score % 10) + '0';
   ChargerImage(png, 126, height - 40, 0, 0, 23, 31);
 
-  ChoisirCouleurDessin(CouleurParNom("black"));
-  int decal = 100;
   // Affichage Apple restantes
   if(G.dispApple) {
+    ChoisirCouleurDessin(CouleurParNom("black"));
     sprintf(buf, "%d/%d", A.eaten, A.spawn);
-    EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2-120, height-15, buf, 2);
+    EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, height-15, buf, 2);
     //ChargerImage("src/apple_18.png",width/2+TailleChaineEcran(buf, 2)/2-100, height - 39, 0, 0, 18, 18);
-    decal = 0;
   }
-  sprintf(buf, "Level: %d", G.level+1);
-  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2+100-decal, height-15, buf, 2);
 }
 
 /* void printscore (Game G) {
@@ -224,6 +222,8 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
 
   ChoisirEcran(1);
   EffacerEcran(choisirCouleur(G.theme, 'b'));
+  ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
+  RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
 
   // Dessin des Segments du Snake
   ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
@@ -253,7 +253,7 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   ChoisirCouleurDessin(choisirCouleur(G.theme, 'r'));
   for(i = 0 ; i < B.nbrBot ; i++) {
     for(j = 0; j < B.bot[i].nbrseg ; j++)
-      RemplirRectangle(B.bot[i].seg[j].x, B.bot[i].seg[j].y, G.tcase - 2, G.tcase - 2);
+      RemplirRectangle(B.bot[i].seg[j].x+1, B.bot[i].seg[j].y+1, G.tcase - 2, G.tcase - 2);
   }
 
   // Dessin des Yeux des Bots
@@ -302,13 +302,12 @@ int main () {
   unsigned long temps = Microsecondes();
   srand(time(NULL));
 
-  Settings S;
   Game G;
   Bodies B;
   Apple A;
   Wall W;
 
-  initGame(&G, &B, &A, &W, &S);
+  initGame(&G, &B, &A, &W);
 
   int touche, old_dir = 4;
 
@@ -336,14 +335,14 @@ int main () {
 
       verifPause(G, B, A, W, &touche, &temps);
       moveForward(G, &B, A, W);
-      verifApple(&G, &B, &A, &W, &temps, S);
+      verifApple(&G, &B, &A, &W, &temps);
       draw(G, B, A, W, temps);
       old_dir = B.snake.dir;
     }
 
     FermerGraphique();
     setScore(G);
-    dispMenu(&G, &B, &A, &W, &S);
+    dispMenu(&G, &B, &A, &W);
     temps = Microsecondes();
     old_dir = B.snake.dir;
     touche = 0;

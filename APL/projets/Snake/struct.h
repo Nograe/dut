@@ -59,14 +59,8 @@ typedef struct {
   int level;
   int initLevel;
   int dispApple;
+  char pseudo[11];
   Theme theme;
 } Game;
-
-typedef struct {
-  Game setG;
-  Bodies setB;
-  Apple setA;
-  Wall setW;
-} Settings;
 
 #endif

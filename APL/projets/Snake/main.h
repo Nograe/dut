@@ -10,7 +10,7 @@
 #include "struct.h"
 
 void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps);
-void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps, Settings S);
+void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps);
 void timer (Game G, Apple A, unsigned long temps);
 void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps);
 
