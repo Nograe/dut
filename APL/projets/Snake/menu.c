@@ -19,7 +19,6 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	G->width = 60;
 	G->height = 40;
-	G->initLevel = 0;
 	G->dispApple = 0;
 	strncpy(G->pseudo, getenv("USER"), 11);
 
@@ -140,7 +139,7 @@ void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	// Initialisation des Snake / Bots / Apple / Wall / Création de la fenêtre
 	G->score = 0;
-	G->level = G->initLevel;
+	G->level = 0;
 
 	B->snake.speed = B->initSpeed;
 	B->snake.nbrseg = B->initSize;
@@ -317,9 +316,9 @@ int verifScore (char *pseudo, int score) {
 // b : Background | d : Dessin | t : timer/score | r : bots
 couleur choisirCouleur (Theme T, char type) {
 
-	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0;
-	static int random = 35;
-	if(random > 35)
+	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
+	static int random = 100;
+	if(random > 100)
 		random = 0;
 
 	couleur C;
@@ -351,16 +350,20 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(255, 65, 30);
 	}
 	if(T == RANDOM) {
-		if(random == 35)
+		if(random == 100) {
 			randr = rand()%255, randv = rand()%255, randb = rand()%255;
+			randr1 = rand()%255, randv1 = rand()%255, randb1 = rand()%255;
+			randr2 = rand()%255, randv2 = rand()%255, randb2 = rand()%255;
+			randr3 = rand()%255, randv3 = rand()%255, randb3 = rand()%255;
+		}
 		if(type == 'b')
 			C = CouleurParComposante(randr, randv, randb);
-		if(random == 35)
-			randr1 = rand()%255, randv1 = rand()%255, randb1 = rand()%255;
 		if(type == 'd')
 			C = CouleurParComposante(randr1, randv1, randb1);
-		if(type == 'p')
-			C = CouleurParComposante(0, 0, 0);
+		if(type == 't')
+			C = CouleurParComposante(randr2, randv2, randb2);
+		if(type == 'r')
+			C = CouleurParComposante(randr3, randv3, randb3);
 		random++;
 	}
 

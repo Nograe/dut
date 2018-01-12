@@ -57,7 +57,6 @@ typedef struct {
   int tcase;
   int score;
   int level;
-  int initLevel;
   int dispApple;
   char pseudo[11];
   Theme theme;

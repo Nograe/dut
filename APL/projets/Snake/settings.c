@@ -136,7 +136,7 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
-	int touche = 0, decalB = 0, decalW = 0, decalS = 0;
+	int touche = 0, decalB = 0, decalW = 0;
 	char buf[10];
 
 	ChoisirCouleurDessin(CouleurParNom("black"));
@@ -161,7 +161,6 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 		// Décalage du texte (détail)
 		(B->nbrBot >= 10) ? (decalB = 6) : (decalB = 0);
 		(W->initSpawn >= 10) ? (decalW = 10) : (decalW = 0);
-		(B->initSpeed >= 10) ? (decalS = 6) : (decalS = 0);
 
 		sprintf(buf, "%d", B->nbrBot);
 		EcrireTexte(170-decalB, 284, buf, 2);
@@ -170,7 +169,7 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 		sprintf(buf, "%d", G->tcase);
 		EcrireTexte(164, 486, buf, 2);
 		sprintf(buf, "%d", B->initSpeed%10);
-		EcrireTexte(675-decalS, 487, buf, 2);
+		EcrireTexte(675, 486, buf, 2);
 		if(G->theme == 1)
 			EcrireTexte(392, 375, "Retro", 2);
 		if(G->theme == 2)
@@ -204,14 +203,26 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 				B->nbrBot = 99;
 		}
 
-		if(_X >= 92 && _X <= 92+35 && _Y >= 458 && _Y <= 458+35)
-		if(_X >= 228 && _X <= 228+35 && _Y >= 458 && _Y <= 458+35)
+		if(_X >= 92 && _X <= 92+35 && _Y >= 458 && _Y <= 458+35 && G->tcase > 10)
+			G->tcase-=4;
+		if(_X >= 228 && _X <= 228+35 && _Y >= 458 && _Y <= 458+35 && G->tcase < 18)
+			G->tcase+=4;
 
-		if(_X >= 590 && _X <= 590+35 && _Y >= 458 && _Y <= 458+35)
-		if(_X >= 726 && _X <= 726+35 && _Y >= 458 && _Y <= 458+35)
+		if(_X >= 590 && _X <= 590+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed < 97001)
+				B->initSpeed+=8999;
+		if(_X >= 726 && _X <= 726+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed > 25009)
+				B->initSpeed-=8999;
 
-		if(_X >= 334 && _X <= 334+35 && _Y >= 347 && _Y <= 34735)
-		if(_X >= 485 && _X <= 485+35 && _Y >= 347 && _Y <= 34735)
+		if(_X >= 334 && _X <= 334+35 && _Y >= 347 && _Y <= 347+35) {
+			G->theme--;
+			if(G->theme == 0)
+				G->theme = 4;
+		}
+		if(_X >= 485 && _X <= 485+35 && _Y >= 347 && _Y <= 347+35) {
+			G->theme++;
+			if(G->theme == 5)
+				G->theme = 1;
+		}
 
 		_X = 0;
 		_Y = 0;
