@@ -317,7 +317,13 @@ int verifScore (char *pseudo, int score) {
 couleur choisirCouleur (Theme T, char type) {
 
 	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
-	static int random = 100;
+	static int random = 101;
+	
+	if(random == 101) {
+		randr1 = rand()%255, randv1 = rand()%255, randb1 = rand()%255;
+		randr2 = rand()%255, randv2 = rand()%255, randb2 = rand()%255;
+		randr3 = rand()%255, randv3 = rand()%255, randb3 = rand()%255;
+	}
 	if(random > 100)
 		random = 0;
 
@@ -350,12 +356,8 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(255, 65, 30);
 	}
 	if(T == RANDOM) {
-		if(random == 100) {
+		if(random == 100)
 			randr = rand()%255, randv = rand()%255, randb = rand()%255;
-			randr1 = rand()%255, randv1 = rand()%255, randb1 = rand()%255;
-			randr2 = rand()%255, randv2 = rand()%255, randb2 = rand()%255;
-			randr3 = rand()%255, randv3 = rand()%255, randb3 = rand()%255;
-		}
 		if(type == 'b')
 			C = CouleurParComposante(randr, randv, randb);
 		if(type == 'd')
