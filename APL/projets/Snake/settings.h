@@ -9,5 +9,6 @@
 
 void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W);
 void advSettings (Game *G, Bodies *B, Wall *W);
+void setDefaultSettings ();
 
 #endif

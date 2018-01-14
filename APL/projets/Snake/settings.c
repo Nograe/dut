@@ -169,7 +169,7 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 		sprintf(buf, "%d", G->tcase);
 		EcrireTexte(164, 486, buf, 2);
 		sprintf(buf, "%d", B->initSpeed%10);
-		EcrireTexte(675, 486, buf, 2);
+		EcrireTexte(670, 486, buf, 2);
 		if(G->theme == 1)
 			EcrireTexte(392, 375, "Retro", 2);
 		if(G->theme == 2)
@@ -232,4 +232,25 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 			touche = Touche();
 	}
 	while(SourisCliquee());
+}
+
+void setDefaultSettings () {
+
+	FILE *fichier = fopen("src/settings", "a");
+	fichier = fopen("src/settings", "r+");
+
+  // Attribution VARIABLES DEFAUT
+	fprintf(fichier, "%d\n", 60);
+	fprintf(fichier, "%d\n", 40);
+	fprintf(fichier, "%d\n", 14);
+	fprintf(fichier, "%d\n", 0);
+	fprintf(fichier, "%s\n", "TheDev");
+	fprintf(fichier, "%d\n", 3);
+	fprintf(fichier, "%d\n", 10);
+	fprintf(fichier, "%d\n", 70004);
+	fprintf(fichier, "%d\n", 0);
+	fprintf(fichier, "%d\n", 5);
+	fprintf(fichier, "%d\n", 0);
+
+	fclose(fichier);
 }

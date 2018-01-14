@@ -8,27 +8,27 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 	FILE *fichier = NULL;
 	fichier = fopen("src/scores", "a");
 	fclose(fichier);
-	fichier = fopen("src/settings", "a");
-	fclose(fichier);
-	fichier = fopen("src/settings", "r+");
+	fichier = fopen("src/settings", "r");
+
+	if(fichier == NULL) {
+		printf("Redirection vers l'attribution des paramètres par défaut.\n");
+		setDefaultSettings();
+		fichier = fopen("src/settings", "r");
+	}
 
 	int i, var;
 	for(i = 0; i < 11; i++) {
-		if(i == 0) {
+		if(i == 0)
 			fscanf(fichier, "%d", &G->width);
-		printf("%d: %d\n", i, G->width);
-		}
 		if(i == 1)
 			fscanf(fichier, "%d", &G->height);
-		printf("%d: %d\n", i, G->height);
 		if(i == 2)
 			fscanf(fichier, "%d", &G->tcase);
-		printf("%d: %d\n", i, G->tcase);
 		if(i == 3)
 			fscanf(fichier, "%d", &G->dispApple);
 		if(i == 4 && fgetc(fichier) == '.') 
 			strncpy(G->pseudo, getenv("USER"), 11);
-		else {
+		else if(i == 4) {
 			fseek(fichier, -1, SEEK_CUR);
 			fscanf(fichier, "%s", G->pseudo);
 		}
@@ -46,24 +46,6 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 			fscanf(fichier, "%d", &W->initSpawn);
 		while(fgetc(fichier) != '\n');
 	}
-
-  // Attribution VARIABLES DEFAUT
-  // BETA
-	G->tcase = 14;
-
-	G->width = 60;
-	G->height = 40;
-	G->dispApple = 0;
-	strncpy(G->pseudo, getenv("USER"), 11);
-  G->theme = MODERN;
-
-	B->initSize = 10;
-	B->initSpeed = 70004;
-	B->nbrBot = 0;
-
-	A->initSpawn = 5;
-
-	W->initSpawn = 10;
 
 	fclose(fichier);
 
@@ -178,12 +160,12 @@ void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	B->snake.speed = B->initSpeed;
 	B->snake.nbrseg = B->initSize;
-	B->snake.seg = malloc((B->snake.nbrseg+1) * sizeof(Segment));
+	B->snake.seg = malloc((B->snake.nbrseg) * sizeof(Segment));
 	B->bot = malloc(B->nbrBot * sizeof(Body));
 	int i;
 	for(i = 0; i < B->nbrBot; i++) {
     B->bot[i].nbrseg = 5;
-		B->bot[i].seg = malloc(5 * sizeof(Segment));
+		B->bot[i].seg = malloc((B->bot[i].nbrseg) * sizeof(Segment));
 	}
 	bodyInit(*G, B);
 
@@ -253,8 +235,8 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	}
 
 	#ifdef DEV
-		for(i = 0 ; i < line ; i++)
-			printf("score %d: %d\n", scores[i][1], scores[i][0]);
+	for(i = 0 ; i < line ; i++)
+		printf("score %d: %d\n", scores[i][1], scores[i][0]);
 	#endif
 
 	// Récupération et affichage du pseudo | score
@@ -309,7 +291,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 void setScore (Game G) {
 
 	// On quitte si le score est inférieur à 1 ou son pseudo est déjà inscrit avec le même score
-	if(G.score < 1 || verifScore(getenv("USER"), G.score))
+	if(G.score < 1 || verifScore(G.pseudo, G.score))
 		return;
 
 	FILE* fichier = NULL;
@@ -351,7 +333,7 @@ int verifScore (char *pseudo, int score) {
 // b : Background | d : Dessin | t : timer/score | r : bots
 couleur choisirCouleur (Theme T, char type) {
 
-	static int randr = 0, randv = 0, randb = 0, randr1 = 0, randv1 = 0, randb1 = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
+	static int randr = 0, randv = 0, randb = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
 	static int random = -1;
 	
 	if(random == -1) {
@@ -366,19 +348,23 @@ couleur choisirCouleur (Theme T, char type) {
 
 	if(T == RETRO) {
 		if(type == 'b')
-			C = CouleurParNom("NULL");
+			C = CouleurParComposante(24, 89, 60);
 		if(type == 'd')
-			C = CouleurParNom("NULL");
-		if(type == 'p')
-			C = CouleurParNom("NULL");
+			C = CouleurParComposante(200, 145, 0);
+		if(type == 't')
+			C = CouleurParComposante(4, 69, 40);
+		if(type == 'r')
+			C = CouleurParComposante(255, 65, 30);
 	}
 	if(T == CLASSIC) {
 		if(type == 'b')
-			C = CouleurParNom("NULL");
+			C = CouleurParComposante(24, 89, 60);
 		if(type == 'd')
-			C = CouleurParNom("NULL");
-		if(type == 'p')
-			C = CouleurParNom("NULL");
+			C = CouleurParComposante(200, 145, 0);
+		if(type == 't')
+			C = CouleurParComposante(4, 69, 40);
+		if(type == 'r')
+			C = CouleurParComposante(255, 65, 30);
 	}
 	if(T == MODERN) {
 		if(type == 'b')
@@ -391,12 +377,10 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(255, 65, 30);
 	}
 	if(T == RANDOM) {
-		if(random == 100)
-			randr1 = rand()%255, randv1 = rand()%255, randb1 = rand()%255;
 		if(type == 'b')
 			C = CouleurParComposante(randr, randv, randb);
 		if(type == 'd')
-			C = CouleurParComposante(randr1, randv1, randb1);
+			C = CouleurParComposante(rand()%255, rand()%255, rand()%255);
 		if(type == 't')
 			C = CouleurParComposante(randr2, randv2, randb2);
 		if(type == 'r')

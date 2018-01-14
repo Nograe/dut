@@ -110,7 +110,7 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 
   G->level++;
   B->snake.nbrseg = B->initSize;
-  B->snake.seg = realloc(B->snake.seg, (B->snake.nbrseg+1) * sizeof(Segment));
+  B->snake.seg = realloc(B->snake.seg, (B->snake.nbrseg) * sizeof(Segment));
   B->snake.speed -= 6500;
   int i;
   for(i = 0; i < B->nbrBot; i++) {
@@ -214,7 +214,7 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
 
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
-  int i, j;
+  int i, j, posx, posy, pvposx, pvposy, nxposx, nxposy;
   char bufapple[17] = "src/apple_1X.png";
   char bufwall[16] = "src/wall_1X.png";
   bufapple[11] = G.tcase%10 + '0';
@@ -226,9 +226,36 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
 
   // Dessin des Segments du Snake
-  ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
-  for(i = 0 ; i < B.snake.nbrseg ; i++)
-    RemplirRectangle(B.snake.seg[i].x+1, B.snake.seg[i].y+1, G.tcase - 2, G.tcase - 2);
+  for(i = 0 ; i < B.snake.nbrseg ; i++) {
+    ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
+    posx = B.snake.seg[i].x;
+    posy = B.snake.seg[i].y;
+    j = 0;
+    if(i > 0 && i < B.snake.nbrseg-1) {
+      pvposx = B.snake.seg[i-1].x;
+      pvposy = B.snake.seg[i-1].y;
+      nxposx = B.snake.seg[i+1].x;
+      nxposy = B.snake.seg[i+1].y;
+      if((pvposx == posx + G.tcase && pvposy == posy && nxposx == posx && nxposy == posy + G.tcase) || (nxposx == posx + G.tcase && nxposy == posy && pvposx == posx && pvposy == posy + G.tcase)) {
+        RemplirArc(posx, posy, G.tcase*2-1, G.tcase*2-1, 90, 90);
+        j = 1;
+      }
+      if((pvposx == posx - G.tcase && pvposy == posy && nxposx == posx && nxposy == posy + G.tcase) || (nxposx == posx - G.tcase && nxposy == posy && pvposx == posx && pvposy == posy + G.tcase)) {
+        RemplirArc(posx-G.tcase+1, posy, G.tcase*2-1, G.tcase*2-1, 0, 90);
+        j = 1;
+      }
+      if((pvposx == posx && pvposy == posy - G.tcase && nxposx == posx + G.tcase && nxposy == posy) || (nxposx == posx && nxposy == posy - G.tcase && pvposx == posx + G.tcase && pvposy == posy)) {
+        RemplirArc(posx, posy-G.tcase+1, G.tcase*2-1, G.tcase*2-1, 180, 90);
+        j = 1;
+      }
+      if((pvposx == posx && pvposy == posy - G.tcase && nxposx == posx - G.tcase && nxposy == posy) || (nxposx == posx && nxposy == posy - G.tcase && pvposx == posx - G.tcase && pvposy == posy)) {
+        RemplirArc(posx-G.tcase+1, posy-G.tcase+1, G.tcase*2-1, G.tcase*2-1, 270, 90);
+        j = 1;
+      }
+    }
+    if(j != 1)
+      RemplirRectangle(posx+1, posy+1, G.tcase-1, G.tcase-1);
+  }
 
   // Dessin des Yeux du Snake
   ChoisirCouleurDessin(CouleurParNom("black"));
