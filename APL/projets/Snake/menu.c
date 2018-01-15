@@ -33,20 +33,18 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 	CreerFenetre(500, 300, width, height);
 	ChoisirEcran(2);
 
+	while (1) {
+
+		ChargerImageFond("src/menu_bg.png");
+
 	#ifdef DEV
 		DessinerSegment(width/2, 0, width/2, height);
 		DessinerSegment(0, height/2, width, height/2);
+		DessinerRectangle(340, 190, 160, 80);
+		DessinerRectangle(245, 290, 350, 70);
+		DessinerRectangle(295, 385, 250, 70);
+		DessinerRectangle(360, 470, 120, 60);
 	#endif
-
-	while (1) {
-
-		EffacerEcran(CouleurParComposante(21, 97, 49));
-		ChargerImage("src/fonts/snake.png", tcase * 15.5, tcase * 4, 0, 0, 421, 72);
-		ChargerImage("src/fonts/play.png", tcase * 25.5, tcase * 14, 0, 0, 128, 52);
-		ChargerImage("src/fonts/highscores.png", tcase * 19, tcase * 21, 0, 0, 328, 52);
-		ChargerImage("src/fonts/settings.png", tcase * 22, tcase * 28, 0, 0, 225, 52);
-		ChargerImage("src/fonts/quit.png", tcase * 26.5, tcase * 35, 0, 0, 91, 42);
-		ChargerImageFond("src/menu_bg.png");
 
 		SourisPosition();
 
@@ -83,20 +81,20 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 				quit(*G, *B, *A, *W);
 		}
 
-		if(_X >= (tcase * 25.5) && _X <= (tcase * 25.5 + 128) && _Y >= (tcase * 14) && _Y <= (tcase * 14 + 52) || old == 1) {
-			ChargerImage("src/fonts/select.png", tcase * 23, tcase * 14.5, 0, 0, 19, 28);
+		if(_X >= 340 && _X <= 340+160 && _Y >= 190 && _Y <= 190+80 || old == 1) {
+			ChargerImage("src/fonts/select.png", 340-19, 215, 0, 0, 19, 28);
 			old = 1;
 		}
-		if(_X >= (tcase * 19) && _X <= (tcase * 19 + 328) && _Y >= (tcase * 21) && _Y <= (tcase * 21 + 52) || old == 2) {
-			ChargerImage("src/fonts/select.png", tcase * 16.5, tcase * 21.5, 0, 0, 19, 28);
+		if(_X >= 245 && _X <= 245+350 && _Y >= 290 && _Y <= 290+70 || old == 2) {
+			ChargerImage("src/fonts/select.png", 245-19, 313, 0, 0, 19, 28);
 			old = 2;
 		}
-		if(_X >= (tcase * 22) && _X <= (tcase * 22 + 225) && _Y >= (tcase * 28) && _Y <= (tcase * 28 + 52) || old == 3) {
-			ChargerImage("src/fonts/select.png", tcase * 19.5, tcase * 28.5, 0, 0, 19, 28);
+		if(_X >= 295 && _X <= 295+250 && _Y >= 385 && _Y <= 385+70 || old == 3) {
+			ChargerImage("src/fonts/select.png", 295-19, 403, 0, 0, 19, 28);
 			old = 3;
 		}
-		if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42) || old == 4) {
-			ChargerImage("src/fonts/select.png", tcase * 24, tcase * 35.5, 0, 0, 19, 28);
+		if(_X >= 360 && _X <= 360+120 && _Y >= 470 && _Y <= 470+60 || old == 4) {
+			ChargerImage("src/fonts/select.png", 360-19, 487, 0, 0, 19, 28);
 			old = 4;
 		}
 
@@ -162,8 +160,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	int touche = 0, temp, temp_l, posy = 120, posx = 320;
 	char buf[6], player[11];
 
-	EffacerEcran(CouleurParComposante(21, 97, 49));
-	ChargerImage("src/fonts/highscores_title.png", 14 * 11.75, 14 * 4, 0, 0, 523, 45);
+	ChargerImageFond("src/hs_bg.png");
 	ChoisirCouleurDessin(CouleurParNom("black"));
 
 	FILE* fichier = NULL;
