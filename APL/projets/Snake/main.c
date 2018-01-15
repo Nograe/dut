@@ -19,10 +19,12 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
 
   // Affichage du level
   ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
-  sprintf(buf, "Level: %d", G.level+1);
-  RemplirRectangle(width/2-TailleChaineEcran(buf, 2)/2-20, 0, TailleChaineEcran(buf, 2)+40, 40);
-  ChoisirCouleurDessin(CouleurParNom("black"));
-  EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, 30, buf, 2);
+  if(G.dispApple) {
+    sprintf(buf, "Apples: %d/%d", A.eaten, A.spawn);
+    RemplirRectangle(width/2-TailleChaineEcran(buf, 2)/2-20, 0, TailleChaineEcran(buf, 2)+40, 40);
+    ChoisirCouleurDessin(CouleurParNom("black"));
+    EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, 30, buf, 2);
+  }
 
   #ifdef DEV
   while(*touche != XK_space && *touche != XK_Escape) {
@@ -180,14 +182,6 @@ void timer (Game G, Apple A, unsigned long temps) {
   ChargerImage(png, 98, height - 40, 0, 0, 23, 31);
   png[11] = (G.score % 10) + '0';
   ChargerImage(png, 126, height - 40, 0, 0, 23, 31);
-
-  // Affichage Apple restantes
-  if(G.dispApple) {
-    ChoisirCouleurDessin(CouleurParNom("black"));
-    sprintf(buf, "%d/%d", A.eaten, A.spawn);
-    EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, height-15, buf, 2);
-    //ChargerImage("src/apple_18.png",width/2+TailleChaineEcran(buf, 2)/2-100, height - 39, 0, 0, 18, 18);
-  }
 }
 
 /* void printscore (Game G) {
@@ -315,10 +309,15 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   for(i = 0 ; i < W.spawn ; i++)
     ChargerImage(bufwall, W.x[i], W.y[i], 0, 0, G.tcase, G.tcase);
 
-  // Chargement du Temps - Score - Apple
+  // Chargement du Temps - Score
   timer(G, A, temps);
   if(Microsecondes()/300000%2 == 0)
     ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+
+  // Affichage Level
+  ChoisirCouleurDessin(CouleurParNom("black"));
+  sprintf(bufapple, " Level: %d", G.level+1);
+  EcrireTexte(width/2-TailleChaineEcran(bufapple, 2)/2, height-15, bufapple, 2);
 
   ChoisirEcran(0);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);

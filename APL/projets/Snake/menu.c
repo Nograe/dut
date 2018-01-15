@@ -84,7 +84,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 			touche = Touche();
 
 		if(touche == XK_Escape)
-			quit();
+			quit(*G, *B, *A, *W);
 		if(touche == XK_Down || touche == XK_s) {
 			if(old == 3)
 				old = 4;
@@ -109,7 +109,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 			if(old == 3)
 				dispSettings(G, B, A, W);
 			if(old == 4)
-				quit();
+				quit(*G, *B, *A, *W);
 		}
 
 		if(_X >= (tcase * 25.5) && _X <= (tcase * 25.5 + 128) && _Y >= (tcase * 14) && _Y <= (tcase * 14 + 52) || old == 1) {
@@ -143,9 +143,10 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 				continue;
 			}
 			if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42))
-				quit();
+				quit(*G, *B, *A, *W);
 			_X = 0;
 			_Y = 0;
+			usleep(10000);
 		}
 	}
 }
@@ -334,15 +335,14 @@ int verifScore (char *pseudo, int score) {
 couleur choisirCouleur (Theme T, char type) {
 
 	static int randr = 0, randv = 0, randb = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
-	static int random = -1;
+	static int random = 0;
 	
-	if(random == -1) {
+	if(random != -1) {
 		randr = rand()%255, randv = rand()%255, randb = rand()%255;
 		randr2 = rand()%255, randv2 = rand()%255, randb2 = rand()%255;
 		randr3 = rand()%255, randv3 = rand()%255, randb3 = rand()%255;
+		random = -1;
 	}
-	if(random > 100 || random < 0)
-		random = 0;
 
 	couleur C;
 
@@ -385,14 +385,14 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(randr2, randv2, randb2);
 		if(type == 'r')
 			C = CouleurParComposante(randr3, randv3, randb3);
-		random++;
 	}
 
 	return C;
 }
 
-void quit () {
+void quit (Game G, Bodies B, Apple A, Wall W) {
 
+	setNewSettings(G, B, A, W);
 	FermerGraphique();
 	printf("▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué ! █ ▇ ▆ ▅ ▄ ▂ ▁\n");
 	exit(0);

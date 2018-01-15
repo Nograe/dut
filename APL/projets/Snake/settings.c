@@ -59,8 +59,8 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 		if(_X >= 92 && _X <= 92+35 && _Y >= 226 && _Y <= 226+35) {
 			G->width -= 2;
-			if(G->width < 24 && G->tcase == 14)
-				G->width = 24;
+			if(G->width < 30)
+				G->width = 30;
 			verif = 1;
 		}
 		if(_X >= 228 && _X <= 228+35 && _Y >= 226 && _Y <= 226+35) {
@@ -136,7 +136,7 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
-	int touche = 0, decalB = 0, decalW = 0;
+	int touche = 0, decalB = 0, decalW = 0, verif = 0;
 	char buf[10];
 
 	ChoisirCouleurDessin(CouleurParNom("black"));
@@ -185,49 +185,65 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 			B->nbrBot--;
 			if(B->nbrBot < 0)
 				B->nbrBot = 0;
+			verif = 1;
 		}
 		if(_X >= 226 && _X <= 226+35 && _Y >= 255 && _Y <= 255+35) {
 			B->nbrBot++;
 			if(B->nbrBot > 99)
 				B->nbrBot = 99;
+			verif = 1;
 		}
 
 		if(_X >= 590 && _X <= 590+35 && _Y >= 256 && _Y <= 256+35) {
 			W->initSpawn--;
 			if(B->nbrBot < 0)
 				B->nbrBot = 0;
+			verif = 1;
 		}
 		if(_X >= 726 && _X <= 726+35 && _Y >= 256 && _Y <= 256 +35) {
 			W->initSpawn++;
 			if(B->nbrBot > 99)
 				B->nbrBot = 99;
+			verif = 1;
 		}
 
-		if(_X >= 92 && _X <= 92+35 && _Y >= 458 && _Y <= 458+35 && G->tcase > 10)
+		if(_X >= 92 && _X <= 92+35 && _Y >= 458 && _Y <= 458+35 && G->tcase > 10) {
 			G->tcase-=4;
-		if(_X >= 228 && _X <= 228+35 && _Y >= 458 && _Y <= 458+35 && G->tcase < 18)
+			verif = 1;
+		}
+		if(_X >= 228 && _X <= 228+35 && _Y >= 458 && _Y <= 458+35 && G->tcase < 18) {
 			G->tcase+=4;
+			verif = 1;
+		}
 
-		if(_X >= 590 && _X <= 590+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed < 97001)
+		if(_X >= 590 && _X <= 590+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed < 97001) {
 				B->initSpeed+=8999;
-		if(_X >= 726 && _X <= 726+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed > 25009)
+				verif = 1;
+		}
+		if(_X >= 726 && _X <= 726+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed > 25009) {
 				B->initSpeed-=8999;
+				verif = 1;
+		}
 
 		if(_X >= 334 && _X <= 334+35 && _Y >= 347 && _Y <= 347+35) {
 			G->theme--;
 			if(G->theme == 0)
 				G->theme = 4;
+			verif = 1;
 		}
 		if(_X >= 485 && _X <= 485+35 && _Y >= 347 && _Y <= 347+35) {
 			G->theme++;
 			if(G->theme == 5)
 				G->theme = 1;
+			verif = 1;
 		}
 
 		_X = 0;
 		_Y = 0;
 		CopierZone(2, 0, 0, 0, width, height, 0, 0);
-		
+		while(!verif && !SourisCliquee() && !ToucheEnAttente());
+		verif = 0;
+
 		if(ToucheEnAttente())
 			touche = Touche();
 	}
@@ -251,6 +267,28 @@ void setDefaultSettings () {
 	fprintf(fichier, "%d\n", 0);
 	fprintf(fichier, "%d\n", 5);
 	fprintf(fichier, "%d\n", 0);
+
+	fclose(fichier);
+}
+
+void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
+
+	remove("src/settings");
+	FILE *fichier = fopen("src/settings", "a");
+	fichier = fopen("src/settings", "r+");
+
+  // Attribution nouveaux paramètres
+	fprintf(fichier, "%d\n", G.width);
+	fprintf(fichier, "%d\n", G.height);
+	fprintf(fichier, "%d\n", G.tcase);
+	fprintf(fichier, "%d\n", G.dispApple);
+	fprintf(fichier, "%s\n", G.pseudo);
+	fprintf(fichier, "%d\n", G.theme);
+	fprintf(fichier, "%d\n", B.initSize);
+	fprintf(fichier, "%d\n", B.initSpeed);
+	fprintf(fichier, "%d\n", B.nbrBot);
+	fprintf(fichier, "%d\n", A.initSpawn);
+	fprintf(fichier, "%d\n", W.initSpawn);
 
 	fclose(fichier);
 }
