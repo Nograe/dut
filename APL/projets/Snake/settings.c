@@ -16,8 +16,12 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		else
 			src[15] = '2';
 		ChargerImageFond(src);
+		ChargerImage("src/user.png", 15, height-65, 0, 0, 50, 50);
+		ChargerImage("src/settings.png", width-65, height-65, 0, 0, 50, 50);
 
 		#ifdef DEV
+			DessinerRectangle(15, height-65, 50, 50);
+			DessinerRectangle(width-65, height-65, 50, 50);
 			DessinerSegment(width/2, 0, width/2, height);
 			DessinerSegment(0, height/2, width, height/2);		
 			DessinerRectangle(92, 226, 35, 35);
@@ -37,7 +41,7 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		// Décalage du texte (détail)
 		(G->width >= 100) ? (decalW = 6) : (decalW = 0);
 		(G->height >= 100) ? (decalH = 6) : (decalH = 0);
-		(B->initSize >= 100) ? (decalB = 6) : (decalB = 0);
+		(B->initSize < 10) ? (decalB = 6) : (decalB = 0);
 		(A->initSpawn >= 10) ? (decalA = 6) : (decalA = 0);
 
 		sprintf(buf, "%d", G->width);
@@ -45,9 +49,25 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		sprintf(buf, "%d", G->height);
 		EcrireTexte(665-decalH, 254, buf, 2);
 		sprintf(buf, "%d", B->initSize);
-		EcrireTexte(166-decalB, 426, buf, 2);
+		EcrireTexte(166+decalB, 426, buf, 2);
 		sprintf(buf, "%d", A->initSpawn);
 		EcrireTexte(670-decalA, 426, buf, 2);
+
+		if(_X >= 15 && _X <= 65 && _Y >= height-65 && _Y <= height-15) {
+			changePseudo(G);
+			ChoisirEcran(2);
+			while(SourisCliquee());
+			_X = 0;
+			_Y = 0;
+			verif = 1;
+		}
+		if(_X >= width-65 && _X <= width-15 && _Y >= height-65 && _Y <= height-15) {
+			setDefaultSettings(G, B, A, W);
+			FILE *fichier = fopen("src/settings", "r");
+			readSettings(fichier, G, B, A, W);
+			fclose(fichier);
+			verif = 1;
+		}
 
 		if(_X >= 388 && _X <= 388+81 && _Y >= 310 && _Y <= 310+48) {
 			if(!G->dispApple)
@@ -160,12 +180,12 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 
 		// Décalage du texte (détail)
 		(B->nbrBot >= 10) ? (decalB = 6) : (decalB = 0);
-		(W->initSpawn >= 10) ? (decalW = 10) : (decalW = 0);
+		(W->initSpawn >= 10) ? (decalW = 6) : (decalW = 0);
 
 		sprintf(buf, "%d", B->nbrBot);
 		EcrireTexte(170-decalB, 284, buf, 2);
 		sprintf(buf, "%d", W->initSpawn);
-		EcrireTexte(675-decalW, 284, buf, 2);
+		EcrireTexte(670-decalW, 284, buf, 2);
 		sprintf(buf, "%d", G->tcase);
 		EcrireTexte(164, 486, buf, 2);
 		sprintf(buf, "%d", B->initSpeed%10);
@@ -260,7 +280,7 @@ void setDefaultSettings () {
 	fprintf(fichier, "%d\n", 40);
 	fprintf(fichier, "%d\n", 14);
 	fprintf(fichier, "%d\n", 0);
-	fprintf(fichier, "%s\n", "TheDev");
+	fprintf(fichier, "%s\n", getenv("USER"));
 	fprintf(fichier, "%d\n", 3);
 	fprintf(fichier, "%d\n", 10);
 	fprintf(fichier, "%d\n", 70004);
@@ -291,4 +311,77 @@ void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
 	fprintf(fichier, "%d\n", W.initSpawn);
 
 	fclose(fichier);
+}
+
+void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W) {
+
+	int i;
+	for(i = 0; i < 11; i++) {
+		if(i == 0)
+			fscanf(fichier, "%d", &G->width);
+		if(i == 1)
+			fscanf(fichier, "%d", &G->height);
+		if(i == 2)
+			fscanf(fichier, "%d", &G->tcase);
+		if(i == 3)
+			fscanf(fichier, "%d", &G->dispApple);
+		if(i == 4)
+			fscanf(fichier, "%s", G->pseudo);
+		if(i == 5)
+			fscanf(fichier, "%u", &G->theme);
+		if(i == 6)
+			fscanf(fichier, "%d", &B->initSize);
+		if(i == 7)
+			fscanf(fichier, "%d", &B->initSpeed);
+		if(i == 8)
+			fscanf(fichier, "%d", &B->nbrBot);
+		if(i == 9)
+			fscanf(fichier, "%d", &A->initSpawn);
+		if(i == 10)
+			fscanf(fichier, "%d", &W->initSpawn);
+		while(fgetc(fichier) != '\n');
+	}
+}
+
+void changePseudo (Game *G) {
+
+	int width = 60*14, height = 40*14;
+	int i = 0, touche = -1, modif = 0;
+	char pseudo[11];
+
+	strncpy(pseudo, G->pseudo, 11);
+	while((int)pseudo[i] >= 32 && (int)pseudo[i] <= 126)
+		i++;
+
+	ChoisirEcran(3);
+
+	while(touche != XK_Return || i < 1) {
+
+		EffacerEcran(CouleurParComposante(21, 97, 49));
+		EcrireTexte(width/2, height/2, pseudo, 2);
+		CopierZone(3, 0, 0, 0, width, height, 0, 0);
+
+		if((int)touche == 65288 && i > 0) {
+			pseudo[i-1] = '\0';
+			i--;
+			touche = 0;
+			modif = 1;
+		}
+		if((int)touche >= 32 && (int)touche <= 126 && i < 10) {
+			pseudo[i] = touche;
+			i++;
+			pseudo[i] = '\0';
+			touche = 0;
+			modif = 1;
+		}
+
+		if(ToucheEnAttente() || modif == 0) {
+			touche = Touche();
+			modif = 0;
+		}
+		if(touche == XK_Escape)
+			return;
+	}
+
+	strncpy(G->pseudo, pseudo, 11);
 }

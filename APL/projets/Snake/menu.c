@@ -11,42 +11,12 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 	fichier = fopen("src/settings", "r");
 
 	if(fichier == NULL) {
-		printf("Redirection vers l'attribution des paramètres par défaut.\n");
+		//printf("Redirection vers l'attribution des paramètres par défaut.\n");
 		setDefaultSettings();
 		fichier = fopen("src/settings", "r");
 	}
 
-	int i, var;
-	for(i = 0; i < 11; i++) {
-		if(i == 0)
-			fscanf(fichier, "%d", &G->width);
-		if(i == 1)
-			fscanf(fichier, "%d", &G->height);
-		if(i == 2)
-			fscanf(fichier, "%d", &G->tcase);
-		if(i == 3)
-			fscanf(fichier, "%d", &G->dispApple);
-		if(i == 4 && fgetc(fichier) == '.') 
-			strncpy(G->pseudo, getenv("USER"), 11);
-		else if(i == 4) {
-			fseek(fichier, -1, SEEK_CUR);
-			fscanf(fichier, "%s", G->pseudo);
-		}
-		if(i == 5)
-			fscanf(fichier, "%u", &G->theme);
-		if(i == 6)
-			fscanf(fichier, "%d", &B->initSize);
-		if(i == 7)
-			fscanf(fichier, "%d", &B->initSpeed);
-		if(i == 8)
-			fscanf(fichier, "%d", &B->nbrBot);
-		if(i == 9)
-			fscanf(fichier, "%d", &A->initSpawn);
-		if(i == 10)
-			fscanf(fichier, "%d", &W->initSpawn);
-		while(fgetc(fichier) != '\n');
-	}
-
+	readSettings(fichier, G, B, A, W);
 	fclose(fichier);
 
 	dispMenu(G, B, A, W);
@@ -76,6 +46,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 		ChargerImage("src/fonts/highscores.png", tcase * 19, tcase * 21, 0, 0, 328, 52);
 		ChargerImage("src/fonts/settings.png", tcase * 22, tcase * 28, 0, 0, 225, 52);
 		ChargerImage("src/fonts/quit.png", tcase * 26.5, tcase * 35, 0, 0, 91, 42);
+		ChargerImageFond("src/menu_bg.png");
 
 		SourisPosition();
 
@@ -146,7 +117,6 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 				quit(*G, *B, *A, *W);
 			_X = 0;
 			_Y = 0;
-			usleep(10000);
 		}
 	}
 }
@@ -247,8 +217,6 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 			while(fgetc(fichier) != '\n');
 		}
 		fscanf(fichier, "%*d %s", player);
-		if(player[0] > 97 && player[0] < 122)
-			player[0] -= 32;
 		player[10] = '\0';
 		sprintf(buf, "%d", scores[i][0]);
 		if(posy > (height - 42) && posx == 650)
@@ -310,13 +278,12 @@ int verifScore (char *pseudo, int score) {
 	char ps[11];
 	int tmp;
 	FILE* fichier = NULL;
-	fichier = fopen("src/scores", "r+");
+	fichier = fopen("src/scores", "r");
 
 	// Si le score et le pseudo correspondent à une entrée, on n'inscrit rien
 	while(c != EOF) {
 
 		fscanf(fichier, "%d %s", &tmp, ps);
-		//printf("score: %d ps: %s\n", tmp, ps);
 		if(tmp == score && !strcmp(pseudo, ps))
 			return 1;
 

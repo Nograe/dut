@@ -323,8 +323,15 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
 }
 
-int main () {
+int main (int argc, char *argv[]) {
 
+  if(argc > 1) {
+    if(!strcmp(argv[1], "reset")) {
+      remove("src/settings");
+      remove("src/scores");
+    }
+  }
+  
   unsigned long temps = Microsecondes();
   srand(time(NULL));
 
