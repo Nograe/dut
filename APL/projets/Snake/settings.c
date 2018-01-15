@@ -358,7 +358,7 @@ void changePseudo (Game *G) {
 	while(touche != XK_Return || i < 1) {
 
 		EffacerEcran(CouleurParComposante(21, 97, 49));
-		EcrireTexte(width/2, height/2, pseudo, 2);
+		EcrireTexte(width/2-TailleChaineEcran(pseudo, 2)/2, height/2, pseudo, 2);
 		CopierZone(3, 0, 0, 0, width, height, 0, 0);
 
 		if((int)touche == 65288 && i > 0) {
