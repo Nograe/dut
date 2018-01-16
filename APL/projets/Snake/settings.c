@@ -1,37 +1,38 @@
 #include "settings.h"
-//#define DEV
+#define DEV
 
 void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
+
+	while(SourisCliquee());
+	_X = 0;
+	_Y = 0;
 
 	int width = 60 * 14;
 	int height = 40 * 14;
 	int touche = 0, decalW, decalH, decalB, decalA, verif = 0;
 	char buf[5];
-	char src[21] = "src/bg_settingsX.png";
 
 	while(touche != XK_Escape) {
 
-		if(!G->dispApple)
-			src[15] = '1';
+		if(G->dispApple)
+			ChargerImageFond("src/settings_bg2.png");
 		else
-			src[15] = '2';
-		ChargerImageFond(src);
-		ChargerImage("src/user.png", 15, height-65, 0, 0, 50, 50);
-		ChargerImage("src/settings.png", width-65, height-65, 0, 0, 50, 50);
+			ChargerImageFond("src/settings_bg1.png");
 
 		#ifdef DEV
-			DessinerRectangle(15, height-65, 50, 50);
-			DessinerRectangle(width-65, height-65, 50, 50);
 			DessinerSegment(width/2, 0, width/2, height);
-			DessinerSegment(0, height/2, width, height/2);		
+			DessinerSegment(0, height/2, width, height/2);
+			DessinerRectangle(377, 310, 81, 48);
+			DessinerRectangle(9, height-74, 64, 64);
+			DessinerRectangle(width-74, height-74, 64, 64);
 			DessinerRectangle(92, 226, 35, 35);
 			DessinerRectangle(228, 226, 35, 35);
-			DessinerRectangle(590, 226, 35, 35);
-			DessinerRectangle(726, 226, 35, 35);
+			DessinerRectangle(567, 226, 35, 35);
+			DessinerRectangle(703, 226, 35, 35);
 			DessinerRectangle(92, 398, 35, 35);
 			DessinerRectangle(228, 398, 35, 35);
-			DessinerRectangle(590, 398, 35, 35);
-			DessinerRectangle(726, 398, 35, 35);
+			DessinerRectangle(567, 398, 35, 35);
+			DessinerRectangle(703, 398, 35, 35);
 			printf("X: %d | Y: %d\n", _X, _Y);
 			DessinerRectangle(277, 519, 305, 28);
 		#endif
@@ -47,13 +48,13 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		sprintf(buf, "%d", G->width);
 		EcrireTexte(166-decalW, 254, buf, 2);
 		sprintf(buf, "%d", G->height);
-		EcrireTexte(665-decalH, 254, buf, 2);
+		EcrireTexte(642-decalH, 254, buf, 2);
 		sprintf(buf, "%d", B->initSize);
 		EcrireTexte(166+decalB, 426, buf, 2);
 		sprintf(buf, "%d", A->initSpawn);
-		EcrireTexte(670-decalA, 426, buf, 2);
+		EcrireTexte(647-decalA, 426, buf, 2);
 
-		if(_X >= 15 && _X <= 65 && _Y >= height-65 && _Y <= height-15) {
+		if(_X >= 9 && _X <= 9+64 && _Y >= height-74 && _Y <= height-10) {
 			changePseudo(G);
 			ChoisirEcran(2);
 			while(SourisCliquee());
@@ -61,7 +62,7 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 			_Y = 0;
 			verif = 1;
 		}
-		if(_X >= width-65 && _X <= width-15 && _Y >= height-65 && _Y <= height-15) {
+		if(_X >= width-74 && _X <= width-10 && _Y >= height-74 && _Y <= height-10) {
 			setDefaultSettings(G, B, A, W);
 			FILE *fichier = fopen("src/settings", "r");
 			readSettings(fichier, G, B, A, W);
@@ -69,7 +70,7 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 			verif = 1;
 		}
 
-		if(_X >= 388 && _X <= 388+81 && _Y >= 310 && _Y <= 310+48) {
+		if(_X >= 377 && _X <= 377+81 && _Y >= 310 && _Y <= 310+48) {
 			if(!G->dispApple)
 				G->dispApple = 1;
 			else
@@ -94,13 +95,13 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 			verif = 1;
 		}
 
-		if(_X >= 590 && _X <= 590+35 && _Y >= 226 && _Y <= 226+35) {
+		if(_X >= 567 && _X <= 567+35 && _Y >= 226 && _Y <= 226+35) {
 			G->height -= 2;
 			if(G->height < 24 && G->tcase == 14)
 				G->height = 24;
 			verif = 1;
 		}
-		if(_X >= 726 && _X <= 726+35 && _Y >= 226 && _Y <= 226+35) {
+		if(_X >= 703 && _X <= 703+35 && _Y >= 226 && _Y <= 226+35) {
 			G->height += 2;
 			if(G->height > 90 && G->tcase == 10)
 				G->height = 90;
@@ -119,16 +120,18 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		}
 		if(_X >= 228 && _X <= 228+35 && _Y >= 398 && _Y <= 398+35) {
 			B->initSize += 1;
+			if(B->initSize > 99)
+				B->initSize = 99;
 			verif = 1;
 		}
 
-		if(_X >= 590 && _X <= 590+35 && _Y >= 398 && _Y <= 398+35) {
+		if(_X >= 567 && _X <= 567+35 && _Y >= 398 && _Y <= 398+35) {
 			A->initSpawn -= 1;
 			if(A->initSpawn < 1)
 				A->initSpawn = 1;
 			verif = 1;
 		}
-		if(_X >= 726 && _X <= 726+35 && _Y >= 398 && _Y <= 398+35) {
+		if(_X >= 703 && _X <= 703+35 && _Y >= 398 && _Y <= 398+35) {
 			A->initSpawn += 1;
 			if(A->initSpawn > 90)
 				A->initSpawn = 90;
@@ -145,14 +148,18 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		CopierZone(2, 0, 0, 0, width, height, 0, 0);
 		while(!verif && !SourisCliquee() && !ToucheEnAttente());
 		verif = 0;
-
 		if(ToucheEnAttente())
 			touche = Touche();
 	}
+	setNewSettings(*G, *B, *A, *W);
 }
 
 // Fenêtre des paramètres avancés
 void advSettings (Game *G, Bodies *B, Wall *W) {
+
+	while(SourisCliquee());
+	_X = 0;
+	_Y = 0;
 
 	int width = 60 * 14;
 	int height = 40 * 14;
@@ -163,17 +170,17 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 
 	while(touche != XK_Escape) {
 
-		ChargerImageFond("src/advsettings.png");		
+		ChargerImageFond("src/advsettings_bg.png");
 
 		#ifdef DEV
 			DessinerRectangle(90, 226+29, 35, 35);
 			DessinerRectangle(226, 226+29, 35, 35);
-			DessinerRectangle(590, 227+29, 35, 35);
-			DessinerRectangle(726, 227+29, 35, 35);
+			DessinerRectangle(567, 227+29, 35, 35);
+			DessinerRectangle(703, 227+29, 35, 35);
 			DessinerRectangle(92, 398+60, 35, 35);
 			DessinerRectangle(228, 398+60, 35, 35);
-			DessinerRectangle(590, 398+60, 35, 35);
-			DessinerRectangle(726, 398+60, 35, 35);
+			DessinerRectangle(567, 398+60, 35, 35);
+			DessinerRectangle(703, 398+60, 35, 35);
 			DessinerRectangle(334, 347, 35, 35);
 			DessinerRectangle(485, 347, 35, 35);
 		#endif
@@ -214,13 +221,13 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 			verif = 1;
 		}
 
-		if(_X >= 590 && _X <= 590+35 && _Y >= 256 && _Y <= 256+35) {
+		if(_X >= 567 && _X <= 567+35 && _Y >= 256 && _Y <= 256+35) {
 			W->initSpawn--;
 			if(B->nbrBot < 0)
 				B->nbrBot = 0;
 			verif = 1;
 		}
-		if(_X >= 726 && _X <= 726+35 && _Y >= 256 && _Y <= 256 +35) {
+		if(_X >= 703 && _X <= 703+35 && _Y >= 256 && _Y <= 256 +35) {
 			W->initSpawn++;
 			if(B->nbrBot > 99)
 				B->nbrBot = 99;
@@ -236,11 +243,11 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 			verif = 1;
 		}
 
-		if(_X >= 590 && _X <= 590+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed < 97001) {
+		if(_X >= 567 && _X <= 567+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed < 97001) {
 				B->initSpeed+=8999;
 				verif = 1;
 		}
-		if(_X >= 726 && _X <= 726+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed > 25009) {
+		if(_X >= 703 && _X <= 703+35 && _Y >= 458 && _Y <= 458+35 && B->initSpeed > 25009) {
 				B->initSpeed-=8999;
 				verif = 1;
 		}
@@ -263,7 +270,6 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 		CopierZone(2, 0, 0, 0, width, height, 0, 0);
 		while(!verif && !SourisCliquee() && !ToucheEnAttente());
 		verif = 0;
-
 		if(ToucheEnAttente())
 			touche = Touche();
 	}
@@ -346,7 +352,7 @@ void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W) {
 void changePseudo (Game *G) {
 
 	int width = 60*14, height = 40*14;
-	int i = 0, touche = -1, modif = 0;
+	int i = 0, touche = -1;
 	char pseudo[11];
 
 	strncpy(pseudo, G->pseudo, 11);
@@ -361,26 +367,22 @@ void changePseudo (Game *G) {
 		EcrireTexte(width/2-TailleChaineEcran(pseudo, 2)/2, height/2, pseudo, 2);
 		CopierZone(3, 0, 0, 0, width, height, 0, 0);
 
+		while(!ToucheEnAttente());
+		touche = Touche();
+		if(touche == XK_Escape)
+			return;
+
 		if((int)touche == 65288 && i > 0) {
 			pseudo[i-1] = '\0';
 			i--;
 			touche = 0;
-			modif = 1;
 		}
 		if((int)touche >= 32 && (int)touche <= 126 && i < 10) {
 			pseudo[i] = touche;
 			i++;
 			pseudo[i] = '\0';
 			touche = 0;
-			modif = 1;
 		}
-
-		if(ToucheEnAttente() || modif == 0) {
-			touche = Touche();
-			modif = 0;
-		}
-		if(touche == XK_Escape)
-			return;
 	}
 
 	strncpy(G->pseudo, pseudo, 11);

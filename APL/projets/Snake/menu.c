@@ -101,21 +101,22 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 		CopierZone(2, 0, 0, 0, width, height, 0, 0);
 
 		if(SourisCliquee()) {
-			if(_X >= (tcase * 25.5) && _X <= (tcase * 25.5 + 128) && _Y >= (tcase * 14) && _Y <= (tcase * 14 + 52))
+			if(_X >= 340 && _X <= 340+160 && _Y >= 190 && _Y <= 190+80)
 				return dispPlay(G, B, A, W);
-			if(_X >= (tcase * 19) && _X <= (tcase * 19 + 328) && _Y >= (tcase * 21) && _Y <= (tcase * 21 + 52)) {
+			if(_X >= 245 && _X <= 245+350 && _Y >= 290 && _Y <= 290+70) {
 				dispHighscore(G, B, A, W);
 				continue;
 			}
-			if(_X >= (tcase * 22) && _X <= (tcase * 22 + 225) && _Y >= (tcase * 28) && _Y <= (tcase * 28 + 52)) {
+			if(_X >= 295 && _X <= 295+250 && _Y >= 385 && _Y <= 385+70) {
 				dispSettings(G, B, A, W);
 				continue;
 			}
-			if(_X >= (tcase * 26.5) && _X <= (tcase * 26.5 + 91) && _Y >= (tcase * 35) && _Y <= (tcase * 35 + 42))
+			if(_X >= 360 && _X <= 360+120 && _Y >= 470 && _Y <= 470+60)
 				quit(*G, *B, *A, *W);
 			_X = 0;
 			_Y = 0;
 		}
+		usleep(50000);
 	}
 }
 
@@ -160,6 +161,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	int touche = 0, temp, temp_l, posy = 120, posx = 320;
 	char buf[6], player[11];
 
+	ChoisirEcran(2);
 	ChargerImageFond("src/hs_bg.png");
 	ChoisirCouleurDessin(CouleurParNom("black"));
 
@@ -203,8 +205,8 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	}
 
 	#ifdef DEV
-	for(i = 0 ; i < line ; i++)
-		printf("score %d: %d\n", scores[i][1], scores[i][0]);
+	DessinerRectangle(5, height-70, 64, 64);
+	DessinerRectangle(width-71, height-71, 64, 64);
 	#endif
 
 	// Récupération et affichage du pseudo | score
@@ -234,23 +236,27 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	if(line >= 3)
 		EcrireTexte(137, 246, "3.", 2);
 
-
-	EcrireTexte(50, height-18, "Delete", 1);
-	ChargerImage("src/redcross.png", 8, height-40, 0, 0, 32, 32);
-
 	CopierZone(2, 0, 0, 0, width, height, 0, 0);
 
-	int verif = 0; 
+	int var = 0; 
 	while(touche != XK_Escape) {
-		if(SourisCliquee() && _X >= 0 && _X <= 37 && _Y >= height-37 && _Y <= height) {
+		while(!SourisCliquee() && !ToucheEnAttente());
+		if(_X >= 5 && _X <= 69 && _Y >= height-70 && _Y <= height-6 && line > 0) {
 			remove("src/scores");
 			fichier = fopen("src/scores", "a");
-			break;
+			return dispHighscore(G, B, A, W);
 		}
+		if(_X >= width-71 && _X <= width-7 && _Y >= height-71 && _Y <= height-7) {
+			changePseudo(G);
+			CopierZone(2, 0, 0, 0, width, height, 0, 0);
+			while(SourisCliquee());
+		}
+		_X = 0;
+		_Y = 0;
 		if(ToucheEnAttente())
 			touche = Touche();
 	}
-
+	ChoisirEcran(2);
 	fclose(fichier);
 }
 
@@ -356,7 +362,6 @@ couleur choisirCouleur (Theme T, char type) {
 
 void quit (Game G, Bodies B, Apple A, Wall W) {
 
-	setNewSettings(G, B, A, W);
 	FermerGraphique();
 	printf("▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué ! █ ▇ ▆ ▅ ▄ ▂ ▁\n");
 	exit(0);

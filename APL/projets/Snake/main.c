@@ -5,6 +5,9 @@
 
 void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
 
+  while(ToucheEnAttente())
+    Touche();
+
   if(*touche != XK_space)
     return;
 
@@ -157,6 +160,7 @@ void timer (Game G, Apple A, unsigned long temps) {
   #endif
 
   ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
+  RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
   RemplirRectangle(0, 0, G.width*G.tcase, G.tcase);
   RemplirRectangle(0, 0, G.tcase, G.height*G.tcase);
   RemplirRectangle(G.width*G.tcase-G.tcase+1, 0, G.tcase, G.height*G.tcase);
@@ -182,27 +186,72 @@ void timer (Game G, Apple A, unsigned long temps) {
   ChargerImage(png, 98, height - 40, 0, 0, 23, 31);
   png[11] = (G.score % 10) + '0';
   ChargerImage(png, 126, height - 40, 0, 0, 23, 31);
+
+  // Affichage level
+  ChoisirCouleurDessin(CouleurParNom("black"));
+  ChargerImage("src/fonts/level.png", width/2-35, height-32, 0, 0, 67, 12);
+  sprintf(png, "%d", G.level+1);
+  EcrireTexte(width/2+40, height-18, png, 2);
 }
 
-/* void printscore (Game G) {
+void gameOver (Game G) {
 
-  int width = G.width * G.tcase;
-  int height = G.height * G.tcase;
+  int width = 60*14;
+  int height = 40*14;
+  char png[17] = "src/digits/X.png";
   char buf[6];
+  int var = -1;
 
-  ChoisirEcran(1);
-  ChoisirCouleurDessin(choisirCouleur("black"));
+  FermerGraphique();
+  InitialiserGraphique();
+  CreerFenetre(500, 300, width, height);
+  couleur C = choisirCouleur(G.theme, 'd');
 
-  EcrireTexte(width / 3, height / 2, "YOUR SCORE: ", 2);
-  sprintf(buf, "%d", G.score);
-  EcrireTexte(width / 3 + TailleChaineEcran("YOUR SCORE: 0", 2), height / 2, buf, 2);
+  ChoisirEcran(8);
+  EffacerEcran(C);
+  ChargerImage("src/gameover.png", 0, 0, 0, 0, width, height);
+  ChoisirCouleurDessin(CouleurParNom("black"));
+  png[11] = (G.score / 10000) + '0';
+  ChargerImage(png, 14+100, height/2, 0, 0, 23, 31);
+  png[11] = (G.score / 1000 % 10) + '0';
+  ChargerImage(png, 42+100, height/2, 0, 0, 23, 31);
+  png[11] = (G.score / 100 % 10) + '0';
+  ChargerImage(png, 70+100, height/2, 0, 0, 23, 31);
+  png[11] = (G.score / 10 % 10) + '0';
+  ChargerImage(png, 98+100, height/2, 0, 0, 23, 31);
+  png[11] = (G.score % 10) + '0';
+  ChargerImage(png, 126+100, height/2, 0, 0, 23, 31);
+  if(G.level+1 >= 10) {
+    png[11] = ;
+  }
+  else
+    png[11] = ;
 
-  ChoisirEcran(0);
-  EffacerEcran(choisirCouleur("seagreen"));
-  CopierZone(1, 0, 0, 0, width, height, 0, 0);
+  ChoisirEcran(9);
+  EffacerEcran(C);
+  ChargerImage("src/gameover2.png", 0, 0, 0, 0, width, height);
+  CopierZone(8, 9, 0, 0, width, 400, 0, 0);
+  CopierZone(9, 0, 0, 0, width, height, 0, 0);
+  while(ToucheEnAttente())
+    Touche();
+  while(SourisCliquee());
 
-  sleep(2);
-} */
+  while(!ToucheEnAttente() && !SourisCliquee()) {
+    usleep(50000);
+    var++;
+    if(var%15 == 0 && var > 30) {
+      CopierZone(9, 0, 0, 0, width, height, 0, 0);
+    }
+    if(var%15 == 8 && var > 30) {
+      CopierZone(8, 0, 0, 0, width, height, 0, 0);
+    }
+    if(var < 30) {
+      while(ToucheEnAttente())
+        Touche();
+      while(SourisCliquee());
+    }
+  }
+}
 
 void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
 
@@ -216,8 +265,6 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
 
   ChoisirEcran(1);
   EffacerEcran(choisirCouleur(G.theme, 'b'));
-  ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
-  RemplirRectangle(0, (G.height*G.tcase)-55, G.width*G.tcase, (G.height*G.tcase));
 
   // Dessin des Segments du Snake
   for(i = 0 ; i < B.snake.nbrseg ; i++) {
@@ -309,15 +356,10 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   for(i = 0 ; i < W.spawn ; i++)
     ChargerImage(bufwall, W.x[i], W.y[i], 0, 0, G.tcase, G.tcase);
 
-  // Chargement du Temps - Score
+  // Chargement du Temps - Score - Level
   timer(G, A, temps);
   if(Microsecondes()/300000%2 == 0)
     ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
-
-  // Affichage Level
-  ChoisirCouleurDessin(CouleurParNom("black"));
-  sprintf(bufapple, " Level: %d", G.level+1);
-  EcrireTexte(width/2-TailleChaineEcran(bufapple, 2)/2, height-15, bufapple, 2);
 
   ChoisirEcran(0);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
@@ -373,6 +415,8 @@ int main (int argc, char *argv[]) {
       old_dir = B.snake.dir;
     }
 
+    if(touche != XK_Escape)
+      gameOver(G);
     FermerGraphique();
     setScore(G);
     dispMenu(&G, &B, &A, &W);
