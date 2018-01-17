@@ -5,9 +5,6 @@
 
 void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
 
-  while(ToucheEnAttente())
-    Touche();
-
   if(*touche != XK_space)
     return;
 
@@ -95,15 +92,15 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/3pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
-  usleep(600000);
+  usleep(400000);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/2pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
-  usleep(600000);
+  usleep(400000);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/1pause.png", (width/2) - 50/2, (height/2) - 50, 0, 0, 67, 67);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
-  usleep(600000);
+  usleep(400000);
 
   *temps += Microsecondes() - tmp;
   while(ToucheEnAttente())
@@ -116,7 +113,7 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
   G->level++;
   B->snake.nbrseg = B->initSize;
   B->snake.seg = realloc(B->snake.seg, (B->snake.nbrseg) * sizeof(Segment));
-  B->snake.speed -= 6500;
+  B->snake.speed -= 4000;
   int i;
   for(i = 0; i < B->nbrBot; i++) {
     B->bot[i].nbrseg++;
@@ -200,36 +197,53 @@ void gameOver (Game G) {
   int height = 40*14;
   char png[17] = "src/digits/X.png";
   char buf[6];
-  int var = -1;
+  int var = -1, decal = 0;
 
   FermerGraphique();
   InitialiserGraphique();
   CreerFenetre(500, 300, width, height);
   couleur C = choisirCouleur(G.theme, 'd');
 
+  // Affichage du score final et du level atteint
   ChoisirEcran(8);
   EffacerEcran(C);
-  ChargerImage("src/gameover.png", 0, 0, 0, 0, width, height);
-  ChoisirCouleurDessin(CouleurParNom("black"));
+  ChargerImageFond("src/gameover.png");
   png[11] = (G.score / 10000) + '0';
-  ChargerImage(png, 14+100, height/2, 0, 0, 23, 31);
-  png[11] = (G.score / 1000 % 10) + '0';
-  ChargerImage(png, 42+100, height/2, 0, 0, 23, 31);
-  png[11] = (G.score / 100 % 10) + '0';
-  ChargerImage(png, 70+100, height/2, 0, 0, 23, 31);
-  png[11] = (G.score / 10 % 10) + '0';
-  ChargerImage(png, 98+100, height/2, 0, 0, 23, 31);
-  png[11] = (G.score % 10) + '0';
-  ChargerImage(png, 126+100, height/2, 0, 0, 23, 31);
-  if(G.level+1 >= 10) {
-    png[11] = ;
+  if(png[11] != '0') {
+    ChargerImage(png, 330, height/2+47, 0, 0, 23, 31);
+    decal += 28;
   }
-  else
-    png[11] = ;
+  png[11] = (G.score / 1000 % 10) + '0';
+  if(png[11] != '0') {
+    ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
+    decal += 28;
+  }
+  png[11] = (G.score / 100 % 10) + '0';
+  if(png[11] != '0') {
+    ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
+    decal += 28;
+  }
+  png[11] = (G.score / 10 % 10) + '0';
+  if(png[11] != '0') {
+    ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
+    decal += 28;
+  }
+  png[11] = (G.score % 10) + '0';
+  ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
+  if(G.level+1 >= 10) {
+    png[11] = (G.level+1)/10 + '0';
+    ChargerImage(png, 678, height/2+47, 0, 0, 23, 31);
+    png[11] = (G.level+1)%10 + '0';
+    ChargerImage(png, 28+678, height/2+47, 0, 0, 23, 31);
+  }
+  else {
+    png[11] = (G.level+1)%10 + '0';
+    ChargerImage(png, 678, height/2+47, 0, 0, 23, 31);
+  }
 
   ChoisirEcran(9);
   EffacerEcran(C);
-  ChargerImage("src/gameover2.png", 0, 0, 0, 0, width, height);
+  ChargerImageFond("src/gameover2.png");
   CopierZone(8, 9, 0, 0, width, 400, 0, 0);
   CopierZone(9, 0, 0, 0, width, height, 0, 0);
   while(ToucheEnAttente())
@@ -299,49 +313,47 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   }
 
   // Dessin des Yeux du Snake
-  ChoisirCouleurDessin(CouleurParNom("black"));
+  ChoisirCouleurDessin(choisirCouleur(G.theme, 'r'));
   if(B.snake.dir == UP) {
-    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+2, 3, 3);
-    RemplirRectangle(B.snake.seg[0].x+7, B.snake.seg[0].y+2, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+3, B.snake.seg[0].y+4, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+9, B.snake.seg[0].y+4, 3, 3);
   }
   if(B.snake.dir == DOWN) {
-    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+6, 3, 3);
-    RemplirRectangle(B.snake.seg[0].x+7, B.snake.seg[0].y+6, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+3, B.snake.seg[0].y+8, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+9, B.snake.seg[0].y+8, 3, 3);
   }
   if(B.snake.dir == LEFT) {
-    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+2, 3, 3);
-    RemplirRectangle(B.snake.seg[0].x+2, B.snake.seg[0].y+7, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+4, B.snake.seg[0].y+3, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+4, B.snake.seg[0].y+9, 3, 3);
   }
   if(B.snake.dir == RIGHT) {
-    RemplirRectangle(B.snake.seg[0].x+6, B.snake.seg[0].y+2, 3, 3);
-    RemplirRectangle(B.snake.seg[0].x+6, B.snake.seg[0].y+7, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+8, B.snake.seg[0].y+3, 3, 3);
+    RemplirRectangle(B.snake.seg[0].x+8, B.snake.seg[0].y+9, 3, 3);
   }
 
   // Dessin des Segments des Bots
   ChoisirCouleurDessin(choisirCouleur(G.theme, 'r'));
   for(i = 0 ; i < B.nbrBot ; i++) {
     for(j = 0; j < B.bot[i].nbrseg ; j++)
-      RemplirRectangle(B.bot[i].seg[j].x+1, B.bot[i].seg[j].y+1, G.tcase - 2, G.tcase - 2);
-  }
+      RemplirRectangle(B.bot[i].seg[j].x+1, B.bot[i].seg[j].y+1, G.tcase-1, G.tcase-1);
 
-  // Dessin des Yeux des Bots
-  ChoisirCouleurDessin(CouleurParNom("brown4"));
-  for(i = 0 ; i < B.nbrBot ; i++) {
+    // Dessin des Yeux des Bots
+    ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
     if(B.bot[i].dir == UP) {
-      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+2, 3, 3);
-      RemplirRectangle(B.bot[i].seg[0].x+7, B.bot[i].seg[0].y+2, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+3, B.bot[i].seg[0].y+4, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+9, B.bot[i].seg[0].y+4, 3, 3);
     }
     if(B.bot[i].dir == DOWN) {
-      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+6, 3, 3);
-      RemplirRectangle(B.bot[i].seg[0].x+7, B.bot[i].seg[0].y+6, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+3, B.bot[i].seg[0].y+8, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+9, B.bot[i].seg[0].y+8, 3, 3);
     }
     if(B.bot[i].dir == LEFT) {
-      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+2, 3, 3);
-      RemplirRectangle(B.bot[i].seg[0].x+2, B.bot[i].seg[0].y+7, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+4, B.bot[i].seg[0].y+3, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+4, B.bot[i].seg[0].y+9, 3, 3);
     }
     if(B.bot[i].dir == RIGHT) {
-      RemplirRectangle(B.bot[i].seg[0].x+6, B.bot[i].seg[0].y+2, 3, 3);
-      RemplirRectangle(B.bot[i].seg[0].x+6, B.bot[i].seg[0].y+7, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+8, B.bot[i].seg[0].y+3, 3, 3);
+      RemplirRectangle(B.bot[i].seg[0].x+8, B.bot[i].seg[0].y+9, 3, 3);
     }
   }
 
@@ -394,6 +406,11 @@ int main (int argc, char *argv[]) {
       
       if(ToucheEnAttente()) {
         touche = Touche();
+
+
+        while(ToucheEnAttente())
+          Touche();
+
 
         if(touche == XK_Up || touche == XK_z)
           B.snake.dir = UP;

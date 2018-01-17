@@ -46,9 +46,10 @@ typedef struct {
 
 typedef enum {
   RETRO = 1,
-  CLASSIC,
+  CHRISTMAS,
   MODERN,
-  RANDOM
+  RANDOM,
+  FALLOUT
 } Theme;
 
 typedef struct {

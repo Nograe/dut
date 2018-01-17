@@ -8,14 +8,15 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 	FILE *fichier = NULL;
 	fichier = fopen("src/scores", "a");
 	fclose(fichier);
-	fichier = fopen("src/settings", "r");
+	fichier = fopen("src/settings", "a");
 
-	if(fichier == NULL) {
+	fseek(fichier, SEEK_SET, SEEK_END);
+	if(fichier == NULL || ftell(fichier)<20) {
 		//printf("Redirection vers l'attribution des paramètres par défaut.\n");
 		setDefaultSettings();
-		fichier = fopen("src/settings", "r");
 	}
 
+	fichier = fopen("src/settings", "r");
 	readSettings(fichier, G, B, A, W);
 	fclose(fichier);
 
@@ -115,6 +116,8 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 				quit(*G, *B, *A, *W);
 			_X = 0;
 			_Y = 0;
+			ChargerImageFond("src/menu_bg.png");
+			CopierZone(2, 0, 0, 0, width, height, 0, 0);
 		}
 		usleep(50000);
 	}
@@ -326,15 +329,15 @@ couleur choisirCouleur (Theme T, char type) {
 		if(type == 'r')
 			C = CouleurParComposante(255, 65, 30);
 	}
-	if(T == CLASSIC) {
+	if(T == CHRISTMAS) {
 		if(type == 'b')
-			C = CouleurParComposante(24, 89, 60);
+			C = CouleurParComposante(200, 62, 62);
 		if(type == 'd')
-			C = CouleurParComposante(200, 145, 0);
+			C = CouleurParComposante(230, 230, 230);
 		if(type == 't')
-			C = CouleurParComposante(4, 69, 40);
+			C = CouleurParComposante(170, 18, 18);
 		if(type == 'r')
-			C = CouleurParComposante(255, 65, 30);
+			C = CouleurParComposante(63, 150, 80);
 	}
 	if(T == MODERN) {
 		if(type == 'b')
@@ -355,6 +358,16 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(randr2, randv2, randb2);
 		if(type == 'r')
 			C = CouleurParComposante(randr3, randv3, randb3);
+	}
+	if(T == FALLOUT) {
+		if(type == 'b')
+			C = CouleurParComposante(37, 57, 122);
+		if(type == 'd')
+			C = CouleurParComposante(218, 160, 13);
+		if(type == 't')
+			C = CouleurParComposante(241, 177, 15);
+		if(type == 'r')
+			C = CouleurParComposante(64, 154, 213);
 	}
 
 	return C;

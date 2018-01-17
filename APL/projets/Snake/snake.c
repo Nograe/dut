@@ -220,12 +220,12 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     return;
   }
 
-  /*if(rand()%20 == 0) {
+  if(rand()%20 == 0) {
     do {
       D = rand() % 4 + 1;
     } while(prevDir + D == 3 || prevDir + D == 7);
     B->bot[botNum].dir = D;
-  }*/
+  }
 }
 
 int verif (Game *G, Bodies *B, Wall W) {
