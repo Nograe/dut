@@ -113,7 +113,7 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
   G->level++;
   B->snake.nbrseg = B->initSize;
   B->snake.seg = realloc(B->snake.seg, (B->snake.nbrseg) * sizeof(Segment));
-  B->snake.speed -= 4000;
+  B->snake.speed -= B->snake.speed/6;
   int i;
   for(i = 0; i < B->nbrBot; i++) {
     B->bot[i].nbrseg++;
@@ -191,7 +191,7 @@ void timer (Game G, Apple A, unsigned long temps) {
   EcrireTexte(width/2+40, height-18, png, 2);
 }
 
-void gameOver (Game G) {
+void gameOver (Game *G) {
 
   int width = 60*14;
   int height = 40*14;
@@ -202,67 +202,78 @@ void gameOver (Game G) {
   FermerGraphique();
   InitialiserGraphique();
   CreerFenetre(500, 300, width, height);
-  couleur C = choisirCouleur(G.theme, 'd');
 
   // Affichage du score final et du level atteint
-  ChoisirEcran(8);
-  EffacerEcran(C);
+  ChoisirEcran(9);
+  EffacerEcran(choisirCouleur(G->theme, 'd'));
   ChargerImageFond("src/gameover.png");
-  png[11] = (G.score / 10000) + '0';
+  png[11] = (G->score / 10000) + '0';
   if(png[11] != '0') {
-    ChargerImage(png, 330, height/2+47, 0, 0, 23, 31);
+    ChargerImage(png, 445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
-  png[11] = (G.score / 1000 % 10) + '0';
+  png[11] = (G->score / 1000 % 10) + '0';
   if(png[11] != '0') {
-    ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
+    ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
-  png[11] = (G.score / 100 % 10) + '0';
+  png[11] = (G->score / 100 % 10) + '0';
   if(png[11] != '0') {
-    ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
+    ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
-  png[11] = (G.score / 10 % 10) + '0';
+  png[11] = (G->score / 10 % 10) + '0';
   if(png[11] != '0') {
-    ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
+    ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
-  png[11] = (G.score % 10) + '0';
-  ChargerImage(png, decal+330, height/2+47, 0, 0, 23, 31);
-  if(G.level+1 >= 10) {
-    png[11] = (G.level+1)/10 + '0';
-    ChargerImage(png, 678, height/2+47, 0, 0, 23, 31);
-    png[11] = (G.level+1)%10 + '0';
-    ChargerImage(png, 28+678, height/2+47, 0, 0, 23, 31);
+  png[11] = (G->score % 10) + '0';
+  ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
+  if(G->level+1 >= 10) {
+    png[11] = (G->level+1)/10 + '0';
+    ChargerImage(png, 454, height-194, 0, 0, 23, 31);
+    png[11] = (G->level+1)%10 + '0';
+    ChargerImage(png, 28+454, height-194, 0, 0, 23, 31);
   }
   else {
-    png[11] = (G.level+1)%10 + '0';
-    ChargerImage(png, 678, height/2+47, 0, 0, 23, 31);
+    png[11] = (G->level+1)%10 + '0';
+    ChargerImage(png, 454, height-194, 0, 0, 23, 31);
   }
 
-  ChoisirEcran(9);
-  EffacerEcran(C);
-  ChargerImageFond("src/gameover2.png");
-  CopierZone(8, 9, 0, 0, width, 400, 0, 0);
+  #ifdef DEV
+    DessinerRectangle(5, height-70, 64, 64); // Pseudo
+    DessinerRectangle(width-70, height-70, 64, 64); // Reset settings
+  #endif
+
   CopierZone(9, 0, 0, 0, width, height, 0, 0);
   while(ToucheEnAttente())
     Touche();
   while(SourisCliquee());
-
-  while(!ToucheEnAttente() && !SourisCliquee()) {
+  ChoisirEcran(0);
+  while(!ToucheEnAttente()) {
     usleep(50000);
     var++;
     if(var%15 == 0 && var > 30) {
+      ChargerImage("src/presskey.png", 220, 460, 0, 0, 426, 20);
+    }
+    if(var%15 == 8) {
       CopierZone(9, 0, 0, 0, width, height, 0, 0);
     }
-    if(var%15 == 8 && var > 30) {
-      CopierZone(8, 0, 0, 0, width, height, 0, 0);
-    }
-    if(var < 30) {
+    if(var < 40) {
       while(ToucheEnAttente())
         Touche();
-      while(SourisCliquee());
+    }
+    SourisCliquee();
+    if(_X >= 5 && _X <= 69 && _Y >= height-70 && _Y <= height-6) {
+      changePseudo(G);
+      while(SourisCliquee()); // On vide la file d'attente
+      _X = 0;
+      _Y = 0;
+      return;
+    }
+    if(_X >= width-70 && _X <= width-6 && _Y >= height-70 && _Y <= height-6) {
+      G->opt = 1;
+      return;
     }
   }
 }
@@ -332,8 +343,8 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   }
 
   // Dessin des Segments des Bots
-  ChoisirCouleurDessin(choisirCouleur(G.theme, 'r'));
   for(i = 0 ; i < B.nbrBot ; i++) {
+    ChoisirCouleurDessin(choisirCouleur(G.theme, 'r'));
     for(j = 0; j < B.bot[i].nbrseg ; j++)
       RemplirRectangle(B.bot[i].seg[j].x+1, B.bot[i].seg[j].y+1, G.tcase-1, G.tcase-1);
 
@@ -377,13 +388,27 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
 }
 
+void gameModes(Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
+
+  if(argc < 2)
+    return;
+
+  if(argc == 2 && !strcmp(argv[1], "zombie")) {
+    G->opt = 2;
+    B->nbrBot = 30;
+    B->initSpeed = 100000;
+    B->initSize = 20;
+    A->initSpawn = 0;
+    W->initSpawn = 20;
+    dispPlay(G, B, A, W);
+  }
+}
+
 int main (int argc, char *argv[]) {
 
-  if(argc > 1) {
-    if(!strcmp(argv[1], "reset")) {
-      remove("src/settings");
-      remove("src/scores");
-    }
+  if(argc > 1 && !strcmp(argv[1], "reset")) {
+    remove("src/settings");
+    remove("src/scores");
   }
   
   unsigned long temps = Microsecondes();
@@ -400,6 +425,8 @@ int main (int argc, char *argv[]) {
 
   while(1) {
 
+    gameModes(&G, &B, &A, &W, argc, argv);
+
     while(!verif(&G, &B, W) && touche != XK_Escape) {
 
       usleep(B.snake.speed);
@@ -407,10 +434,8 @@ int main (int argc, char *argv[]) {
       if(ToucheEnAttente()) {
         touche = Touche();
 
-
         while(ToucheEnAttente())
           Touche();
-
 
         if(touche == XK_Up || touche == XK_z)
           B.snake.dir = UP;
@@ -433,7 +458,7 @@ int main (int argc, char *argv[]) {
     }
 
     if(touche != XK_Escape)
-      gameOver(G);
+      gameOver(&G);
     FermerGraphique();
     setScore(G);
     dispMenu(&G, &B, &A, &W);

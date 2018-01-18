@@ -306,7 +306,10 @@ int verif (Game *G, Bodies *B, Wall W) {
 
 void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 
-  if(A->eaten == A->spawn)
+	if(G->opt == 2)
+		return;
+
+  	if(A->eaten == A->spawn)
     return nextLevel(G, B, A, W, temps);
 
   int i, j;

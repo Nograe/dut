@@ -49,7 +49,8 @@ typedef enum {
   CHRISTMAS,
   MODERN,
   RANDOM,
-  FALLOUT
+  FALLOUT,
+  ZOMBIE
 } Theme;
 
 typedef struct {
@@ -59,6 +60,7 @@ typedef struct {
   int score;
   int level;
   int dispApple;
+  int opt;
   char pseudo[11];
   Theme theme;
 } Game;

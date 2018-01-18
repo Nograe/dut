@@ -22,20 +22,20 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		#ifdef DEV
 			DessinerSegment(width/2, 0, width/2, height);
 			DessinerSegment(0, height/2, width, height/2);
-			DessinerRectangle(377, 310, 81, 48);
-			DessinerRectangle(9, height-74, 64, 64);
-			DessinerRectangle(width-74, height-74, 64, 64);
-			DessinerRectangle(92, 226, 35, 35);
+			DessinerRectangle(377, 310, 81, 48); // Switch bouton
+			DessinerRectangle(9, height-74, 64, 64); // Pseudo
+			DessinerRectangle(width-74, height-74, 64, 64); // Reset settings
+			DessinerRectangle(92, 226, 35, 35); // Width
 			DessinerRectangle(228, 226, 35, 35);
-			DessinerRectangle(567, 226, 35, 35);
+			DessinerRectangle(567, 226, 35, 35); // Height
 			DessinerRectangle(703, 226, 35, 35);
-			DessinerRectangle(92, 398, 35, 35);
+			DessinerRectangle(92, 398, 35, 35); // Starting size
 			DessinerRectangle(228, 398, 35, 35);
-			DessinerRectangle(567, 398, 35, 35);
+			DessinerRectangle(567, 398, 35, 35); // Apples
 			DessinerRectangle(703, 398, 35, 35);
 			if(SourisCliquee())
 				printf("X: %d | Y: %d\n", _X, _Y);
-			DessinerRectangle(277, 519, 305, 28);
+			DessinerRectangle(225, 502, 386, 58); // AdvSettings
 		#endif
 
 		// Décalage du texte (détail)
@@ -111,7 +111,7 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		if(_X >= 703 && _X <= 703+35 && _Y >= 398 && _Y <= 398+35 && A->initSpawn < 99)
 			A->initSpawn++;
 
-		if(_X >= 277 && _X <= 277+305 && _Y >= 519 && _Y <= 519+28)
+		if(_X >= 225 && _X <= 611 && _Y >= 502 && _Y <= height)
 			advSettings(G, B, W);
 
 		_X = 0;
@@ -251,6 +251,9 @@ void setDefaultSettings () {
 
 void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
 
+	if(G.opt > 1)
+		return;
+
 	remove("src/settings");
 	FILE *fichier = fopen("src/settings", "a");
 	fichier = fopen("src/settings", "r+");
@@ -273,6 +276,7 @@ void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
 
 void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W) {
 
+	G->opt = 0;
 	int i;
 	for(i = 0; i < 11; i++) {
 		if(i == 0)

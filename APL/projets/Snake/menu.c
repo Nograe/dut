@@ -52,9 +52,14 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 		touche = 0;
 		if(ToucheEnAttente())
 			touche = Touche();
+		if(G->opt == 1) {
+			G->opt = 0;
+			dispHighscore(G, B, A, W);
+			CopierZone(2, 0, 0, 0, width, height, 0, 0);
+		}
 
 		if(touche == XK_Escape)
-			quit(*G, *B, *A, *W);
+			quit(G, B, A, W);
 		if(touche == XK_Down || touche == XK_s) {
 			if(old == 3)
 				old = 4;
@@ -79,7 +84,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 			if(old == 3)
 				dispSettings(G, B, A, W);
 			if(old == 4)
-				quit(*G, *B, *A, *W);
+				quit(G, B, A, W);
 		}
 
 		if(_X >= 340 && _X <= 340+160 && _Y >= 190 && _Y <= 190+80 || old == 1) {
@@ -113,7 +118,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 				continue;
 			}
 			if(_X >= 360 && _X <= 360+120 && _Y >= 470 && _Y <= 470+60)
-				quit(*G, *B, *A, *W);
+				quit(G, B, A, W);
 			_X = 0;
 			_Y = 0;
 			ChargerImageFond("src/menu_bg.png");
@@ -164,7 +169,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	int touche = 0, temp, temp_l, posy = 120, posx = 320;
 	char buf[6], player[11];
 
-	ChoisirEcran(2);
+	ChoisirEcran(4);
 	ChargerImageFond("src/hs_bg.png");
 	ChoisirCouleurDessin(CouleurParNom("black"));
 
@@ -239,7 +244,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	if(line >= 3)
 		EcrireTexte(137, 246, "3.", 2);
 
-	CopierZone(2, 0, 0, 0, width, height, 0, 0);
+	CopierZone(4, 0, 0, 0, width, height, 0, 0);
 
 	int var = 0; 
 	while(touche != XK_Escape) {
@@ -251,7 +256,8 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 		}
 		if(_X >= width-71 && _X <= width-7 && _Y >= height-71 && _Y <= height-7) {
 			changePseudo(G);
-			CopierZone(2, 0, 0, 0, width, height, 0, 0);
+			setNewSettings(*G, *B, *A, *W);
+			CopierZone(4, 0, 0, 0, width, height, 0, 0);
 			while(SourisCliquee());
 		}
 		_X = 0;
@@ -261,6 +267,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	}
 	ChoisirEcran(2);
 	fclose(fichier);
+	while(SourisCliquee());
 }
 
 void setScore (Game G) {
@@ -373,9 +380,10 @@ couleur choisirCouleur (Theme T, char type) {
 	return C;
 }
 
-void quit (Game G, Bodies B, Apple A, Wall W) {
+void quit (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	FermerGraphique();
+	setNewSettings(*G, *B, *A, *W);
 	printf("▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué ! █ ▇ ▆ ▅ ▄ ▂ ▁\n");
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
