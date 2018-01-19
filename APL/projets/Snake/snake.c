@@ -1,6 +1,4 @@
 #include "snake.h"
-#include "main.h"
-#include "menu.h"
 //#define DEV
 //#define DEBUG
 

@@ -7,8 +7,8 @@
 #include <unistd.h>
 #include <graph.h>
 #include "struct.h"
+#include "menu.h"
 
-void initGame (Game *G, Bodies *B, Apple *A, Wall *W);
 void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W);
 void advSettings (Game *G, Bodies *B, Wall *W);
 void setDefaultSettings ();

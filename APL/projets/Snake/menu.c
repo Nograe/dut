@@ -1,8 +1,7 @@
 #include "menu.h"
-#include "settings.h"
 //#define DEV
 
-void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
+void initGame (Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
 
 	// Vérification (création si NULL) du fichier 'scores'
 	FILE *fichier = NULL;
@@ -17,9 +16,11 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W) {
 	}
 
 	fichier = fopen("src/settings", "r");
+	G->opt = 0;
 	readSettings(fichier, G, B, A, W);
 	fclose(fichier);
 
+   gameModes(G, B, A, W, argc, argv);
 	dispMenu(G, B, A, W);
 }
 
@@ -383,7 +384,6 @@ couleur choisirCouleur (Theme T, char type) {
 void quit (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	FermerGraphique();
-	setNewSettings(*G, *B, *A, *W);
 	printf("▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué ! █ ▇ ▆ ▅ ▄ ▂ ▁\n");
 	exit(EXIT_SUCCESS);
 }

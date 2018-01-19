@@ -1,8 +1,10 @@
 #ifndef DEF_SNAKE
 
 #define DEF_SNAKE
-#include "struct.h"
 #include <graph.h>
+#include "struct.h"
+#include "main.h"
+#include "menu.h"
 
 void moveForward (Game G, Bodies *B, Apple A, Wall W);
 void bodyInit (Game G, Bodies *B);

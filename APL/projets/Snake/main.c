@@ -1,5 +1,4 @@
 #include "main.h"
-#include "menu.h"
 //#define DEBUG
 //#define DEV
 
@@ -395,12 +394,13 @@ void gameModes(Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
 
   if(argc == 2 && !strcmp(argv[1], "zombie")) {
     G->opt = 2;
-    B->nbrBot = 30;
+    G->width = 100;
+    G->height = 60;
+    B->nbrBot = 40;
     B->initSpeed = 100000;
     B->initSize = 20;
     A->initSpawn = 0;
     W->initSpawn = 20;
-    dispPlay(G, B, A, W);
   }
 }
 
@@ -419,13 +419,11 @@ int main (int argc, char *argv[]) {
   Apple A;
   Wall W;
 
-  initGame(&G, &B, &A, &W);
+  initGame(&G, &B, &A, &W, argc, argv);
 
   int touche, old_dir = 4;
 
   while(1) {
-
-    gameModes(&G, &B, &A, &W, argc, argv);
 
     while(!verif(&G, &B, W) && touche != XK_Escape) {
 

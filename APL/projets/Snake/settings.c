@@ -276,7 +276,6 @@ void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
 
 void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W) {
 
-	G->opt = 0;
 	int i;
 	for(i = 0; i < 11; i++) {
 		if(i == 0)
