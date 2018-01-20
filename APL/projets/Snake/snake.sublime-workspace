@@ -216,8 +216,8 @@
 						"selection":
 						[
 							[
-								177,
-								177
+								369,
+								369
 							]
 						],
 						"settings":
@@ -519,12 +519,16 @@
 	},
 	"select_project":
 	{
-		"height": 0.0,
+		"height": 500.0,
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"",
+				"~/Bureau/dutinfo/APL/projets/Snake/main.sublime-workspace"
+			]
 		],
-		"width": 0.0
+		"width": 380.0
 	},
 	"select_symbol":
 	{

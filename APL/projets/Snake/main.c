@@ -396,6 +396,7 @@ void gameModes(Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
     G->opt = 2;
     G->width = 100;
     G->height = 60;
+    strncpy(G->pseudo, "Survivant", 11);
     B->nbrBot = 40;
     B->initSpeed = 100000;
     B->initSize = 20;
