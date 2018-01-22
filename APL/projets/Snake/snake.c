@@ -2,6 +2,26 @@
 //#define DEV
 //#define DEBUG
 
+void changeDir (Bodies *B, int *touche, int old_dir) {
+
+  *touche = Touche();
+
+  while(ToucheEnAttente())
+    Touche();
+
+  if(*touche == XK_Up || *touche == XK_z)
+    B->snake.dir = UP;
+  if(*touche == XK_Down || *touche == XK_s)
+    B->snake.dir = DOWN;
+  if(*touche == XK_Right || *touche == XK_d)
+    B->snake.dir = RIGHT;
+  if(*touche == XK_Left || *touche == XK_q)
+    B->snake.dir = LEFT;
+
+  if(old_dir+B->snake.dir == 3 || old_dir+B->snake.dir == 7)
+    B->snake.dir = old_dir;
+}
+
 void moveForward (Game G, Bodies *B, Apple A, Wall W) {
 
   int i, j, old_dir;

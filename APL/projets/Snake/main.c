@@ -217,27 +217,28 @@ void gameOver (Game *G) {
   EffacerEcran(choisirCouleur(G->theme, 'd'));
   ChargerImageFond("src/gameover.png");
   png[11] = (G->score / 10000) + '0';
-  if(png[11] != '0') {
+  if(G->score >= 10000) {
     ChargerImage(png, 445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score / 1000 % 10) + '0';
-  if(png[11] != '0') {
+  if(G->score >= 1000) {
     ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score / 100 % 10) + '0';
-  if(png[11] != '0') {
+  if(G->score >= 100) {
     ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score / 10 % 10) + '0';
-  if(png[11] != '0') {
+  if(G->score >= 10) {
     ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score % 10) + '0';
   ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
+
   if(G->level+1 >= 10) {
     png[11] = (G->level+1)/10 + '0';
     ChargerImage(png, 454, height-194, 0, 0, 23, 31);
@@ -429,7 +430,7 @@ int main (int argc, char *argv[]) {
 
   initGame(&G, &B, &A, &W, argc, argv);
 
-  int touche, old_dir = 4;
+  int touche, old_dir = B.snake.dir;
 
   while(1) {
 
@@ -437,24 +438,8 @@ int main (int argc, char *argv[]) {
 
       usleep(B.snake.speed);
       
-      if(ToucheEnAttente()) {
-        touche = Touche();
-
-        while(ToucheEnAttente())
-          Touche();
-
-        if(touche == XK_Up || touche == XK_z)
-          B.snake.dir = UP;
-        if(touche == XK_Down || touche == XK_s)
-          B.snake.dir = DOWN;
-        if(touche == XK_Right || touche == XK_d)
-          B.snake.dir = RIGHT;
-        if(touche == XK_Left || touche == XK_q)
-          B.snake.dir = LEFT;
-
-        if(old_dir+B.snake.dir == 3 || old_dir+B.snake.dir == 7)
-          B.snake.dir = old_dir;
-      }
+      if(ToucheEnAttente())
+        changeDir(&B, &touche, old_dir);
 
       verifPause(G, B, A, W, &touche, &temps);
       moveForward(G, &B, A, W);

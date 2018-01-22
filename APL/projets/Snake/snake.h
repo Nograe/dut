@@ -6,6 +6,7 @@
 #include "main.h"
 #include "menu.h"
 
+void changeDir (Bodies *B, int *touche, int old_dir);
 void moveForward (Game G, Bodies *B, Apple A, Wall W);
 void bodyInit (Game G, Bodies *B);
 void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum);
