@@ -16,6 +16,6 @@ void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W);
 void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W);
 void setScore (Game G);
 int verifScore (char *pseudo, int score);
-void quit (Game *G, Bodies *B, Apple *A, Wall *W);
+void quit (char *pseudo);
 
 #endif

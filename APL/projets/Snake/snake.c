@@ -22,9 +22,9 @@ void changeDir (Bodies *B, int *touche, int old_dir) {
     B->snake.dir = old_dir;
 }
 
-void moveForward (Game G, Bodies *B, Apple A, Wall W) {
+void moveBodies (Game G, Bodies *B, Apple A, Wall W) {
 
-  int i, j, old_dir;
+  int i, j;
 
   // Chaque segment prend la valeur du segment précédent, excepté le premier
   for(i = B->snake.nbrseg-1 ; i >= 1 ; i--)
@@ -328,7 +328,7 @@ void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 		return;
 
   	if(A->eaten == A->spawn)
-    return nextLevel(G, B, A, W, temps);
+      return nextLevel(G, B, A, W, temps);
 
   int i, j;
   for(i = 0 ; i < A->spawn ; i++) {
@@ -363,8 +363,6 @@ void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 
 void randomApple (Game G, Bodies B, Apple *A) {
 
-  int width = G.width * G.tcase;
-  int height = G.height * G.tcase;
   int posx, posy, i, j = 0, verif = 1;
 
   while (j < A->spawn) {
@@ -395,8 +393,6 @@ void randomApple (Game G, Bodies B, Apple *A) {
 
 void randomWall (Game G, Bodies B, Apple A, Wall *W) {
 
-  int width = G.width * G.tcase;
-  int height = G.height * G.tcase;
   int posx, posy, i, j = 0, verif = 1;
 
   while (j < W->spawn) {

@@ -29,7 +29,6 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
-	int tcase = 14;
 	int touche, old = 1;
 
 	InitialiserGraphique();
@@ -61,7 +60,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 		}
 
 		if(touche == XK_Escape)
-			quit(G, B, A, W);
+			quit(G->pseudo);
 		if(touche == XK_Down || touche == XK_s) {
 			if(old == 3)
 				old = 4;
@@ -86,7 +85,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 			if(old == 3)
 				dispSettings(G, B, A, W);
 			if(old == 4)
-				quit(G, B, A, W);
+				quit(G->pseudo);
 		}
 
 		if(_X >= 340 && _X <= 340+160 && _Y >= 190 && _Y <= 190+80 || old == 1) {
@@ -120,7 +119,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 				continue;
 			}
 			if(_X >= 360 && _X <= 360+120 && _Y >= 470 && _Y <= 470+60)
-				quit(G, B, A, W);
+				quit(G->pseudo);
 			_X = 0;
 			_Y = 0;
 			ChargerImageFond("src/menu_bg.png");
@@ -256,7 +255,6 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	CopierZone(4, 0, 0, 0, width, height, 0, 0);
 
-	int var = 0; 
 	while(touche != XK_Escape) {
 		while(!SourisCliquee() && !ToucheEnAttente());
 		if(_X >= 5 && _X <= 69 && _Y >= height-70 && _Y <= height-6 && line > 0) {
@@ -324,9 +322,9 @@ int verifScore (char *pseudo, int score) {
 }
 
 // On quitte le programme
-void quit (Game *G, Bodies *B, Apple *A, Wall *W) {
+void quit (char *pseudo) {
 
 	FermerGraphique();
-	printf("▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué ! █ ▇ ▆ ▅ ▄ ▂ ▁\n");
+	printf("\n▁ ▂ ▄ ▅ ▆ ▇ █ Merci d'avoir joué %s ! █ ▇ ▆ ▅ ▄ ▂ ▁\n\n", pseudo);
 	exit(EXIT_SUCCESS);
 }

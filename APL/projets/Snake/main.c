@@ -2,7 +2,7 @@
 //#define DEBUG
 //#define DEV
 
-void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *temps) {
+void verifPause (Game G, Apple A, int *touche, unsigned long *temps) {
 
   if(*touche != XK_space)
     return;
@@ -10,7 +10,6 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   unsigned long tmp = Microsecondes();
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
-  int i;
   char buf[10];
   *touche = 0;
 
@@ -136,20 +135,16 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
   W->x = realloc(W->x, W->spawn * sizeof(int));
   W->y = realloc(W->y, W->spawn * sizeof(int));
 
-  int width = G->width * G->tcase;
-  int height = G->height * G->tcase;
-  char buf[10];
-
   bodyInit(*G, B);
   randomApple(*G, *B, A);
   randomWall(*G, *B, *A, W);
   draw(*G, *B, *A, *W, *temps);
 
   int touche = XK_space;
-  verifPause(*G, *B, *A, *W, &touche, temps);
+  verifPause(*G, *A, &touche, temps);
 }
 
-void printData (Game G, Apple A, unsigned long temps) {
+void printData (Game G, unsigned long temps) {
 
   int var = (Microsecondes() - temps)/1000000;
   int sec = var % 60;
@@ -157,7 +152,6 @@ void printData (Game G, Apple A, unsigned long temps) {
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
   char png[17] = "src/digits/X.png";
-  char buf[10];
 
   #ifdef DEV
   ChoisirCouleurDessin(CouleurParNom("red"));
@@ -205,7 +199,6 @@ void gameOver (Game *G) {
   int width = 60*14;
   int height = 40*14;
   char png[17] = "src/digits/X.png";
-  char buf[6];
   int decal = 0, touche = 0;
 
   FermerGraphique();
@@ -387,7 +380,7 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
     ChargerImage(bufwall, W.x[i], W.y[i], 0, 0, G.tcase, G.tcase);
 
   // Chargement du Temps - Score - Level
-  printData(G, A, temps);
+  printData(G, temps);
   if(Microsecondes()/300000%2 == 0)
     ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
 
@@ -441,8 +434,8 @@ int main (int argc, char *argv[]) {
       if(ToucheEnAttente())
         changeDir(&B, &touche, old_dir);
 
-      verifPause(G, B, A, W, &touche, &temps);
-      moveForward(G, &B, A, W);
+      verifPause(G, A, &touche, &temps);
+      moveBodies(G, &B, A, W);
       verifApple(&G, &B, &A, &W, &temps);
       draw(G, B, A, W, temps);
       old_dir = B.snake.dir;
