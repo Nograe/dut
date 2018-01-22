@@ -14,7 +14,7 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
   char buf[10];
   *touche = 0;
 
-  ChoisirEcran(0);
+  ChoisirEcran(1);
 
   // Affichage du level
   ChoisirCouleurDessin(choisirCouleur(G.theme, 't'));
@@ -24,6 +24,8 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
     ChoisirCouleurDessin(CouleurParNom("black"));
     EcrireTexte(width/2-TailleChaineEcran(buf, 2)/2, 30, buf, 2);
   }
+  ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
+  CopierZone(1, 2, 0, 0, width, height, 0, 0);
 
   #ifdef DEV
   while(*touche != XK_space && *touche != XK_Escape) {
@@ -82,12 +84,20 @@ void verifPause (Game G, Bodies B, Apple A, Wall W, int *touche, unsigned long *
     }
   }
   #else
+  ChoisirEcran(2);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
   ChargerImage("src/fonts/pause.png", width/2-72/2, height/2-72+50/2, 0, 0, 72, 72);
-  while(*touche != XK_space && *touche != XK_Escape)
-    *touche = Touche();
+  while(*touche != XK_space && *touche != XK_Escape) {
+    if(Microsecondes()/500000%2 == 0)
+      CopierZone(2, 0, width/2-72/2, height/2-72+50/2, 72, 72, width/2-72/2, height/2-72+50/2);
+    else
+      CopierZone(1, 0, 0, 0, width, height, 0, 0);
+    if(ToucheEnAttente())
+      *touche = Touche();
+  }
   #endif
 
+  ChoisirEcran(0);
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
   ChargerImage("src/digits/3pause.png", (width/2) - 67/2, (height/2) - 50, 0, 0, 67, 67);
   ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);

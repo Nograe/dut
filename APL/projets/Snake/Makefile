@@ -22,6 +22,8 @@ settings.o: settings.c settings.h
 	@echo "Création du fichier objet \"settings.o\" ..."
 	@gcc -c settings.c
 
+.PHONY: clean mrproper
+
 clean:
 	@echo "Suppression des fichiers objets..."
 	@rm *.o
@@ -29,3 +31,4 @@ clean:
 mrproper: clean
 	@echo "Suppression de l'executable..."
 	@rm exe
+	@rm *.o
