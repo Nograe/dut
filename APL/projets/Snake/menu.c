@@ -1,29 +1,30 @@
 #include "menu.h"
 //#define DEV
 
+// Initialisation / Lecture des fichiers 'scores' et 'settings'
 void initGame (Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
 
-	// Vérification (création si NULL) du fichier 'scores'
+	// Vérification (création si NULL) du fichier 'scores' et 'settings'
 	FILE *fichier = NULL;
 	fichier = fopen("src/scores", "a");
 	fclose(fichier);
 	fichier = fopen("src/settings", "a");
 
 	fseek(fichier, SEEK_SET, SEEK_END);
-	if(fichier == NULL || ftell(fichier)<20) {
-		//printf("Redirection vers l'attribution des paramètres par défaut.\n");
+	if(fichier == NULL || ftell(fichier)<20)
 		setDefaultSettings();
-	}
 
 	fichier = fopen("src/settings", "r");
 	G->opt = 0;
 	readSettings(fichier, G, B, A, W);
 	fclose(fichier);
 
+	// Vérification du mode de jeu (voir Annexe)
    gameModes(G, B, A, W, argc, argv);
 	dispMenu(G, B, A, W);
 }
 
+// Affichage du Menu
 void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	int width = 60 * 14;
@@ -129,6 +130,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 	}
 }
 
+// Initialisation des variables pour une partie
 void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	FermerGraphique();
@@ -163,6 +165,7 @@ void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W) {
 	CreerFenetre(500, 300, G->width * G->tcase, G->height * G->tcase);
 }
 
+// Affichage des meilleurs scores
 void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	int width = 60 * 14;
@@ -277,9 +280,10 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	while(SourisCliquee());
 }
 
+// Enregistrement du score après la fin de partie
 void setScore (Game G) {
 
-	// On quitte si le score est inférieur à 1 ou son pseudo est déjà inscrit avec le même score
+	// On quitte si le score est inférieur à 1 ou si le pseudo est déjà inscrit avec le même score
 	if(G.score < 1 || verifScore(G.pseudo, G.score))
 		return;
 
@@ -292,6 +296,7 @@ void setScore (Game G) {
 	fclose(fichier);
 }
 
+// On vérifie que le pseudo n'est pas déjà inscrit avec le même score
 int verifScore (char *pseudo, int score) {
 
 	int c = 0;
@@ -318,6 +323,7 @@ int verifScore (char *pseudo, int score) {
 	return 0;
 }
 
+// On quitte le programme
 void quit (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	FermerGraphique();
