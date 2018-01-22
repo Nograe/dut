@@ -139,7 +139,7 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
   verifPause(*G, *B, *A, *W, &touche, temps);
 }
 
-void timer (Game G, Apple A, unsigned long temps) {
+void printData (Game G, Apple A, unsigned long temps) {
 
   int var = (Microsecondes() - temps)/1000000;
   int sec = var % 60;
@@ -196,7 +196,7 @@ void gameOver (Game *G) {
   int height = 40*14;
   char png[17] = "src/digits/X.png";
   char buf[6];
-  int var = -1, decal = 0;
+  int decal = 0, touche = 0;
 
   FermerGraphique();
   InitialiserGraphique();
@@ -245,22 +245,16 @@ void gameOver (Game *G) {
   #endif
 
   CopierZone(9, 0, 0, 0, width, height, 0, 0);
-  while(ToucheEnAttente())
-    Touche();
   while(SourisCliquee());
   ChoisirEcran(0);
-  while(!ToucheEnAttente()) {
+
+  while(touche != XK_Escape) {
     usleep(50000);
-    var++;
-    if(var%15 == 0 && var > 30) {
-      ChargerImage("src/presskey.png", 220, 460, 0, 0, 426, 20);
+    if(Microsecondes()/400000%2 == 1) {
+      ChargerImage("src/fonts/presskey.png", 220, 460, 0, 0, 426, 20);
     }
-    if(var%15 == 8) {
+    if(Microsecondes()/400000%2 == 0) {
       CopierZone(9, 0, 0, 0, width, height, 0, 0);
-    }
-    if(var < 40) {
-      while(ToucheEnAttente())
-        Touche();
     }
     SourisCliquee();
     if(_X >= 5 && _X <= 69 && _Y >= height-70 && _Y <= height-6) {
@@ -274,6 +268,9 @@ void gameOver (Game *G) {
       G->opt = 1;
       return;
     }
+
+    if(ToucheEnAttente())
+      touche = Touche();
   }
 }
 
@@ -379,7 +376,7 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
     ChargerImage(bufwall, W.x[i], W.y[i], 0, 0, G.tcase, G.tcase);
 
   // Chargement du Temps - Score - Level
-  timer(G, A, temps);
+  printData(G, A, temps);
   if(Microsecondes()/300000%2 == 0)
     ChargerImage("src/digits/:.png", width - 85, height - 40, 0, 0, 23, 31);
 

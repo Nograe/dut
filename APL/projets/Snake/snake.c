@@ -55,7 +55,7 @@ void bodyInit (Game G, Bodies *B) {
 
   int i, j, var;
   int posx = G.width * G.tcase / 2;
-  int posy = G.height * G.tcase / 2;
+  int posy = (G.height-4) * G.tcase / 2;
 
   for(i = 0 ; i < B->snake.nbrseg ; i++) {
     B->snake.seg[i].x = posx;

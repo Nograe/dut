@@ -309,6 +309,8 @@ void changePseudo (Game *G) {
 	int width = 60*14, height = 40*14;
 	int i = 0, touche = -1;
 	char pseudo[11];
+	_X = 0;
+	_Y = 0;
 
 	strncpy(pseudo, G->pseudo, 11);
 	while((int)pseudo[i] >= 32 && (int)pseudo[i] <= 126)
@@ -319,11 +321,14 @@ void changePseudo (Game *G) {
 	while(touche != XK_Return || i < 1) {
 
 		EffacerEcran(CouleurParComposante(21, 97, 49));
-		EcrireTexte(width/2-TailleChaineEcran(pseudo, 2)/2, height/2, pseudo, 2);
+		ChargerImageFond("src/username.png");
+		EcrireTexte(352, 308, pseudo, 2);
+		if(Microsecondes()/500000%2 == 0)
+			RemplirRectangle(352+TailleChaineEcran(pseudo, 2), 286, 2, 24);
 		CopierZone(3, 0, 0, 0, width, height, 0, 0);
 
-		while(!ToucheEnAttente());
-		touche = Touche();
+		if(ToucheEnAttente())
+			touche = Touche();
 		if(touche == XK_Escape)
 			return;
 
@@ -338,7 +343,81 @@ void changePseudo (Game *G) {
 			pseudo[i] = '\0';
 			touche = 0;
 		}
+		SourisCliquee();
+		if(_X >= 5 && _X <= 69 && _Y >= height-70 && _Y <= height-6)
+			return;
+		if(_X >= width-71 && _X <= width-7 && _Y >= height-71 && _Y <= height-7)
+			touche = XK_Return;
 	}
 
 	strncpy(G->pseudo, pseudo, 11);
+}
+
+// b : Background | d : Dessin | t : timer/score | r : bots
+couleur choisirCouleur (Theme T, char type) {
+
+	static int randr = 0, randv = 0, randb = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
+	static int random = 0;
+	
+	if(random != -1) {
+		randr = rand()%255, randv = rand()%255, randb = rand()%255;
+		randr2 = rand()%255, randv2 = rand()%255, randb2 = rand()%255;
+		randr3 = rand()%255, randv3 = rand()%255, randb3 = rand()%255;
+		random = -1;
+	}
+
+	couleur C;
+
+	if(T == RETRO) {
+		if(type == 'b')
+			C = CouleurParComposante(24, 89, 60);
+		if(type == 'd')
+			C = CouleurParComposante(200, 145, 0);
+		if(type == 't')
+			C = CouleurParComposante(4, 69, 40);
+		if(type == 'r')
+			C = CouleurParComposante(255, 65, 30);
+	}
+	if(T == CHRISTMAS) {
+		if(type == 'b')
+			C = CouleurParComposante(200, 62, 62);
+		if(type == 'd')
+			C = CouleurParComposante(230, 230, 230);
+		if(type == 't')
+			C = CouleurParComposante(170, 18, 18);
+		if(type == 'r')
+			C = CouleurParComposante(63, 150, 80);
+	}
+	if(T == MODERN) {
+		if(type == 'b')
+			C = CouleurParComposante(24, 89, 60);
+		if(type == 'd')
+			C = CouleurParComposante(200, 145, 0);
+		if(type == 't')
+			C = CouleurParComposante(4, 69, 40);
+		if(type == 'r')
+			C = CouleurParComposante(255, 65, 30);
+	}
+	if(T == RANDOM) {
+		if(type == 'b')
+			C = CouleurParComposante(randr, randv, randb);
+		if(type == 'd')
+			C = CouleurParComposante(rand()%255, rand()%255, rand()%255);
+		if(type == 't')
+			C = CouleurParComposante(randr2, randv2, randb2);
+		if(type == 'r')
+			C = CouleurParComposante(randr3, randv3, randb3);
+	}
+	if(T == FALLOUT) {
+		if(type == 'b')
+			C = CouleurParComposante(37, 57, 122);
+		if(type == 'd')
+			C = CouleurParComposante(218, 160, 13);
+		if(type == 't')
+			C = CouleurParComposante(241, 177, 15);
+		if(type == 'r')
+			C = CouleurParComposante(64, 154, 213);
+	}
+
+	return C;
 }

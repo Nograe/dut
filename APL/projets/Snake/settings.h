@@ -15,5 +15,6 @@ void setDefaultSettings ();
 void setNewSettings (Game G, Bodies B, Apple A, Wall W);
 void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W);
 void changePseudo (Game *G);
+couleur choisirCouleur (Theme T, char type);
 
 #endif

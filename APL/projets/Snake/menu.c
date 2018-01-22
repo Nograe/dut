@@ -167,7 +167,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	int width = 60 * 14;
 	int height = 40 * 14;
-	int touche = 0, temp, temp_l, posy = 120, posx = 320;
+	int touche = 0, temp, temp_l, posy = 120, posx = 485;
 	char buf[6], player[11];
 
 	ChoisirEcran(4);
@@ -218,6 +218,9 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	DessinerRectangle(width-71, height-71, 64, 64);
 	#endif
 
+	if(line > 10)
+		posx = 320;
+
 	// Récupération et affichage du pseudo | score
 	for(i = line-1 ; i >= 0 ; i--) {
 		fseek(fichier, 0, SEEK_SET);
@@ -238,12 +241,15 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 		EcrireTexte(posx, posy, buf, 2);
 	}
 
+	posx = 292;
+	if(line > 10)
+		posx = 127;
 	if(line >= 1)
-		ChargerImage("src/crown.png", 127, 132, 0, 0, 32, 32);
+		ChargerImage("src/crown.png", posx, 132, 0, 0, 32, 32);
 	if(line >= 2)
-		EcrireTexte(137, 204, "2.", 2);
+		EcrireTexte(posx+10, 204, "2.", 2);
 	if(line >= 3)
-		EcrireTexte(137, 246, "3.", 2);
+		EcrireTexte(posx+10, 246, "3.", 2);
 
 	CopierZone(4, 0, 0, 0, width, height, 0, 0);
 
@@ -310,75 +316,6 @@ int verifScore (char *pseudo, int score) {
 
 	fclose(fichier);
 	return 0;
-}
-
-// b : Background | d : Dessin | t : timer/score | r : bots
-couleur choisirCouleur (Theme T, char type) {
-
-	static int randr = 0, randv = 0, randb = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
-	static int random = 0;
-	
-	if(random != -1) {
-		randr = rand()%255, randv = rand()%255, randb = rand()%255;
-		randr2 = rand()%255, randv2 = rand()%255, randb2 = rand()%255;
-		randr3 = rand()%255, randv3 = rand()%255, randb3 = rand()%255;
-		random = -1;
-	}
-
-	couleur C;
-
-	if(T == RETRO) {
-		if(type == 'b')
-			C = CouleurParComposante(24, 89, 60);
-		if(type == 'd')
-			C = CouleurParComposante(200, 145, 0);
-		if(type == 't')
-			C = CouleurParComposante(4, 69, 40);
-		if(type == 'r')
-			C = CouleurParComposante(255, 65, 30);
-	}
-	if(T == CHRISTMAS) {
-		if(type == 'b')
-			C = CouleurParComposante(200, 62, 62);
-		if(type == 'd')
-			C = CouleurParComposante(230, 230, 230);
-		if(type == 't')
-			C = CouleurParComposante(170, 18, 18);
-		if(type == 'r')
-			C = CouleurParComposante(63, 150, 80);
-	}
-	if(T == MODERN) {
-		if(type == 'b')
-			C = CouleurParComposante(24, 89, 60);
-		if(type == 'd')
-			C = CouleurParComposante(200, 145, 0);
-		if(type == 't')
-			C = CouleurParComposante(4, 69, 40);
-		if(type == 'r')
-			C = CouleurParComposante(255, 65, 30);
-	}
-	if(T == RANDOM) {
-		if(type == 'b')
-			C = CouleurParComposante(randr, randv, randb);
-		if(type == 'd')
-			C = CouleurParComposante(rand()%255, rand()%255, rand()%255);
-		if(type == 't')
-			C = CouleurParComposante(randr2, randv2, randb2);
-		if(type == 'r')
-			C = CouleurParComposante(randr3, randv3, randb3);
-	}
-	if(T == FALLOUT) {
-		if(type == 'b')
-			C = CouleurParComposante(37, 57, 122);
-		if(type == 'd')
-			C = CouleurParComposante(218, 160, 13);
-		if(type == 't')
-			C = CouleurParComposante(241, 177, 15);
-		if(type == 'r')
-			C = CouleurParComposante(64, 154, 213);
-	}
-
-	return C;
 }
 
 void quit (Game *G, Bodies *B, Apple *A, Wall *W) {
