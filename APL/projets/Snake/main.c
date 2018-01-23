@@ -208,29 +208,29 @@ void gameOver (Game *G) {
   // Affichage du score final et du level atteint
   ChoisirEcran(9);
   EffacerEcran(choisirCouleur(G->theme, 'd'));
-  ChargerImageFond("src/gameover.png");
+  ChargerImageFond("src/backgrounds/gameover.png");
   png[11] = (G->score / 10000) + '0';
   if(G->score >= 10000) {
-    ChargerImage(png, 445, height/2+14, 0, 0, 23, 31);
+    ChargerImage(png, 449, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score / 1000 % 10) + '0';
   if(G->score >= 1000) {
-    ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
+    ChargerImage(png, decal+449, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score / 100 % 10) + '0';
   if(G->score >= 100) {
-    ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
+    ChargerImage(png, decal+449, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score / 10 % 10) + '0';
   if(G->score >= 10) {
-    ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
+    ChargerImage(png, decal+449, height/2+14, 0, 0, 23, 31);
     decal += 28;
   }
   png[11] = (G->score % 10) + '0';
-  ChargerImage(png, decal+445, height/2+14, 0, 0, 23, 31);
+  ChargerImage(png, decal+449, height/2+14, 0, 0, 23, 31);
 
   if(G->level+1 >= 10) {
     png[11] = (G->level+1)/10 + '0';
@@ -250,6 +250,8 @@ void gameOver (Game *G) {
 
   CopierZone(9, 0, 0, 0, width, height, 0, 0);
   while(SourisCliquee());
+  _X = 0;
+  _Y = 0;
   ChoisirEcran(0);
 
   while(touche != XK_Escape) {
@@ -283,10 +285,10 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   int width = G.width * G.tcase;
   int height = G.height * G.tcase;
   int i, j, posx, posy, pvposx, pvposy, nxposx, nxposy;
-  char bufapple[17] = "src/apple_1X.png";
-  char bufwall[16] = "src/wall_1X.png";
-  bufapple[11] = G.tcase%10 + '0';
-  bufwall[10] = G.tcase%10 + '0';
+  char bufapple[23] = "src/icons/apple_1X.png";
+  char bufwall[22] = "src/icons/wall_1X.png";
+  bufapple[17] = G.tcase%10 + '0';
+  bufwall[16] = G.tcase%10 + '0';
 
   ChoisirEcran(1);
   EffacerEcran(choisirCouleur(G.theme, 'b'));
@@ -399,11 +401,35 @@ void gameModes(Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
     G->height = 60;
     strncpy(G->pseudo, "Survivant", 11);
     B->nbrBot = 40;
-    B->initSpeed = 100000;
+    B->initSpeed = 100007;
     B->initSize = 20;
     A->initSpawn = 0;
     W->initSpawn = 20;
   }
+
+  if(argc == 2 && !strcmp(argv[1], "minimoys")) {
+    G->opt = 3;
+    strncpy(G->pseudo, "Arthur", 11);
+    B->nbrBot = 20;
+    B->initSpeed = 50004;
+    B->initSize = 1;
+    A->initSpawn = 1;
+  }
+
+  if(argc == 2 && !strcmp(argv[1], "flash")) {
+    G->opt = 3;
+    strncpy(G->pseudo, "Arthur", 11);
+    B->nbrBot = 0;
+    B->initSpeed = 20004;
+    B->initSize = 10;
+    A->initSpawn = 1;
+  }
+
+  /*if(argc == 2 && !strcmp(argv[1], "EXEMPLE")) {
+      ...
+    Modification des paramètres
+      ...
+  }*/
 }
 
 int main (int argc, char *argv[]) {

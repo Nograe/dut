@@ -15,7 +15,6 @@ void initGame (Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
 		setDefaultSettings();
 
 	fichier = fopen("src/settings", "r");
-	G->opt = 0;
 	readSettings(fichier, G, B, A, W);
 	fclose(fichier);
 
@@ -37,7 +36,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	while (1) {
 
-		ChargerImageFond("src/menu_bg.png");
+		ChargerImageFond("src/backgrounds/menu_bg.png");
 
 	#ifdef DEV
 		DessinerSegment(width/2, 0, width/2, height);
@@ -122,7 +121,7 @@ void dispMenu (Game *G, Bodies *B, Apple *A, Wall *W) {
 				quit(G->pseudo);
 			_X = 0;
 			_Y = 0;
-			ChargerImageFond("src/menu_bg.png");
+			ChargerImageFond("src/backgrounds/menu_bg.png");
 			CopierZone(2, 0, 0, 0, width, height, 0, 0);
 		}
 		usleep(50000);
@@ -144,7 +143,7 @@ void dispPlay (Game *G, Bodies *B, Apple *A, Wall *W) {
 	B->bot = malloc(B->nbrBot * sizeof(Body));
 	int i;
 	for(i = 0; i < B->nbrBot; i++) {
-    B->bot[i].nbrseg = 5;
+		B->bot[i].nbrseg = 5;
 		B->bot[i].seg = malloc((B->bot[i].nbrseg) * sizeof(Segment));
 	}
 	bodyInit(*G, B);
@@ -173,7 +172,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	char buf[6], player[11];
 
 	ChoisirEcran(4);
-	ChargerImageFond("src/hs_bg.png");
+	ChargerImageFond("src/backgrounds/hs_bg.png");
 	ChoisirCouleurDessin(CouleurParNom("black"));
 
 	FILE* fichier = NULL;
@@ -247,7 +246,7 @@ void dispHighscore (Game *G, Bodies *B, Apple *A, Wall *W) {
 	if(line > 10)
 		posx = 127;
 	if(line >= 1)
-		ChargerImage("src/crown.png", posx, 132, 0, 0, 32, 32);
+		ChargerImage("src/icons/crown.png", posx, 132, 0, 0, 32, 32);
 	if(line >= 2)
 		EcrireTexte(posx+10, 204, "2.", 2);
 	if(line >= 3)

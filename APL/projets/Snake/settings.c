@@ -15,9 +15,9 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 	while(touche != XK_Escape) {
 
 		if(G->dispApple)
-			ChargerImageFond("src/settings_bg2.png");
+			ChargerImageFond("src/backgrounds/settings_bg2.png");
 		else
-			ChargerImageFond("src/settings_bg1.png");
+			ChargerImageFond("src/backgrounds/settings_bg1.png");
 
 		#ifdef DEV
 			DessinerSegment(width/2, 0, width/2, height);
@@ -143,7 +143,7 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 
 	while(touche != XK_Escape) {
 
-		ChargerImageFond("src/advsettings_bg.png");
+		ChargerImageFond("src/backgrounds/advsettings_bg.png");
 
 		#ifdef DEV
 			DessinerRectangle(90, 226+29, 35, 35); // Bots
@@ -276,6 +276,7 @@ void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
 
 void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W) {
 
+	G->opt = 0;
 	int i;
 	for(i = 0; i < 11; i++) {
 		if(i == 0)
@@ -321,7 +322,7 @@ void changePseudo (Game *G) {
 	while(touche != XK_Return || i < 1) {
 
 		EffacerEcran(CouleurParComposante(21, 97, 49));
-		ChargerImageFond("src/username.png");
+		ChargerImageFond("src/backgrounds/username.png");
 		EcrireTexte(352, 308, pseudo, 2);
 		if(Microsecondes()/500000%2 == 0)
 			RemplirRectangle(352+TailleChaineEcran(pseudo, 2), 286, 2, 24);
@@ -418,6 +419,16 @@ couleur choisirCouleur (Theme T, char type) {
 		if(type == 'r')
 			C = CouleurParComposante(64, 154, 213);
 	}
+	/*if(T == EXEMPLE) {
+		if(type == 'b')
+			C = CouleurParComposante(EXEMPLE);
+		if(type == 'd')
+			C = CouleurParComposante(EXEMPLE);
+		if(type == 't')
+			C = CouleurParComposante(EXEMPLE);
+		if(type == 'r')
+			C = CouleurParComposante(EXEMPLE;
+	}*/
 
 	return C;
 }

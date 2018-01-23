@@ -5,7 +5,7 @@ all: exe
 
 exe: main.o snake.o menu.o settings.o struct.h
 	@echo "Création du fichier éxecutable ..."
-	@gcc -o exe main.o snake.o menu.o settings.o $(FLAG)
+	@gcc -o snake main.o snake.o menu.o settings.o $(FLAG)
 
 main.o: main.c main.h
 	@echo "Création du fichier objet \"main.o\" ..."
