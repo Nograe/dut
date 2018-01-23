@@ -1,3 +1,10 @@
+/***********************************\
+*           Projet: Snake           *
+*                                   *
+* Par: Matthieu Petit   Le: 23/01   *
+*                                   *
+\***********************************/
+
 #include "main.h"
 //#define DEBUG
 //#define DEV
