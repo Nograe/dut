@@ -423,7 +423,7 @@ void gameModes(Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
   if(argc == 2 && !strcmp(argv[1], "minimoys")) {
     G->opt = 3;
     strncpy(G->pseudo, "Arthur", 11);
-    B->nbrBot = 20;
+    B->nbrBot = 10;
     B->initSpeed = 50004;
     B->initSize = 1;
     A->initSpawn = 1;
