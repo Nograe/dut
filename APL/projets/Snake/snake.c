@@ -339,7 +339,7 @@ void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
       A->x[i] = (-G->tcase);
       A->eaten++;
       B->snake.nbrseg += 2;
-      B->snake.seg = realloc(B->snake.seg, sizeof(Segment) * (B->snake.nbrseg + 1));
+      B->snake.seg = realloc(B->snake.seg, sizeof(Segment) * B->snake.nbrseg);
       for(j = B->snake.nbrseg-2 ; j < B->snake.nbrseg ; j++)
         B->snake.seg[j] = B->snake.seg[j-1];
     }
