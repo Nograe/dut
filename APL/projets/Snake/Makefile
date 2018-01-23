@@ -1,9 +1,9 @@
 CFLAGS=-Wunused-variable -Wunused-parameter
 FLAG = -lgraph
 
-all: exe
+all: snake
 
-exe: main.o snake.o menu.o settings.o struct.h
+snake: main.o snake.o menu.o settings.o struct.h
 	@echo "Création du fichier éxecutable ..."
 	@gcc -o snake main.o snake.o menu.o settings.o $(FLAG)
 
