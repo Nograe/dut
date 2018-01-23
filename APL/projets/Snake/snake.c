@@ -2,6 +2,7 @@
 //#define DEV
 //#define DEBUG
 
+// Changement de direction selon la touche pressée, on vide aussi la file des touches
 void changeDir (Bodies *B, int *touche, int old_dir) {
 
   *touche = Touche();
@@ -22,6 +23,7 @@ void changeDir (Bodies *B, int *touche, int old_dir) {
     B->snake.dir = old_dir;
 }
 
+// Déplacement des Bodies - Snake/Bots
 void moveBodies (Game G, Bodies *B, Apple A, Wall W) {
 
   int i, j;
@@ -71,6 +73,7 @@ void moveBodies (Game G, Bodies *B, Apple A, Wall W) {
   }
 }
 
+// Initialisation des Bodies selon les paramètres
 void bodyInit (Game G, Bodies *B) {
 
   int i, j, var;
@@ -84,8 +87,7 @@ void bodyInit (Game G, Bodies *B) {
   }
   B->snake.dir = RIGHT;
 
-  for(i = 0 ; i < B->nbrBot ; i++) {
-
+  for(i = 0; i < B->nbrBot; i++) {
     var = rand()%4 + 1;
     if(var == 1) {
       B->bot[i].seg[0].x = rand() % (G.width-4) * G.tcase + 2*G.tcase;
@@ -109,10 +111,10 @@ void bodyInit (Game G, Bodies *B) {
     }
     for(j = 1; j < B->bot[i].nbrseg; j++)
       B->bot[i].seg[j].x = (-G.tcase);
-    //printf("x: %d | y: %d | dir: %d\n", B->bot[i].seg[0].x, B->bot[i].seg[0].y, B->bot[i].dir);
   }
 }
 
+// On gére la direction des bots selon la position des obstacles, des pommes, du joueur et des bordures
 void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
 
   Direction D = 0;
@@ -198,6 +200,26 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
     }
   }
 
+  // Mode Zombie, les bots vont en direction de la tête du snake
+  if(G.opt == 2) {
+    sx = B->snake.seg[0].x;
+    sy = B->snake.seg[0].y;
+    if(posx == sx && (prevDir == LEFT || prevDir == RIGHT) && rand()%2 == 0) {
+      if(posy > sy)
+        B->bot[botNum].dir = UP;
+      if(posy < sy)
+        B->bot[botNum].dir = DOWN;
+      return;
+    }
+    if(posy == sy && (prevDir == UP || prevDir == DOWN) && rand()%2 == 0) {
+      if(posx > sx)
+        B->bot[botNum].dir = LEFT;
+      if(posx < sx)
+        B->bot[botNum].dir = RIGHT;
+      return;
+    }
+  }
+
   // Une pomme est sur la même ligne ou la même colonne
   for(i = 0; i < A.spawn; i++) {
 
@@ -246,6 +268,7 @@ void dirBot (Game G, Bodies *B, Apple A, Wall W, int botNum) {
   }
 }
 
+// On vérifie chaque obstacle et chaque bordure pour le Snake, et le reste pour les Bots
 int verif (Game *G, Bodies *B, Wall W) {
 
   int i, j;
@@ -322,6 +345,7 @@ int verif (Game *G, Bodies *B, Wall W) {
   return 0;
 }
 
+// On gérer les pommes mangées, et la redirection vers la fonction nextLevel
 void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 
 	if(G->opt == 2)
@@ -361,6 +385,7 @@ void verifApple (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
   }
 }
 
+// Génération aléatoire des pommes
 void randomApple (Game G, Bodies B, Apple *A) {
 
   int posx, posy, i, j = 0, verif = 1;
@@ -391,6 +416,7 @@ void randomApple (Game G, Bodies B, Apple *A) {
   }
 }
 
+// Génération aléatoire des obstacles
 void randomWall (Game G, Bodies B, Apple A, Wall *W) {
 
   int posx, posy, i, j = 0, verif = 1;

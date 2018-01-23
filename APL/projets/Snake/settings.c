@@ -1,6 +1,7 @@
 #include "settings.h"
 //#define DEV
 
+// Affichage des paramètres
 void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	while(SourisCliquee());
@@ -20,8 +21,8 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 			ChargerImageFond("src/backgrounds/settings_bg1.png");
 
 		#ifdef DEV
-			DessinerSegment(width/2, 0, width/2, height);
-			DessinerSegment(0, height/2, width, height/2);
+		DessinerSegment(width/2, 0, width/2, height);
+		DessinerSegment(0, height/2, width, height/2);
 			DessinerRectangle(377, 310, 81, 48); // Switch bouton
 			DessinerRectangle(9, height-74, 64, 64); // Pseudo
 			DessinerRectangle(width-74, height-74, 64, 64); // Reset settings
@@ -39,26 +40,26 @@ void dispSettings (Game *G, Bodies *B, Apple *A, Wall *W) {
 		#endif
 
 		// Décalage du texte (détail)
-		(G->width >= 100) ? (decalW = 6) : (decalW = 0);
-		(G->height >= 100) ? (decalH = 6) : (decalH = 0);
-		(B->initSize < 10) ? (decalB = 6) : (decalB = 0);
-		(A->initSpawn >= 10) ? (decalA = 6) : (decalA = 0);
+			(G->width >= 100) ? (decalW = 6) : (decalW = 0);
+			(G->height >= 100) ? (decalH = 6) : (decalH = 0);
+			(B->initSize < 10) ? (decalB = 6) : (decalB = 0);
+			(A->initSpawn >= 10) ? (decalA = 6) : (decalA = 0);
 
-		ChoisirCouleurDessin(CouleurParNom("black"));
-		sprintf(buf, "%d", G->width);
-		EcrireTexte(166-decalW, 254, buf, 2);
-		sprintf(buf, "%d", G->height);
-		EcrireTexte(642-decalH, 254, buf, 2);
-		sprintf(buf, "%d", B->initSize);
-		EcrireTexte(166+decalB, 426, buf, 2);
-		sprintf(buf, "%d", A->initSpawn);
-		EcrireTexte(647-decalA, 426, buf, 2);
+			ChoisirCouleurDessin(CouleurParNom("black"));
+			sprintf(buf, "%d", G->width);
+			EcrireTexte(166-decalW, 254, buf, 2);
+			sprintf(buf, "%d", G->height);
+			EcrireTexte(642-decalH, 254, buf, 2);
+			sprintf(buf, "%d", B->initSize);
+			EcrireTexte(166+decalB, 426, buf, 2);
+			sprintf(buf, "%d", A->initSpawn);
+			EcrireTexte(647-decalA, 426, buf, 2);
 
-		SourisCliquee();
+			SourisCliquee();
 
-		if(_X >= 9 && _X <= 9+64 && _Y >= height-74 && _Y <= height-10) {
-			changePseudo(G);
-			ChoisirEcran(2);
+			if(_X >= 9 && _X <= 9+64 && _Y >= height-74 && _Y <= height-10) {
+				changePseudo(G);
+				ChoisirEcran(2);
 			while(SourisCliquee()); // On vide la file d'attente
 			_X = 0;
 			_Y = 0;
@@ -182,6 +183,8 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 			EcrireTexte(418-TailleChaineEcran("Random", 2)/2, 375, "Random", 2);
 		if(G->theme == 5)
 			EcrireTexte(418-TailleChaineEcran("Fallout", 2)/2, 375, "Fallout", 2);
+		if(G->theme == 6)
+			EcrireTexte(418-TailleChaineEcran("Zombie", 2)/2, 375, "Zombie", 2);
 
 		SourisCliquee();
 
@@ -208,11 +211,11 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 		if(_X >= 324 && _X <= 324+35 && _Y >= 347 && _Y <= 347+35) {
 			G->theme--;
 			if(G->theme == 0)
-				G->theme = 5;
+				G->theme = 6;
 		}
 		if(_X >= 475 && _X <= 475+35 && _Y >= 347 && _Y <= 347+35) {
 			G->theme++;
-			if(G->theme == 6)
+			if(G->theme == 7)
 				G->theme = 1;
 		}
 
@@ -228,6 +231,7 @@ void advSettings (Game *G, Bodies *B, Wall *W) {
 	_Y = 0;
 }
 
+// On remet les paramètres par défaut
 void setDefaultSettings () {
 
 	FILE *fichier = fopen("src/settings", "a");
@@ -249,6 +253,7 @@ void setDefaultSettings () {
 	fclose(fichier);
 }
 
+// On sauvegarde dans le fichier les nouveaux paramètres
 void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
 
 	if(G.opt > 1)
@@ -274,6 +279,7 @@ void setNewSettings (Game G, Bodies B, Apple A, Wall W) {
 	fclose(fichier);
 }
 
+// On lit les paramètres sauvegardés dans le fichier
 void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W) {
 
 	G->opt = 0;
@@ -305,6 +311,7 @@ void readSettings(FILE *fichier, Game *G, Bodies *B, Apple *A, Wall *W) {
 	}
 }
 
+// Changement du pseudo
 void changePseudo (Game *G) {
 
 	int width = 60*14, height = 40*14;
@@ -357,13 +364,13 @@ void changePseudo (Game *G) {
 // b : Background | d : Dessin | t : timer/score | r : bots
 couleur choisirCouleur (Theme T, char type) {
 
-	static int randr = 0, randv = 0, randb = 0, randr2 = 0, randv2 = 0, randb2 = 0, randr3 = 0, randv3 = 0, randb3 = 0;
+	static couleur C1, C2, C3;
 	static int random = 0;
 	
 	if(random != -1) {
-		randr = rand()%255, randv = rand()%255, randb = rand()%255;
-		randr2 = rand()%255, randv2 = rand()%255, randb2 = rand()%255;
-		randr3 = rand()%255, randv3 = rand()%255, randb3 = rand()%255;
+		C1 = CouleurParComposante(rand()%255, rand()%255, rand()%255);
+		C2 = CouleurParComposante(rand()%255, rand()%255, rand()%255);
+		C3 = CouleurParComposante(rand()%255, rand()%255, rand()%255);
 		random = -1;
 	}
 
@@ -371,13 +378,13 @@ couleur choisirCouleur (Theme T, char type) {
 
 	if(T == RETRO) {
 		if(type == 'b')
-			C = CouleurParComposante(24, 89, 60);
+			C = CouleurParComposante(150, 194, 11);
 		if(type == 'd')
-			C = CouleurParComposante(200, 145, 0);
+			C = CouleurParComposante(0, 10, 20);
 		if(type == 't')
-			C = CouleurParComposante(4, 69, 40);
+			C = CouleurParComposante(120, 174, 0);
 		if(type == 'r')
-			C = CouleurParComposante(255, 65, 30);
+			C = CouleurParComposante(122, 0, 14);
 	}
 	if(T == CHRISTMAS) {
 		if(type == 'b')
@@ -401,13 +408,13 @@ couleur choisirCouleur (Theme T, char type) {
 	}
 	if(T == RANDOM) {
 		if(type == 'b')
-			C = CouleurParComposante(randr, randv, randb);
+			C = C1;
 		if(type == 'd')
 			C = CouleurParComposante(rand()%255, rand()%255, rand()%255);
 		if(type == 't')
-			C = CouleurParComposante(randr2, randv2, randb2);
+			C = C2;
 		if(type == 'r')
-			C = CouleurParComposante(randr3, randv3, randb3);
+			C = C3;
 	}
 	if(T == FALLOUT) {
 		if(type == 'b')
@@ -418,6 +425,16 @@ couleur choisirCouleur (Theme T, char type) {
 			C = CouleurParComposante(241, 177, 15);
 		if(type == 'r')
 			C = CouleurParComposante(64, 154, 213);
+	}
+	if(T == ZOMBIE) {
+		if(type == 'b')
+			C = CouleurParComposante(67,70,55);
+		if(type == 'd')
+			C = CouleurParComposante(217,30,24);
+		if(type == 't')
+			C = CouleurParComposante(42,55,40);
+		if(type == 'r')
+			C = CouleurParComposante(85,114,57);
 	}
 	/*if(T == EXEMPLE) {
 		if(type == 'b')

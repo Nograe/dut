@@ -2,6 +2,7 @@
 //#define DEBUG
 //#define DEV
 
+// Cette fonction permet de gérer le menu pause
 void verifPause (Game G, Apple A, int *touche, unsigned long *temps) {
 
   if(*touche != XK_space)
@@ -116,6 +117,7 @@ void verifPause (Game G, Apple A, int *touche, unsigned long *temps) {
   *touche = 0;
 }
 
+// On passe un niveau, remise de tous les paramètres initiaux
 void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
 
   G->level++;
@@ -144,6 +146,7 @@ void nextLevel (Game *G, Bodies *B, Apple *A, Wall *W, unsigned long *temps) {
   verifPause(*G, *A, &touche, temps);
 }
 
+// Afficher le temps, le level et le score
 void printData (Game G, unsigned long temps) {
 
   int var = (Microsecondes() - temps)/1000000;
@@ -194,6 +197,7 @@ void printData (Game G, unsigned long temps) {
   EcrireTexte(width/2+40, height-18, png, 2);
 }
 
+// Afficher l'écran de fin de jeu, avec bouton pseudo et highscores
 void gameOver (Game *G) {
 
   int width = 60*14;
@@ -280,6 +284,7 @@ void gameOver (Game *G) {
   }
 }
 
+// Affichage de l'écran de jeu
 void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
 
   int width = G.width * G.tcase;
@@ -293,7 +298,7 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   ChoisirEcran(1);
   EffacerEcran(choisirCouleur(G.theme, 'b'));
 
-  // Dessin des Segments du Snake
+  // Dessin des Segments du Snake, et dessin des segments qui sont en angle
   for(i = 0 ; i < B.snake.nbrseg ; i++) {
     ChoisirCouleurDessin(choisirCouleur(G.theme, 'd'));
     posx = B.snake.seg[i].x;
@@ -390,6 +395,7 @@ void draw (Game G, Bodies B, Apple A, Wall W, unsigned long temps) {
   CopierZone(1, 0, 0, 0, width, height, 0, 0);
 }
 
+// Gestion des modes de jeu
 void gameModes(Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
 
   if(argc < 2)
@@ -418,7 +424,7 @@ void gameModes(Game *G, Bodies *B, Apple *A, Wall *W, int argc, char *argv[]) {
 
   if(argc == 2 && !strcmp(argv[1], "flash")) {
     G->opt = 3;
-    strncpy(G->pseudo, "Arthur", 11);
+    strncpy(G->pseudo, "Flash", 11);
     B->nbrBot = 0;
     B->initSpeed = 20004;
     B->initSize = 10;
