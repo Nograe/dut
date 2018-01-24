@@ -1,0 +1,95 @@
+* {
+	margin: 0;
+	padding: 0;
+	border:;
+font-family: "Times New Roman", Times, serif;
+}
+body {
+	background-color: #f0f0f5;
+}
+header {
+	width: 100%;
+    	left: 0;
+    	right: 0;
+    	height: 80px;
+	background-color: #a6a6a6;
+}
+header * {
+	display: inline-block;
+   	color:  white;
+}
+header h1 {
+	text-transform: uppercase;
+	font-size: 2em;
+	padding: 20px;
+}
+nav {
+	position: absolute;
+	right: 0;
+	top: 30px;
+}
+ul {
+	font-size: 1.2em;
+}
+li {
+	padding-right: 200px;
+}
+aside {
+	float: right;
+	padding: 10px;
+}
+img[src="manchot.jpg"] {
+	width: 300px;
+	height: 150px;
+}
+img[src="manchot2.jpg"] {
+	width: 300px;
+	height: 350px;
+}
+section > h2 {
+	text-align: center;
+	padding: 10px;
+	width: 20%;
+	margin: 0 auto;
+	color: white;
+	background-color: #a6a6a6;
+}
+article {
+	width: 70%;
+	margin: 0 auto;
+	padding: 10px;
+	margin-bottom: 30px;
+	background-color: white;
+ 	box-shadow: 8px 8px #888888;
+}
+article h2 {
+	font-size: 2em;
+	padding: 10px;
+}
+p {
+	color: #808080;
+	margin-bottom: 20px;
+	line-height: 1.2;
+}
+footer {
+	background-color: #a6a6a6;
+	width: 100%;
+	text-align: center;
+	color: white;
+	padding: 20px;
+	font-size: 2em;
+	font-weight: bold;
+}
+a {
+	text-decoration: none;
+	color: red;
+}
+
+@media screen and (max-width: 640px) {
+header {
+	height: 500px;
+}
+header * {
+	display: block;
+}
+}
