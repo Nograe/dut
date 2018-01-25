@@ -87,7 +87,12 @@ Pile* inverse(Pile *p) {
   return res;
 }
 
-void main () {
+int verif (Pile *p) {
+  
+  
+}
+
+/*void main () {
 
   Pile *P = NULL;
   P = empiler(P, 10);
@@ -102,4 +107,41 @@ void main () {
   //printf("%d\n", C->elt);
   Pile *I = inverse(P);
   printf("%d\n", I->elt);
+}*/
+
+void main () {
+
+  Pile *F = NULL;
+  /*F = enfiler(F, 3);
+    F = enfiler(F, 0);
+    F = enfiler(F, 8);
+    F = enfiler(F, 7);
+    afficher(F);
+    //F = defiler(F);
+    //afficher(F);
+    //printf("%d>%d>%d\n", F->elt, F->suivant->elt, F->suivant->suivant->elt);
+
+    File *C = copy(F);
+    afficher(C);*/
+
+  char chain[100];
+  scanf("%s", chain);
+
+  int i = 0;
+  while(chain[i] != '\0') {
+    if(chain[i] == '(')
+      empiler(F, 1);
+    if(chain[i] == ')')
+      empiler(F, 2);
+    if(chain[i] == '[')
+      empiler(F, 3);
+    if(chain[i] == ']')
+      empiler(F, 4);
+    if(chain[i] == '{')
+      empiler(F, 5);
+    if(chain[i] == '}')
+      empiler(F, 6);
+    verif(P);
+    i++;
+  }
 }

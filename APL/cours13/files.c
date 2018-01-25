@@ -8,6 +8,17 @@ struct File {
   File* suivant;
 };
 
+void afficher (File *f) {
+
+  while(f != NULL) {
+    printf("%d", f->elt);
+    f = f->suivant;
+    if(f != NULL)
+      printf(">");
+  }
+  printf("\n");
+}
+
 File* enfiler (File *f, int elt) {
 
   File* res = malloc(sizeof(File));
@@ -24,8 +35,13 @@ File* enfiler (File *f, int elt) {
 
 File* defiler (File *f) {
 
-  if(f == NULL || f->suivant == NULL)
+  if(f == NULL)
     return NULL;
+
+  if(f->suivant == NULL) {
+    free(f);
+    return NULL;
+  }
 
   File* tmp = f;
   File* last = NULL;
@@ -103,13 +119,34 @@ File* inverse(File *f) {
 void main () {
 
   File *F = NULL;
-  F = enfiler(F, 3);
-  F = enfiler(F, 4);
-  F = enfiler(F, 5);
-  //F = defiler(F);
-  //printf("%d\n", dernier(F));
-  printf("%d>%d>%d\n", F->elt, F->suivant->elt, F->suivant->suivant->elt);
+  /*F = enfiler(F, 3);
+    F = enfiler(F, 0);
+    F = enfiler(F, 8);
+    F = enfiler(F, 7);
+    afficher(F);
+    //F = defiler(F);
+    //afficher(F);
+    //printf("%d>%d>%d\n", F->elt, F->suivant->elt, F->suivant->suivant->elt);
 
-  File *C = inverse(F);
-  printf("%d>%d>%d\n", C->elt, C->suivant->elt, C->suivant->suivant->elt);
+    File *C = copy(F);
+    afficher(C);*/
+
+  char chain[100];
+  scanf("%s", chain);
+
+  int i = 0;
+  while(chain[i] != '\0') {
+    if(chain[i] == '(')
+      emfiler(F, 1);
+    if(chain[i] == ')')
+      emfiler(F, 2);
+    if(chain[i] == '[')
+      emfiler(F, 3);
+    if(chain[i] == ']')
+      empiler(F, 4);
+    if(chain[i] == '{')
+      empiler(F, 5);
+    if(chain[i] == '}')
+      empiler(F, 6);
+  }
 }
