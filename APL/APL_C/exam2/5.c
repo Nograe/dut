@@ -3,23 +3,6 @@
 
 int check(int tab[], int length);
 
-// Fonction d'affichage
-void affichage (int grille[9][9])
-{
-   puts("------------------");
-   for (int i = 0; i < 9; i++)
-   {
-      for (int j = 0; j < 9; j++)
-      {
-         printf( ((j + 1) % 3) ? "%d " : "%d|", grille[i][j]);
-      }
-      putchar('\n');
-      if (!((i + 1) % 3))
-         puts("------------------");
-   }
-   puts("\n\n");
-}
-
 void display (int *tab) {
 
    printf("{");
@@ -30,18 +13,19 @@ void display (int *tab) {
 }
 
 int validLigne (int tab[9][9], int line, int nb) {
+   if (check(tab[line], 9))
+      return 0;
 
-   return check(tab[line], 9);
+   return 1;
 }
 
 int validColonne (int tab[9][9], int colonne, int nb) {
-   int i;
-   int tmp[9];
+   int i, j;
 
    for (i = 0; i < 9; i++)
-      tmp[i] = tab[i][colonne];
-
-   return check(tmp, 9);;
+      if (tab[i][colonne] == nb)
+         return 0;
+   return 1;
 }
 
 int validBloc (int tab[9][9], int debi, int debj) {
@@ -63,16 +47,14 @@ int validBloc (int tab[9][9], int debi, int debj) {
 }
 
 int check(int tab[], int length) {
-   //display(tab);
-
    int i, j;
-   for (i = 1; i <= length; ++i) {
+   for (i = 0; i < length; ++i) {
       int nb = 0;
       for (j = 0; j < length; ++j) {
          if (tab[j] == i)
             nb++;
       }
-      if(nb != 1)
+      if (nb != 1)
          return 0;
    }
 
@@ -93,15 +75,17 @@ int valide (int sudoku[9][9]) {
 
    //verif colonne
    for (i = 0; i < 9; i++) {
-      if (!validColonne(sudoku, i, j)) {
-         printf("error colonne\n");
-         return 0;
+      for (j = 1; j <= 10; j++) {
+         if (!validColonne(sudoku, i, j)) {
+            printf("error colonne\n");
+            return 0;
+         }
       }
    }
 
    //verif bloc
-   for (i = 0; i < 9; i+=3) {
-      for (j = 0; j < 9; j+=3) {
+   for (i = 0; i < 9; i++) {
+      for (j = 0; j < 9; j++) {
          if (!validBloc(sudoku, i, j)) {
             printf("error block\n");
             return 0;
@@ -114,20 +98,14 @@ int valide (int sudoku[9][9]) {
 
 void main (int argc, int *argv[]) {
 
-   int sudoku[9][9] =
-   {
-      {4, 1, 5, 6, 3, 8, 9, 7, 2},
-      {3, 6, 2, 4, 7, 9, 1, 8, 5},
-      {7, 8, 9, 2, 1, 5, 3, 6, 4},
-      {9, 2, 6, 3, 4, 1, 7, 5, 8},
-      {1, 3, 8, 7, 5, 6, 4, 2, 9},
-      {5, 7, 4, 9, 8, 2, 6, 3, 1},
-      {2, 5, 7, 1, 6, 4, 8, 9, 3},
-      {8, 4, 3, 5, 9, 7, 2, 1, 6},
-      {6, 9, 1, 8, 2, 3, 5, 4, 7}
-   };
+  int sudoku[9][9];
 
-   affichage(sudoku);
+  int i, j;
+  for(i = 0; i < 9; i++) {
+    for(j = 0; j < 9; j++) {
+      scanf(" %d", &sudoku[i][j]);
+    }
+  }
 
    printf("%d\n", valide(sudoku));
 }
