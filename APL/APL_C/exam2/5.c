@@ -13,19 +13,18 @@ void display (int *tab) {
 }
 
 int validLigne (int tab[9][9], int line, int nb) {
-   if (check(tab[line], 9))
-      return 0;
 
-   return 1;
+   return check(tab[line], 9);
 }
 
 int validColonne (int tab[9][9], int colonne, int nb) {
-   int i, j;
+   int i;
+   int tmp[9];
 
    for (i = 0; i < 9; i++)
-      if (tab[i][colonne] == nb)
-         return 0;
-   return 1;
+      tmp[i] = tab[i][colonne];
+
+   return check(tmp, 9);
 }
 
 int validBloc (int tab[9][9], int debi, int debj) {
@@ -40,21 +39,20 @@ int validBloc (int tab[9][9], int debi, int debj) {
       }
    }
 
-   if (!check(tmp, 9))
-      return 0;
-
-   return 1;
+   return check(tmp, 9);
 }
 
 int check(int tab[], int length) {
+   //display(tab);
+
    int i, j;
-   for (i = 0; i < length; ++i) {
+   for (i = 1; i <= length; ++i) {
       int nb = 0;
       for (j = 0; j < length; ++j) {
          if (tab[j] == i)
             nb++;
       }
-      if (nb != 1)
+      if(nb != 1)
          return 0;
    }
 
@@ -68,26 +66,24 @@ int valide (int sudoku[9][9]) {
    //verif lignes
    for (i = 0; i < 9; i++) {
       if (!validLigne(sudoku, i, j)) {
-         printf("error line %d\n", i);
+         //printf("error line %d\n", i);
          return 0;
       }
    }
 
    //verif colonne
    for (i = 0; i < 9; i++) {
-      for (j = 1; j <= 10; j++) {
-         if (!validColonne(sudoku, i, j)) {
-            printf("error colonne\n");
-            return 0;
-         }
+      if (!validColonne(sudoku, i, j)) {
+         //printf("error colonne\n");
+         return 0;
       }
    }
 
    //verif bloc
-   for (i = 0; i < 9; i++) {
-      for (j = 0; j < 9; j++) {
+   for (i = 0; i < 9; i+=3) {
+      for (j = 0; j < 9; j+=3) {
          if (!validBloc(sudoku, i, j)) {
-            printf("error block\n");
+            //printf("error block\n");
             return 0;
          }
       }
