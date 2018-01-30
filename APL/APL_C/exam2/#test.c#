@@ -1,0 +1,34 @@
+void perm(struct element **liste, struct element *el)
+{
+  P_un_element prec,suiv,l=*liste;
+  if (l == NULL) return;
+  if (el == NULL) return;
+  if (el == l)
+    {
+      suiv = l->suivant;
+      if (suiv)
+	{
+	  l->suivant = suiv->suivant;
+	  suiv->suivant = l;
+	  *liste = suiv;
+	}
+      return;
+    }
+  while (l->suivant != NULL)
+    {
+      if (l->suivant == el) break;
+      l = l->suivant;
+    }
+  if (l->suivant == el)
+    {
+      prec = l;
+      l = l->suivant;
+      suiv = l->suivant;
+      if (suiv)
+	{
+	  l->suivant = suiv->suivant;
+	  suiv->suivant = l;
+	  prec->suivant = suiv;
+	}
+    }
+}
