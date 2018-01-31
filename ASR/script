@@ -1,0 +1,28 @@
+#!/bin/bash
+
+Expression conditionnelle:
+[[ expr ]]  ex: [[ $X -eq 2 ]]
+
+for i in $(seq X) || for read x | for word in list_words
+do
+   #code
+done
+
+for (( i=0 ; i <= 10 ; i=i+1 ))
+do
+   #code
+done
+
+if cond_expr
+then
+   #code
+#else
+   #code
+#elif
+   #code
+fi
+
+while cond_expr
+do
+   #code
+done

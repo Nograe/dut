@@ -15,14 +15,14 @@ if [[ -f $2 ]]
     fi
     cp /dev/null $2
 fi
-while read c
+while read addr
 do
-    echo "c: $c"
-    x=$(expr substr $c 1 8)
-    y=$(expr substr $c 9 8)
-    z=$(expr substr $c 17 8)
-    t=$(expr substr $c 25 8)
+    #echo "addr: $addr"
+    x=$(expr substr $addr 1 8)
+    y=$(expr substr $addr 9 8)
+    z=$(expr substr $addr 17 8)
+    t=$(expr substr $addr 25 8)
     addr_dot=$((9#$x)).$((9#$y)).$((9#$z)).$((9#$t))
     echo $addr_dot >> $2
-done
+done < $1
 exit
