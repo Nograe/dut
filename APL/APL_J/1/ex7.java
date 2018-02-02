@@ -17,14 +17,18 @@ class Matrix {
 	for(int i = 0; i < origin.length; i++)
 	    tab[dim][i] = origin[i];
     }
+    
+    void addition (int mat[]) {
+	
+    }
 }
 
 public class ex7 {
 
     public static void main (String[] args) {
-	Matrix mat;
-	mat = new Matrix(2, 4);
+	Matrix matrice;
+	matrice = new Matrix(2, 4);
 
-	System.out.println("0: "+mat.tab[0][0]);
+	//System.out.println("0: "+matrice.tab[0][0]);
     }
 }
