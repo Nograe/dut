@@ -13,14 +13,14 @@ class SalleAttente {
       }
       System.out.println("On appelle : " + patients.pollFirst());
    }
-   public void afficherSalle() {
+   public void afficherSalle() {s
       if (patients.size() == 0) {
          System.out.println("La salle d'attente est vide.");
          return;
       }
       System.out.println("Liste des patients :");
       for (int i = 0; i < patients.size(); i++)
-         System.out.println(patients.get(i));
+      System.out.println(patients.get(i));
    }
 }
 
@@ -36,23 +36,23 @@ public class ex4 {
          System.out.print("Entrez une commande : " + "\n" + "1)Faire Entrer 2)FaireSortir 3) Afficher 4)Quitter ");
          rep = clavier.nextInt();
          switch (rep) {
-         case 1 :
+            case 1 :
             clavier.nextLine();
             System.out.print("Entrez un nom : ");
             nom = clavier.nextLine();
             docteur.faireEntrer(nom);
             break;
-         case 2 :
+            case 2 :
             docteur.faireSortir();
             break;
-         case 3 :
+            case 3 :
             docteur.afficherSalle();
             break;
-         case 4:
+            case 4:
             System.out.println("bye");
             fini = true;
             break;
-         default : System.out.println("commande inconnue");
+            default : System.out.println("commande inconnue");
          }
       }
    }
