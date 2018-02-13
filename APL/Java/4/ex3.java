@@ -11,7 +11,7 @@ public class ex3 {
       fenetre.setLocation(500, 200);
       fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-      JLabel question = new JLabel("Aimez-vous les chats?");
+      JLabel question = new JLabel("Aimez-vous les chats ?");
       question.setHorizontalAlignment(JLabel.CENTER);
       question.setVerticalAlignment(JLabel.BOTTOM);
       question.setPreferredSize(new Dimension(400, 100));
