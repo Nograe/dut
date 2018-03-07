@@ -100,6 +100,13 @@ CREATE TABLE HOTESSE_EQUIPAGE (
 
 ALTER TABLE EQUIPAGE ADD FOREIGN KEY (numVol, numEscale, dateEscale) REFERENCES INSTANCE_ESCALE;
 
+
+
+ALTER TABLE VOL ADD codeTarif varchar(1) not null;
+ALTER TABLE VOL ADD CONSTRAINT codeTarif_domain CHECK (codeTarif IN ('A', 'B', 'C', 'D'));
+
+
+
 CREATE DOMAIN statut_compagnie VARCHAR(10) CHECK (VALUE = 'Prive' OR VALUE = 'Public');
 
 CREATE TABLE COMPAGNIE_AERIENNE (
@@ -109,3 +116,6 @@ CREATE TABLE COMPAGNIE_AERIENNE (
    paysSiege varchar(40) not null,
    statut statut_compagnie
 );
+
+ALTER TABLE VOL DROP COLUMN compagnie;
+ALTER TABLE VOL ADD codeCompagnie integer REFERENCES COMPAGNIE_AERIENNE (statut);
