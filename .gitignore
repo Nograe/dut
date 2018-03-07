@@ -18,10 +18,8 @@ APL/projets/Snake/src/scores
 APL/projets/Snake/src/settings
 
 # Temp files
-.temp/*
-!.temp/help*
+#.temp/*
 desktop.ini
-!.temp/expo*
 
 # OpenClassrooms
 OpenClassrooms/*
