@@ -19,28 +19,28 @@ class NodeDisplay {
 
    public int countPlaceGraphique(FontMetrics F, String dir) {
       if(dir == "gauche" && filsGauche != null) {
-         System.out.println("Offset gauche");
+         // System.out.println("Offset gauche");
          return (filsGauche.countPlaceGraphique(F) + espaceX + F.stringWidth(Integer.toString(val)));
       }
       if(dir == "droit" && filsDroit != null) {
-         System.out.println("Offset droit");
+         // System.out.println("    PlaceGraphiqueFilsDroit: " + filsDroit.countPlaceGraphique(F) + " + " + espaceX + " + " + F.stringWidth(Integer.toString(val)));
          return (filsDroit.countPlaceGraphique(F) + espaceX + F.stringWidth(Integer.toString(val)));
       }
-
       return F.stringWidth(Integer.toString(val)) + espaceX/2;
    }
-   
+
    public int countPlaceGraphique(FontMetrics F) {
       if(filsGauche != null && filsDroit != null) {
-      return (filsGauche.countPlaceGraphique(F) + filsDroit.countPlaceGraphique(F) + espaceX*2 + F.stringWidth(Integer.toString(val)));
+         // System.out.println("        Val:" + val + " PlaceGraphiqueFilGauche: " + filsGauche.countPlaceGraphique(F) + " PlaceGraphiqueFilsDroit: " + filsDroit.countPlaceGraphique(F));
+         return (filsGauche.countPlaceGraphique(F) + filsDroit.countPlaceGraphique(F) + espaceX + F.stringWidth(Integer.toString(val)));
       }
       if(filsGauche != null && filsDroit == null) {
-      return (filsGauche.countPlaceGraphique(F) + espaceX + F.stringWidth(Integer.toString(val)));
+         return (filsGauche.countPlaceGraphique(F) + espaceX + F.stringWidth(Integer.toString(val)));
       }
       if(filsGauche == null && filsDroit != null) {
-      return (filsDroit.countPlaceGraphique(F) + espaceX + F.stringWidth(Integer.toString(val)));
+         return (filsDroit.countPlaceGraphique(F) + espaceX + F.stringWidth(Integer.toString(val)));
       }
-
-      return F.stringWidth(Integer.toString(val)) + espaceX/2;
+      // System.out.println("           /!\\       " + Integer.toString(val) + " : " + F.stringWidth(Integer.toString(val)));
+      return F.stringWidth(Integer.toString(val));
    }
 }

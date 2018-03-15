@@ -130,16 +130,16 @@ class Node{
 public class BinaryTreeConsole {
     public static void main(String[] args) {
 	//Node n = new Node(1, null, new Node(20));
-	//Node n = new Node(1, new Node(2, new Node(4), new Node(5)), new Node(3, new Node(6), new Node(70)));
+	// Node n = new Node(1, new Node(2, new Node(4), new Node(5)), new Node(3, new Node(6), new Node(70)));
 	//Node n = new Node(1, null, new Node(3, new Node(2), new Node(7)));
 
-	/*Node n = new Node(101,
-	  new Node(22, new Node(40, new Node(8321), new Node(922224)), new Node(5, new Node(224), new Node(3, new Node(22), new Node(43, new Node(22), new Node(43))))),
-	  new Node(321209, new Node(6109, new Node(82367, new Node(20), new Node(13)), new Node(9097)), new Node(709)));*/
+	// Node n = new Node(101,
+	//   new Node(22, new Node(40, new Node(8321), new Node(2224)), new Node(5, new Node(24454), new Node(3, new Node(22), new Node(43, new Node(22), new Node(333))))),
+	//   new Node(321209, new Node(6109, new Node(82367, new Node(20), new Node(13)), new Node(9097)), new Node(709)));
 
 
 
-	//Node n = new Node(1, new Node(2, new Node(4), new Node(5)), new Node(3, new Node(6), new Node(70)));
+	// Node n = new Node(1, new Node(2, new Node(4), new Node(5)), new Node(3, new Node(6), new Node(70)));
 
 	Node n=new Node(1,
 			new Node (21,
@@ -155,24 +155,21 @@ public class BinaryTreeConsole {
 				 new Node (321),
 				 new Node (322)));
 
-	// Node n = new Node(101,
-	//   new Node(22, new Node(40, new Node(8321), new Node(922224)), new Node(5, new Node(224), new Node(3, new Node(22), new Node(43, new Node(22), new Node(43))))),
-	//   new Node(321209, new Node(6109, new Node(82367, new Node(20), new Node(13)), new Node(9097)), new Node(709)));
-
      //n.afficher();
 
-     PanelTree graphicTree = new PanelTree(n);
-     System.out.println(graphicTree.getOffsetGauche() + " | " + graphicTree.getOffsetDroit());
+	PanelTree graphicTree = new PanelTree(n);
+	// System.out.println(graphicTree.getOffsetGauche() + " | " + graphicTree.getOffsetDroit());
 
    	JFrame fenetre = new JFrame();
 
-   	fenetre.setSize(graphicTree.getOffsetGauche()+graphicTree.getOffsetDroit(), 500);
-   	fenetre.setLocation(300, 100);
+   	//fenetre.setSize(graphicTree.getOffsetGauche()+graphicTree.getOffsetDroit(), 500);
+	fenetre.setSize(PanelTree.WIDTH, PanelTree.HEIGHT+NodeDisplay.espaceY*2);
+	fenetre.setLocation(100, 100);
    	fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
    	fenetre.add(graphicTree, BorderLayout.CENTER);
-      graphicTree.repaint();
+	graphicTree.repaint();
    	fenetre.setVisible(true);
     }
 }
