@@ -244,7 +244,7 @@ public class MainPanel extends JPanel implements MouseMotionListener, MouseListe
       }
       for(int i = 0; i < obstacles.length; i++) {
          for (int j = 0; j < obstacles[0].length; j++) {
-            if(Math.random()*100 > 70 && (start == null || (start.getX() != j && start.getY() != i))) {
+            if(Math.random()*100 > 70 && (start == null || (start.getX() != j || start.getY() != i))) {
                obstacles[i][j] = 1;
             }
          }
