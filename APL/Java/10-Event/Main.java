@@ -14,8 +14,8 @@ public class Main {
 
       window.Main.setBackground(new Color(20, 100, 120));
       window.ControlPanel.setBackground(new Color(20, 120, 100));
-      window.repaint(); //debug
-      window.Main.repaint();
-      window.ControlPanel.repaint();
+      // window.repaint(); //debug
+      // window.Main.repaint();
+      // window.ControlPanel.repaint();
    }
 }

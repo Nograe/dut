@@ -35,7 +35,7 @@ public class Fenetre extends JFrame {
 
       this.placeObstacle = new JRadioButton("Placer/Enlever des obstacles");
       this.selectDepart = new JRadioButton("Appliquer l'algorithme");
-      this.random = new JButton("Placer des obstacles aléatoirement");
+      this.random = new JButton("Placer des obstacles aleatoirement");
       this.placeObstacle.setBackground(new Color(20, 120, 100));
       this.selectDepart.setBackground(new Color(20, 120, 100));
       this.random.setBackground(new Color(20, 90, 75));

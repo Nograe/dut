@@ -208,12 +208,12 @@ public class MainPanel extends JPanel implements MouseMotionListener, MouseListe
       if(x < 0 || y < 0 || x >= cases.length || y >= cases[0].length || obstacles[y][x] == 1 || visited[x][y] == true) {
          return;
       }
-      if(!openList.contains(cases[x][y])) {
+      if(!openList.contains(cases[x][y])) { //Si la case est deja dans la liste
          cases[x][y].update(origin.getCout()+1, new Coord(x, y), origin.getCoord());
          openList.add(cases[x][y]);
          mapPath.put(cases[x][y].getCoord(), origin.getCoord());
       }
-      if(openList.contains(cases[x][y]) && origin.getCout()+1 < cases[x][y].getCout()) {
+      if(openList.contains(cases[x][y]) && origin.getCout()+1 < cases[x][y].getCout()) { //Si la case n'est pas dans la liste et que son cout est supérieur à l'origine
          cases[x][y].update(origin.getCout()+1, new Coord(x, y), origin.getCoord());
          mapPath.put(cases[x][y].getCoord(), origin.getCoord());
       }
