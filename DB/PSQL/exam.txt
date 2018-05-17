@@ -1,0 +1,22 @@
+Exercice 1
+1. Une transaction, c'est un ensemble de requêtes qui sont exécutées en un seul bloc.
+Si une des requetes echoue, on peut décider a la fin de la transaction, d'exécuter ou non ce bloc de requetes
+
+Exemple:
+START TRANSACTION;
+INSERT INTO A VALUES (45,13);
+INSERT INTO B VALUES (13,45);
+COMMIT
+
+START TRANSACTION pour initier la transaction, et lorsqu'on veut valider la transaction on utilise COMMIT, ROLLBACK pour l'annuler.
+
+
+2. La métabase contient des informations qui ne sont contenues dans aucune autre table, infos relatives aux users, aux paramètres etc..
+On peut la désigner comme base qui contient des 'données à propos des données'.
+
+
+3. Le schéma d'une base de données est défini par la structure de ses données, à l'aide d'un langage de définition des données, soit LDD.
+Mais les données sont manipulées à l'aide d'un langage de manipulation de données, soit le LMD.
+
+Exemple:
+SELECT, INSERT, DELETE font partie du langage de manipulation (mySQL) et l'organisation de la base de données, soit les clés étrangères, primaires, les contraintes les tuples etc.. font partie de la structure, donc du LDD.

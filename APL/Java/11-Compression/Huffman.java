@@ -1,29 +1,54 @@
 import java.io.*;
+import java.util.*;
+import java.nio.file.Files;
 
 public class Huffman {
    public static SortedLinkedList<Node> compterOcc(File file) {
       try {
-         //Phase d'´ecriture
-         String toWrite = "Les exceptions c'est très bien";
-         FileOutputStream fileW = new FileOutputStream(file);
-         fileW.write(toWrite.getBytes()); //Ecrire un tableau de caractères (un tableau de bytes)
-         fileW.write('\n'); //Ecrire un seul caractère (un seul byte)
-         fileW.close();
-         //Phase de lecture
-         byte[] toRead = new byte[toWrite.length()];
-         FileInputStream fileR = new FileInputStream(file);
-         fileR.read(toRead);
-         fileR.close();
-         System.out.println(new String(toRead));
+         byte[] toRead = Files.readAllBytes(file.toPath());
+         // FileInputStream fileR = new FileInputStream(file);
+         // fileR.read(toRead);
+         // fileR.close();
+         // for (int i = 0; i < toRead.length; i++) {
+         //    System.out.print((char)toRead[i]);
+         // }
+         HashMap<Byte,Integer> map = new HashMap<Byte,Integer>();
+         for (int i = 0; i < toRead.length; i++) {
+            if(map.get(toRead[i]) != null) {
+               map.put(toRead[i], map.get(toRead[i])+1);
+            } else {
+               map.put(toRead[i], 1);
+            }
+         }
+
+         SortedLinkedList<Node> listNode = new SortedLinkedList<Node>();
+         for (Byte name: map.keySet()) {
+            listNode.sortedAdd(new Node(name, map.get(name)));
+         }
+         return listNode;
+
       } catch (IOException e) {
-         //Si la lecture ou l'écriture se passent mal, on écrit le message de l'exception.
          System.out.println(e.getMessage());
          System.out.println("Erreur de lecture.");
+         return null;
       }
-      SortedLinkedList listNode = new SortedLinkedList();
-      for (int i = 0; i < ; ) {
+   }
 
+   public static Node creerArbre(File file) {
+      SortedLinkedList<Node> listNode = compterOcc(file);
+      // displayList(listNode);
+
+      while(!listNode.isEmpty()) {
+         Node n1 = listNode.pollFirst();
+         Node n2 = listNode.pollFirst();
+         System.out.println(n1.toString()+' '+n2.toString());
+         listNode.sortedAdd(new Node((byte)-1, n1.getCount()+n2.getCount()));
       }
+
       return null;
+   }
+
+   public static void displayList(SortedLinkedList<Node> listNode) {
+      System.out.println(Arrays.toString(listNode.toArray()));
    }
 }
