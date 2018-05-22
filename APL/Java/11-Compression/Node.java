@@ -10,6 +10,11 @@ public class Node implements Comparable<Node> {
       this.character = character;
       this.count = count;
    }
+   public Node(byte character, int count, Node filsGauche, Node filsDroit) {
+      this(character, count);
+      this.filsGauche = filsGauche;
+      this.filsDroit = filsDroit;
+   }
    public byte getChar() {
       return character;
    }
@@ -19,7 +24,10 @@ public class Node implements Comparable<Node> {
 
    @Override
    public String toString() {
-      return "char: "+character+" | count: "+count;
+      if(character == -1) {
+         return "char: "+character+" count: "+count + "  filsGauche: " + filsGauche.toString() + "  filsDroit: " + filsDroit.toString();
+      }
+      return "char: "+(char)character+" count: "+count;
    }
 
    @Override

@@ -38,11 +38,15 @@ public class Huffman {
       SortedLinkedList<Node> listNode = compterOcc(file);
       // displayList(listNode);
 
-      while(!listNode.isEmpty()) {
+      while(listNode.size() >= 2) {
          Node n1 = listNode.pollFirst();
          Node n2 = listNode.pollFirst();
-         System.out.println(n1.toString()+' '+n2.toString());
-         listNode.sortedAdd(new Node((byte)-1, n1.getCount()+n2.getCount()));
+         // if(n1.getChar() == -1 && n2.getChar() == -1) {
+         //    break;
+         // }
+         Node newNode = new Node((byte)-1, n1.getCount()+n2.getCount(), n1, n2);
+         System.out.println(newNode.toString());
+         listNode.sortedAdd(newNode);
       }
 
       return null;
