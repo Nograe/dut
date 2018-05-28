@@ -1,6 +1,8 @@
 public class Go {
+   public static myWindow mainWindow;
+
    public static void main(String[] args) {
-      myWindow main = new myWindow();
-      main.displayMenu(500, 500);
+      mainWindow = new myWindow();
+      mainWindow.displayMenu(500, 500);
    }
 }

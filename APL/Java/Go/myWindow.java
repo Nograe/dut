@@ -5,7 +5,9 @@ import javax.swing.*;
 import java.util.*;
 
 public class myWindow extends JFrame {
-   Panneau contentPane = new Panneau();
+   private Panneau contentPane = new Panneau();
+   private Goban goban;
+   private Panneau infos;
 
    public myWindow() {
       setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("img/icon.png")));
@@ -27,6 +29,7 @@ public class myWindow extends JFrame {
       title.setFont(new Font("Roboto", Font.PLAIN, 60));
       title.setForeground(Color.white);
       Button start = new Button("Jouer");
+
       start.addMouseListener(new java.awt.event.MouseAdapter() {
          public void mouseEntered(java.awt.event.MouseEvent evt) {
             start.setBackground(new Color(20, 110, 130));
@@ -36,12 +39,13 @@ public class myWindow extends JFrame {
             start.setBackground(new Color(20, 100, 120));
          }
       });
+
       start.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            myWindow W = (myWindow)SwingUtilities.getWindowAncestor(contentPane);
-            W.displayGame(800, 600);
+            Go.mainWindow.displayGame(800, 600);
          }
       });
+
       GridBagConstraints gbc = new GridBagConstraints();
 
       gbc.gridx = gbc.gridy = 0;
@@ -65,31 +69,22 @@ public class myWindow extends JFrame {
       setMinimumSize(new Dimension(500, 500));
       setLocationRelativeTo(null);
       contentPane.removeAll();
-      contentPane.setLayout(new GridBagLayout());
-      contentPane.setBackground(new Color(20, 100, 90));
-   }
-}
+      // contentPane.setBackground(new Color(20, 100, 90));
+      contentPane.setLayout(new BorderLayout());
 
-class Panneau extends JPanel {
-   @Override
-   public void paintComponent (Graphics g) {
-      super.paintComponent(g);
-   }
-}
+      goban = new Goban(width*0.7);
+      infos = new Panneau();
+      infos.setBackground(new Color(60, 125, 100));
 
-class Button extends JButton {
-   public Button(String text) {
-      super(text);
-   }
-   public void setSize(int width, int height) {
-      setMinimumSize(new Dimension(width, height));
-      setPreferredSize(new Dimension(width, height));
-      setMaximumSize(new Dimension(width, height));
-   }
-   public void setText(Font font, Color color) {
-      setFont(font);
-      setForeground(color);
-      setBorderPainted(false);
-      setFocusPainted(false);
+      JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      sp.setResizeWeight(0.7);
+      // sp.setEnabled(true);
+      sp.setDividerSize(5);
+      sp.setBorder(null);
+
+      sp.add(goban);
+      sp.add(infos);
+      contentPane.add(sp);
+      // goban.drawGrid();
    }
 }
