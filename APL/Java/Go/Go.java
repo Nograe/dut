@@ -1,8 +1,11 @@
 public class Go {
-   public static myWindow mainWindow;
+   public static myWindow mainWindow = new myWindow();
+
+   public static Goban getGoban() {
+      return mainWindow.goban;
+   }
 
    public static void main(String[] args) {
-      mainWindow = new myWindow();
-      mainWindow.displayMenu(500, 500);
+      mainWindow.displayMenu();
    }
 }
