@@ -8,7 +8,6 @@ import java.awt.event.*;
 public class myWindow extends JFrame implements ComponentListener {
    private Panneau contentPane = new Panneau();
    public Goban goban;
-   public static Infos infos;
    private Label title;
    private Button start;
 
@@ -25,7 +24,7 @@ public class myWindow extends JFrame implements ComponentListener {
    }
 
    public void displayMenu() {
-      setTitle("Go - Menu");
+      setTitle("Go");
       setSize((int)MenuWindow.getWidth(), (int)MenuWindow.getHeight());
       setLocationRelativeTo(null);
       setMinimumSize(new Dimension(300, 200));
@@ -46,10 +45,6 @@ public class myWindow extends JFrame implements ComponentListener {
    }
 
    public void chooseSize() { //Choisir taille goban
-      setTitle("Go - Menu");
-      setSize((int)MenuWindow.getWidth(), (int)MenuWindow.getHeight());
-      setLocationRelativeTo(null);
-      setMinimumSize(new Dimension(300, 200));
       contentPane.removeAll();
       contentPane.setLayout(new GridBagLayout());
       contentPane.setBackground(new Color(10, 90, 90));
@@ -76,24 +71,18 @@ public class myWindow extends JFrame implements ComponentListener {
    }
 
    public void displayGame(int GOBAN_SIZE) {
-      setTitle("Go - Jouer");
-      setSize((int)GobanWindow.getWidth(), (int)GobanWindow.getHeight());
-      setMinimumSize(new Dimension(600, 500));
-      setLocationRelativeTo(null);
-      contentPane.removeAll();
+      // setTitle("Go - Jouer");
+      // setSize((int)GobanWindow.getWidth(), (int)GobanWindow.getHeight());
+      // setMinimumSize(new Dimension(600, 500));
+      // setLocationRelativeTo(null);
       // contentPane.setBackground(new Color(20, 100, 90));
       contentPane.setLayout(new BorderLayout());
+      contentPane.removeAll();
 
-      goban = new Goban((int)GobanWindow.getWidth()/2, GOBAN_SIZE);
-      infos = new Infos();
+      goban = new Goban(GOBAN_SIZE);
 
-      JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-      sp.setResizeWeight(0.5);
-      sp.setDividerSize(5);
-      sp.setBorder(null);
-      sp.add(goban);
-      sp.add(infos);
-      contentPane.add(sp);
+      contentPane.add(goban);
+      contentPane.validate();
    }
 
    public void componentResized(ComponentEvent e) {

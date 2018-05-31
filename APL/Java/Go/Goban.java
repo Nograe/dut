@@ -5,21 +5,24 @@ import java.awt.event.*;
 
 public class Goban extends JPanel implements ComponentListener {
    public static int GOBAN_SIZE;
+   private Infos infos;
    private GobanGrid grid;
-   private int gridPadding = 150;
    private boolean player = true;
    private LinkedList<Point> listeCoups = new LinkedList<Point>();
    private int listIndex = 0;
 
-   public Goban(int gridSize, int GOBAN_SIZE) {
+   public Goban(int GOBAN_SIZE) {
       addComponentListener(this);
-      setBackground(new Color(60, 100, 125));
-      setMinimumSize(new Dimension(400, 0));
-      setLayout(new GridBagLayout());
+      // setBackground(new Color(60, 100, 125));
+      setBackground(new Color(155, 105, 50));
       this.GOBAN_SIZE = GOBAN_SIZE;
 
-      grid = new GobanGrid(400);
+      setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+      grid = new GobanGrid();
+      infos = new Infos();
       add(grid);
+      add(infos);
+      infos.p1Timer.start();
    }
 
    @Override
@@ -29,6 +32,13 @@ public class Goban extends JPanel implements ComponentListener {
 
    public void nextPlayer() {
       player = !player;
+      if(player) {
+         infos.p1Timer.start();
+         infos.p2Timer.stop();
+      } else {
+         infos.p1Timer.stop();
+         infos.p2Timer.start();
+      }
    }
    public boolean getPlayer() {
       return player;
@@ -41,32 +51,42 @@ public class Goban extends JPanel implements ComponentListener {
       }
       listIndex = 0;
    }
-   public void cancelCoup() {
+   public void undoCoup() {
       if(listIndex >= listeCoups.size()) return;
       Point p = listeCoups.get(listeCoups.size()-listIndex-1);
       grid.stones[(int)p.getX()][(int)p.getY()] *= 4;
       grid.repaint();
       listIndex++;
+      nextPlayer();
    }
-   public void resetCoup() {
+   public void redoCoup() {
       if(listIndex > listeCoups.size() || listIndex == 0) return;
       Point p = listeCoups.get(listeCoups.size()-listIndex);
       grid.stones[(int)p.getX()][(int)p.getY()] /= 4;
       grid.repaint();
       listIndex--;
+      nextPlayer();
    }
 
+   public void reSize() {
+      int width = getWidth(), height = getHeight();
+      int gridSize = (width < height) ? width : height;
+      if(width - gridSize < 200) {
+         gridSize -= 200;
+      }
+      gridSize = (int)(gridSize/GOBAN_SIZE)*(GOBAN_SIZE);
+      grid.setSize(gridSize);
+      infos.setSize(width-gridSize, height);
+      revalidate();
+   }
    public void componentResized(ComponentEvent e) {
-      grid.setSize(getWidth()-gridPadding, getHeight()-gridPadding);
+      reSize();
    }
    public void componentMoved(ComponentEvent e) {
-      grid.setSize(getWidth()-gridPadding, getHeight()-gridPadding);
    }
    public void componentHidden(ComponentEvent e) {
-      grid.setSize(getWidth()-gridPadding, getHeight()-gridPadding);
    }
    public void componentShown(ComponentEvent e) {
-      grid.setSize(getWidth()-gridPadding, getHeight()-gridPadding);
    }
 }
 
@@ -74,16 +94,13 @@ public class Goban extends JPanel implements ComponentListener {
 class GobanGrid extends JPanel implements MouseListener {
    public int[][] stones; //1: noir  2: blanc  3: hoshi  ||  4: ancien noir  8: ancien blanc
 
-   public GobanGrid(int gridSize) {
+   public GobanGrid() {
       addMouseListener(this);
       setBackground(new Color(155, 105, 50));
-      setSize(gridSize, gridSize);
       stones = new int[Goban.GOBAN_SIZE+1][Goban.GOBAN_SIZE+1];
    }
 
-   public void setSize(int width, int height) {
-      int gridSize = (width < height) ? width : height;
-      gridSize = (int)(gridSize/Goban.GOBAN_SIZE)*(Goban.GOBAN_SIZE);
+   public void setSize(int gridSize) {
       setMinimumSize(new Dimension(gridSize, gridSize));
       setPreferredSize(new Dimension(gridSize, gridSize));
       setMaximumSize(new Dimension(gridSize, gridSize));

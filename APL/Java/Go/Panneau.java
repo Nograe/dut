@@ -14,13 +14,20 @@ public class Panneau extends JPanel {
 class Button extends JButton implements ActionListener {
    private Color backgroundColor;
 
+   public Button(Icon icon, int iconSize, Color backgroundColor) {
+      super(icon);
+      constructor(backgroundColor);
+   }
    public Button(String text, int fontSize, Color backgroundColor) {
       super(text);
+      setFont(new Font("Roboto", Font.PLAIN, fontSize), Color.WHITE);
+      constructor(backgroundColor);
+   }
+   public void constructor(Color backgroundColor) {
       setContentAreaFilled(false);
       addActionListener(this);
       setBorderPainted(false);
       setFocusPainted(false);
-      setFont(new Font("Roboto", Font.PLAIN, fontSize), Color.WHITE);
       setBackground(backgroundColor);
       this.backgroundColor = backgroundColor;
    }
@@ -28,6 +35,7 @@ class Button extends JButton implements ActionListener {
       this(text, fontSize, backgroundColor);
       setForeground(fontColor);
    }
+
    public void setSize(int width, int height) {
       setMinimumSize(new Dimension(width, height));
       setPreferredSize(new Dimension(width, height));
@@ -63,12 +71,6 @@ class Button extends JButton implements ActionListener {
       }
       if(e.getActionCommand() == "Quitter") {
          Go.mainWindow.displayMenu();
-      }
-      if(e.getActionCommand() == "Annuler") {
-         Go.getGoban().cancelCoup();
-      }
-      if(e.getActionCommand() == "Revenir") {
-         Go.getGoban().resetCoup();
       }
    }
 }
