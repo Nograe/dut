@@ -100,7 +100,7 @@ public class myWindow extends JFrame implements ComponentListener {
       if(title == null || start == null) return;
       title.setFontSize(getWidth()/8);
       start.setFontSize(getWidth()/17);
-      start.setSize(getWidth()/4, getHeight()/8);
+      start.setSize(getWidth()/3, getHeight()/8);
    }
    public void componentMoved(ComponentEvent e) {
    }
