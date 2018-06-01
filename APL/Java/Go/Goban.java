@@ -54,15 +54,20 @@ public class Goban extends JPanel implements ComponentListener {
    public void undoCoup() {
       if(listIndex >= listeCoups.size()) return;
       Point p = listeCoups.get(listeCoups.size()-listIndex-1);
-      grid.stones[(int)p.getX()][(int)p.getY()] *= 4;
+      if(grid.stones[(int)p.getX()][(int)p.getY()] == 5 || grid.stones[(int)p.getX()][(int)p.getY()] == 9) grid.stones[(int)p.getX()][(int)p.getY()]++;
+      else grid.stones[(int)p.getX()][(int)p.getY()] *= 4;
       grid.repaint();
       listIndex++;
       nextPlayer();
+      System.out.println("undo: "+grid.stones[(int)p.getX()][(int)p.getY()]);
    }
    public void redoCoup() {
       if(listIndex > listeCoups.size() || listIndex == 0) return;
       Point p = listeCoups.get(listeCoups.size()-listIndex);
-      grid.stones[(int)p.getX()][(int)p.getY()] /= 4;
+      System.out.println("Redo old: "+grid.stones[(int)p.getX()][(int)p.getY()]);
+      if(grid.stones[(int)p.getX()][(int)p.getY()] == 6 || grid.stones[(int)p.getX()][(int)p.getY()] == 10) grid.stones[(int)p.getX()][(int)p.getY()]--;
+      else grid.stones[(int)p.getX()][(int)p.getY()] /= 4;
+      System.out.println("Redo new: "+grid.stones[(int)p.getX()][(int)p.getY()]);
       grid.repaint();
       listIndex--;
       nextPlayer();
@@ -92,7 +97,7 @@ public class Goban extends JPanel implements ComponentListener {
 
 
 class GobanGrid extends JPanel implements MouseListener {
-   public int[][] stones; //1: noir  2: blanc  3: hoshi  ||  4: ancien noir  8: ancien blanc
+   public int[][] stones; //1: noir  2: blanc  3: hoshi  ||  4: ancien noir  8: ancien blanc  || 5: noir/hoshi  9: blanc/hoshi  || 6: ancien noir/hoshi  10: ancien blanc/hoshi
 
    public GobanGrid() {
       addMouseListener(this);
@@ -144,10 +149,10 @@ class GobanGrid extends JPanel implements MouseListener {
    public void drawLineStones(Graphics g, int Y, int cellSize, int padding) {
       double width = cellSize*0.9;
       for (int i = 0; i < Goban.GOBAN_SIZE; i++) {
-         if(stones[i][Y] <= 0 || stones[i][Y] > 3) continue;
-         if(stones[i][Y] == 1) g.setColor(new Color(30, 30, 30));
-         if(stones[i][Y] == 2) g.setColor(new Color(200, 200, 200));
-         if(stones[i][Y] == 3) {
+         if(stones[i][Y] == 0 || stones[i][Y] == 4 || stones[i][Y] == 8) continue;
+         if(stones[i][Y] == 1 || stones[i][Y] == 5) g.setColor(new Color(30, 30, 30));
+         if(stones[i][Y] == 2 || stones[i][Y] == 9) g.setColor(new Color(200, 200, 200));
+         if(stones[i][Y] == 3 || stones[i][Y] == 6 || stones[i][Y] == 10) {
             g.setColor(new Color(30, 30, 30));
             g.fillOval(i*cellSize+padding-3, Y*cellSize+padding-3, 6, 6);
             continue;
@@ -180,10 +185,15 @@ class GobanGrid extends JPanel implements MouseListener {
          dist = distance(e.getX(), e.getY(), (posX*cellSize)+padding+cellSize, (posY*cellSize)+padding+cellSize);
          cell = new Point(posX+1, posY+1);
       }
-      if (stones[(int)cell.getX()][(int)cell.getY()] != 1 && stones[(int)cell.getX()][(int)cell.getY()] != 2) {
-         stones[(int)cell.getX()][(int)cell.getY()] = (Go.getGoban().getPlayer()) ? 1 : 2;
-         Go.getGoban().nextPlayer();
+      int cellValue = stones[(int)cell.getX()][(int)cell.getY()];
+      if (cellValue != 1 && cellValue != 2 && cellValue != 5 && cellValue != 9) {
+         if(cellValue == 3) { //Si il y a un hoshi
+            stones[(int)cell.getX()][(int)cell.getY()] = (Go.getGoban().getPlayer()) ? 5 : 9;
+         } else {
+            stones[(int)cell.getX()][(int)cell.getY()] = (Go.getGoban().getPlayer()) ? 1 : 2;
+         }
          Go.getGoban().addCoup(cell);
+         Go.getGoban().nextPlayer();
       }
       repaint();
    }
@@ -193,7 +203,7 @@ class GobanGrid extends JPanel implements MouseListener {
    }
 
    public void setHoshi(int x, int y) {
-      if(stones[x][y] == 1 || stones[x][y] == 2) return;
+      if(stones[x][y] == 1 || stones[x][y] == 2 || stones[x][y] == 5 || stones[x][y] == 9 || stones[x][y] == 6 || stones[x][y] == 10) return;
       stones[x][y] = 3;
    }
 
