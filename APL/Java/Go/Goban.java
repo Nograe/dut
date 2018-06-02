@@ -54,20 +54,21 @@ public class Goban extends JPanel implements ComponentListener {
    public void undoCoup() {
       if(listIndex >= listeCoups.size()) return;
       Point p = listeCoups.get(listeCoups.size()-listIndex-1);
+      // if(grid.stones[(int)p.getX()][(int)p.getY()] < 0) grid.stones[(int)p.getX()][(int)p.getY()] *= -1;
       if(grid.stones[(int)p.getX()][(int)p.getY()] == 5 || grid.stones[(int)p.getX()][(int)p.getY()] == 9) grid.stones[(int)p.getX()][(int)p.getY()]++;
       else grid.stones[(int)p.getX()][(int)p.getY()] *= 4;
       grid.repaint();
       listIndex++;
       nextPlayer();
-      System.out.println("undo: "+grid.stones[(int)p.getX()][(int)p.getY()]);
+      // System.out.println("undo: "+grid.stones[(int)p.getX()][(int)p.getY()]);
    }
    public void redoCoup() {
       if(listIndex > listeCoups.size() || listIndex == 0) return;
       Point p = listeCoups.get(listeCoups.size()-listIndex);
-      System.out.println("Redo old: "+grid.stones[(int)p.getX()][(int)p.getY()]);
+      // System.out.println("Redo old: "+grid.stones[(int)p.getX()][(int)p.getY()]);
       if(grid.stones[(int)p.getX()][(int)p.getY()] == 6 || grid.stones[(int)p.getX()][(int)p.getY()] == 10) grid.stones[(int)p.getX()][(int)p.getY()]--;
       else grid.stones[(int)p.getX()][(int)p.getY()] /= 4;
-      System.out.println("Redo new: "+grid.stones[(int)p.getX()][(int)p.getY()]);
+      // System.out.println("Redo new: "+grid.stones[(int)p.getX()][(int)p.getY()]);
       grid.repaint();
       listIndex--;
       nextPlayer();
@@ -97,7 +98,8 @@ public class Goban extends JPanel implements ComponentListener {
 
 
 class GobanGrid extends JPanel implements MouseListener {
-   public int[][] stones; //1: noir  2: blanc  3: hoshi  ||  4: ancien noir  8: ancien blanc  || 5: noir/hoshi  9: blanc/hoshi  || 6: ancien noir/hoshi  10: ancien blanc/hoshi
+   public int[][] stones; /* 1: noir 2: blanc 3: hoshi || 4: ancien noir 8: ancien blanc || 5: noir/hoshi 9: blanc/hoshi
+   6: ancien noir/hoshi 10: ancien blanc/hoshi || -1: noir capturé -2: blanc capturé || -5: noir/hoshi capturé -9: blanc/hoshi capturé */
 
    public GobanGrid() {
       addMouseListener(this);
@@ -137,6 +139,13 @@ class GobanGrid extends JPanel implements MouseListener {
          setHoshi(3, 15); setHoshi(9, 15); setHoshi(15, 15);
       }
 
+      for (int x = 0; x < stones.length; x++) {
+         for (int y = 0; y < stones[0].length; y++) {
+            if(stones[x][y] != 1 && stones[x][y] != 2 && stones[x][y] != 5 && stones[x][y] != 9 && stones[x][y] != -1 && stones[x][y] != -2 && stones[x][y] != -5 && stones[x][y] != -9) continue;
+            checkStone(x, y);
+         }
+      }
+
       for (int x = 0; x < Goban.GOBAN_SIZE; x++) {
          g.drawLine(x*cellSize+padding, padding, x*cellSize+padding, gridSize+padding);
       }
@@ -149,7 +158,7 @@ class GobanGrid extends JPanel implements MouseListener {
    public void drawLineStones(Graphics g, int Y, int cellSize, int padding) {
       double width = cellSize*0.9;
       for (int i = 0; i < Goban.GOBAN_SIZE; i++) {
-         if(stones[i][Y] == 0 || stones[i][Y] == 4 || stones[i][Y] == 8) continue;
+         if(stones[i][Y] <= 0 || stones[i][Y] == 4 || stones[i][Y] == 8) continue;
          if(stones[i][Y] == 1 || stones[i][Y] == 5) g.setColor(new Color(30, 30, 30));
          if(stones[i][Y] == 2 || stones[i][Y] == 9) g.setColor(new Color(200, 200, 200));
          if(stones[i][Y] == 3 || stones[i][Y] == 6 || stones[i][Y] == 10) {
@@ -160,6 +169,49 @@ class GobanGrid extends JPanel implements MouseListener {
          g.fillOval(i*cellSize+(int)width/14, Y*cellSize+(int)width/14, (int)width, (int)width);
       }
       g.setColor(new Color(0, 0, 0));
+   }
+
+   public void checkStone(int x, int y) {
+      int freedoms = 4;
+      boolean isBlack = false;
+      if(stones[x][y] == 1 || stones[x][y] == 5 || stones[x][y] == -1 || stones[x][y] == -5) isBlack = true;
+      if(x-1 >= 0) {
+         if (isTaken(x-1, y, isBlack)) {
+            freedoms--;
+         }
+      } else freedoms--;
+      if(y-1 >= 0) {
+         if (isTaken(x, y-1, isBlack)) {
+            freedoms--;
+         }
+      } else freedoms--;
+      if(x+1 < Goban.GOBAN_SIZE) {
+         if (isTaken(x+1, y, isBlack)) {
+            freedoms--;
+         }
+      } else freedoms--;
+      if(y+1 < Goban.GOBAN_SIZE) {
+         if (isTaken(x, y+1, isBlack)) {
+            freedoms--;
+         }
+      } else freedoms--;
+      if(freedoms == 0) {
+         stones[x][y] *= -1;
+      }
+   }
+   public boolean isTaken(int x, int y, boolean isBlack) {
+      if(isBlack) {
+         if(stones[x][y] == 2 || stones[x][y] == 9) {
+            return true;
+         }
+         return false;
+      }
+      else {
+         if(stones[x][y] == 1 || stones[x][y] == 5) {
+            return true;
+         }
+         return false;
+      }
    }
 
    public void mouseClicked(MouseEvent e) {
@@ -186,8 +238,8 @@ class GobanGrid extends JPanel implements MouseListener {
          cell = new Point(posX+1, posY+1);
       }
       int cellValue = stones[(int)cell.getX()][(int)cell.getY()];
-      if (cellValue != 1 && cellValue != 2 && cellValue != 5 && cellValue != 9) {
-         if(cellValue == 3) { //Si il y a un hoshi
+      if (!isTaken((int)cell.getX(), (int)cell.getY(), Go.getGoban().getPlayer())) {
+         if(cellValue == 3 || cellValue == 6 || cellValue == 10) { //Si il y a un hoshi
             stones[(int)cell.getX()][(int)cell.getY()] = (Go.getGoban().getPlayer()) ? 5 : 9;
          } else {
             stones[(int)cell.getX()][(int)cell.getY()] = (Go.getGoban().getPlayer()) ? 1 : 2;
