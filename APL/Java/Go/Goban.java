@@ -7,7 +7,7 @@ public class Goban extends JPanel implements ComponentListener {
    public static int SIZE;
    private Infos infos;
    public GobanGrid grid;
-   public State player = State.BLACK;
+   public static State player = State.BLACK;
    private static ArrayList<Stone[][]> listeCoups = new ArrayList<Stone[][]>();
    private static ArrayList<Chain> listChain = new ArrayList<Chain>();
    private int listIndex = 1;
@@ -179,21 +179,6 @@ class GobanGrid extends JPanel implements MouseListener {
       g.setColor(new Color(0, 0, 0));
    }
 
-   public boolean checkStone(Stone stone) {
-      if(stone.chain == null) return false;
-      // System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
-      Chain chain = stone.chain;
-      if (chain.getLiberties() <= 0) {
-         for (Stone s : chain.stones) {
-            stones[s.x][s.y] = null;
-            s = null;
-         }
-         chain.stones.clear();
-         return true;
-      }
-      return false;
-   }
-
    public void addStone(MouseEvent e) {
       int gridSize = getWidth();
       int cellSize = gridSize/(Goban.SIZE);
@@ -270,6 +255,24 @@ class GobanGrid extends JPanel implements MouseListener {
       // printStones(stones);
       // stones[x][y].chain.printChain();
       return true;
+   }
+
+   public boolean checkStone(Stone stone) {
+      if(stone.chain == null) return false;
+      // System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
+      int score = 0;
+      Chain chain = stone.chain;
+      if (chain.getLiberties() <= 0) {
+         for (Stone s : chain.stones) {
+            s.chain = null;
+            stones[s.x][s.y] = null;
+            score++;
+         }
+         if(Goban.player == State.BLACK) Infos.setScoreBlack(score);
+         else Infos.setScoreWhite(score);
+         return true;
+      }
+      return false;
    }
 
    public double distance(int x1, int y1, int x2, int y2) {

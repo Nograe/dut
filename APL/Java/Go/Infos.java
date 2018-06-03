@@ -6,7 +6,9 @@ import java.awt.event.*;
 public class Infos extends JPanel implements ComponentListener {
    public Countdown p1Timer;
    public Countdown p2Timer;
-   private int time = 20;
+   private int time = 100;
+   public static JLabel scoreBlack = new JLabel("0");
+   public static JLabel scoreWhite = new JLabel("0");
 
    public Infos() {
       addComponentListener(this);
@@ -49,12 +51,23 @@ public class Infos extends JPanel implements ComponentListener {
       add(p1Timer, gbc);
       gbc.gridx = 2;
       add(p2Timer, gbc);
+      gbc.gridy++; gbc.gridx = 0;
+      add(scoreBlack, gbc);
+      gbc.gridx = 2;
+      add(scoreWhite, gbc);
       gbc.gridx = 0; gbc.weighty = 1;
       gbc.anchor = GridBagConstraints.LAST_LINE_START;
       add(undo, gbc);
       gbc.gridx = 2;
       gbc.anchor = GridBagConstraints.LAST_LINE_END;
       add(redo, gbc);
+   }
+
+   public static void setScoreBlack(int score) {
+      scoreBlack.setText(Integer.toString(Integer.parseInt(scoreBlack.getText())+score));
+   }
+   public static void setScoreWhite(int score) {
+      scoreWhite.setText(Integer.toString(Integer.parseInt(scoreWhite.getText())+score));
    }
 
    @Override
