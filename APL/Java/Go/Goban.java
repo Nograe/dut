@@ -8,7 +8,7 @@ public class Goban extends JPanel implements ComponentListener {
    private Infos infos;
    private GobanGrid grid;
    private boolean player = true;
-   private LinkedList<int[][]> listeCoups = new LinkedList<int[][]>();
+   private static ArrayList<int[][]> listeCoups = new ArrayList<int[][]>();
    private int listIndex = 1;
 
    public Goban(int GOBAN_SIZE) {
@@ -46,38 +46,50 @@ public class Goban extends JPanel implements ComponentListener {
    }
 
    public void addCoup() {
+      listeCoups.add(deepCopy(grid.stones));
+
       for (; listIndex > 1; listIndex--) {
          System.out.println("delete all");
-         listeCoups.remove(listeCoups.size()-listIndex-1);
+         listeCoups.remove(listeCoups.size()-listIndex);
       }
       listIndex = 1;
-      System.out.println("Current: "+(listeCoups.size()-1)+" Index: "+listIndex);
-      printArray();
-      // grid.printStones(grid.stones);
+      // printArray();
+      // System.out.println("Current: "+(listeCoups.size()-1)+" Index: "+listIndex);
    }
    public void undoCoup() {
       if(listIndex >= listeCoups.size()) return;
-      int[][] newStones = listeCoups.get(listeCoups.size()-listIndex);
-      grid.stones = newStones;
+      grid.stones = deepCopy(listeCoups.get(listeCoups.size()-listIndex-1));
       grid.repaint();
+      // System.out.println("Get: "+(listeCoups.size()-listIndex-1));
+      // grid.printStones(grid.stones);
       listIndex++;
       nextPlayer();
-      // System.out.println("Get: "+(listeCoups.size()-listIndex));
-      // grid.printStones(newStones);
    }
    public void redoCoup() {
       if(listIndex > listeCoups.size() || listIndex == 1) return;
-      int[][] newStones = listeCoups.get(listeCoups.size()-listIndex+1);
-      grid.stones = newStones;
+      grid.stones = deepCopy(listeCoups.get(listeCoups.size()-listIndex+1));
       grid.repaint();
+      // System.out.println("Get: "+(listeCoups.size()-listIndex+1));
+      // grid.printStones(grid.stones);
       listIndex--;
       nextPlayer();
       // grid.printStones(newStones);
    }
+
    public void printArray() {
+      System.out.println("------------------------------");
       for (int i = 0; i < listeCoups.size(); i++) {
          grid.printStones(listeCoups.get(i));
       }
+      System.out.println("------------------------------");
+   }
+
+   public int[][] deepCopy(int[][] A) {
+      int[][] array = A.clone();
+      for (int i = 0; i < array.length; i++) {
+         array[i] = A[i].clone();
+      }
+      return array;
    }
 
    public void reSize() {
@@ -197,7 +209,7 @@ class GobanGrid extends JPanel implements MouseListener {
          }
       } else freedoms--;
       if(freedoms == 0) {
-         stones[x][y] *= -1;
+         stones[x][y] = 0;
       }
    }
    public boolean isTaken(int x, int y, boolean isBlack) {
@@ -268,12 +280,15 @@ class GobanGrid extends JPanel implements MouseListener {
    }
 
    public void printStones(int [][] array) {
-      for (int x = 0; x < Goban.GOBAN_SIZE; x++) {
-         for (int y = 0; y < Goban.GOBAN_SIZE; y++) {
-            System.out.print(array[y][x]+" ");
+      for (int y = 0; y < Goban.GOBAN_SIZE; y++) {
+         for (int x = 0; x < Goban.GOBAN_SIZE; x++) {
+            System.out.print(array[x][y]+" ");
          }
          System.out.println();
       }
-      System.out.println("-----------------------------------");
+      for (int x = 0; x < Goban.GOBAN_SIZE; x++) {
+         System.out.print("--");
+      }
+      System.out.println();
    }
 }
