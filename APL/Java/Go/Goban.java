@@ -2,23 +2,26 @@ import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.net.URL;
 
 public class Goban extends JPanel implements ComponentListener {
    public static int SIZE;
    private Infos infos;
    public static GobanGrid grid;
+   public static TimerType timer;
    public static State player;
    private static ArrayList<Stone[][]> listeCoups;
    private static ArrayList<Chain> listChain;
    private int listIndex = 1;
 
-   public Goban(int SIZE) {
+   public Goban(int SIZE, TimerType timer) {
       addComponentListener(this);
       setBackground(new Color(155, 105, 50));
       player = State.BLACK;
       listeCoups = new ArrayList<Stone[][]>();
       listChain = new ArrayList<Chain>();
       this.SIZE = SIZE;
+      this.timer = timer;
 
       setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
       grid = new GobanGrid();
@@ -172,11 +175,14 @@ class GobanGrid extends JPanel implements MouseListener {
 
    public void drawLineStones(Graphics g, int y, int cellSize, int padding) {
       double width = cellSize*0.9;
+      URL url = this.getClass().getResource("img/black.png");
       for (int x = 0; x < Goban.SIZE; x++) {
          if(stones[x][y] == null) continue;
-         if(stones[x][y].color == State.BLACK) g.setColor(new Color(30, 30, 30));
-         if(stones[x][y].color == State.WHITE) g.setColor(new Color(200, 200, 200));
-         g.fillOval(x*cellSize+(int)width/14, y*cellSize+(int)width/14, (int)width, (int)width);
+         if(stones[x][y].color == State.BLACK) url = this.getClass().getResource("img/icon.png"); //g.setColor(new Color(30, 30, 30));
+         if(stones[x][y].color == State.WHITE) url = this.getClass().getResource("img/white.png"); //g.setColor(new Color(200, 200, 200));
+         // g.fillOval(x*cellSize+(int)width/14, y*cellSize+(int)width/14, (int)width, (int)width);
+         Image stone = new ImageIcon(url).getImage();
+         g.drawImage(stone, x*cellSize+(int)width/14, y*cellSize+(int)width/14, (int)width, (int)width, this);
       }
       g.setColor(new Color(0, 0, 0));
    }

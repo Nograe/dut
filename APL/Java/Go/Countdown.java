@@ -15,6 +15,7 @@ public class Countdown extends JLabel {
       ActionListener taskPerformer = new ActionListener() {
          public void actionPerformed(ActionEvent evt) {
             if(interval <= 0) {
+               setForeground(new Color(200, 20, 20));
                return;
             }
             interval-=delay;
@@ -30,4 +31,8 @@ public class Countdown extends JLabel {
    public void stop() {
       timer.stop();
    }
+}
+
+enum TimerType {
+   NONE, ABSOLUTE, BYO
 }

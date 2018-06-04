@@ -14,6 +14,9 @@ public class Chain {
       ArrayList<Point> liberties = new ArrayList<Point>();
       for (Stone stone : stones) {
          int x = stone.x, y = stone.y;
+         if(Goban.grid.stones[x][y] == null) {
+            System.out.println("Pierre a disparue");
+         }
          if (x > 0 && Goban.grid.stones[x-1][y] == null && !liberties.contains(new Point(x-1, y))) {
             liberties.add(new Point(x-1, y));
          }

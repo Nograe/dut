@@ -22,6 +22,7 @@ public class Infos extends JPanel implements ComponentListener {
    public void displayInfos() {
       p1Timer = new Countdown(time);
       p2Timer = new Countdown(time);
+      p2Timer.setForeground(Color.BLACK);
       Button quit = new Button("Quitter", 20, getBackground().darker().darker());
       ImageIcon undoIcon = new ImageIcon(new ImageIcon("img/undo.png").getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
       Button undo = new Button(undoIcon, 20, getBackground().darker().darker());
@@ -40,23 +41,26 @@ public class Infos extends JPanel implements ComponentListener {
          }
       });
 
-      // JPanel layout = new JPanel(new GridBagLayout());
-      // // layout.setBackground(getBackground());
-      // layout.add(undo);
-      // layout.add(redo);
-
       GridBagConstraints gbc = new GridBagConstraints();
-      gbc.insets = new Insets(15, 5, 15, 5);
+      gbc.insets = new Insets(15, 0, 15, 0);
       gbc.gridy = 0; gbc.gridx = 1;
       add(quit, gbc);
-      gbc.gridy = 1; gbc.gridx = 0;
-      add(p1Timer, gbc);
-      gbc.gridx = 2;
-      add(p2Timer, gbc);
+
+      if(Goban.timer != TimerType.NONE) {
+         gbc.gridx = 0;
+         gbc.gridy = 1;
+         add(p1Timer, gbc);
+         add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
+         gbc.gridx = 2;
+         add(p2Timer, gbc);
+         add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
+      }
+
       gbc.gridy++; gbc.gridx = 0;
       add(scoreBlack, gbc);
       gbc.gridx = 2;
       add(scoreWhite, gbc);
+
       gbc.gridx = 0; gbc.weighty = 1;
       gbc.anchor = GridBagConstraints.LAST_LINE_START;
       add(undo, gbc);

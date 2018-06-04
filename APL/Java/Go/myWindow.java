@@ -69,18 +69,55 @@ public class myWindow extends JFrame implements ComponentListener {
       contentPane.add(buttonContainer, gbc);
       contentPane.validate();
    }
+   public void chooseTimer(int SIZE) { //Choisir type horloge
+      contentPane.removeAll();
+      contentPane.repaint();
+      contentPane.setLayout(new GridBagLayout());
 
-   public void displayGame(int GOBAN_SIZE) {
-      // setTitle("Go - Jouer");
-      // setSize((int)GobanWindow.getWidth(), (int)GobanWindow.getHeight());
-      // setMinimumSize(new Dimension(600, 500));
-      // setLocationRelativeTo(null);
-      // contentPane.setBackground(new Color(20, 100, 90));
+      Label size = new Label("Type d'horloge ?", getWidth()/14, Color.WHITE);
+      Button none = new Button("Aucune", 30, new Color(36, 120, 122));
+      Button absolute = new Button("Absolue", 30, new Color(36, 120, 122));
+      Button byo = new Button("Byo-Yomi", 30, new Color(36, 120, 122));
+      Panneau buttonContainer = new Panneau();
+      buttonContainer.setLayout(new GridBagLayout());
+      buttonContainer.setOpaque(false);
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.insets = new Insets(0, 10, 0, 10);
+      buttonContainer.add(none, gbc);
+      buttonContainer.add(absolute, gbc);
+      buttonContainer.add(byo, gbc);
+
+      none.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            displayGame(SIZE, TimerType.NONE);
+         }
+      });
+      absolute.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            displayGame(SIZE, TimerType.ABSOLUTE);
+         }
+      });
+      byo.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            displayGame(SIZE, TimerType.BYO);
+         }
+      });
+
+      gbc = new GridBagConstraints();
+      gbc.gridx = gbc.gridy = 0; gbc.insets = new Insets(0, 0, 20, 0);
+      contentPane.add(size, gbc);
+      gbc.gridy = 1;
+      contentPane.add(buttonContainer, gbc);
+      contentPane.validate();
+   }
+
+   public void displayGame(int SIZE, TimerType timer) {
       contentPane.setLayout(new BorderLayout());
       contentPane.removeAll();
-
-      goban = new Goban(GOBAN_SIZE);
-
+      goban = new Goban(SIZE, timer);
       contentPane.add(goban);
       contentPane.validate();
    }

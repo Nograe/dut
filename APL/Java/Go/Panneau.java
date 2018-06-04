@@ -67,7 +67,7 @@ class Button extends JButton implements ActionListener {
          Go.mainWindow.chooseSize();
       }
       if(e.getActionCommand() == "9" || e.getActionCommand() == "13" || e.getActionCommand() == "19") {
-         Go.mainWindow.displayGame(Integer.parseInt(e.getActionCommand()));
+         Go.mainWindow.chooseTimer(Integer.parseInt(e.getActionCommand()));
       }
       if(e.getActionCommand() == "Quitter") {
          Go.mainWindow.displayMenu();
