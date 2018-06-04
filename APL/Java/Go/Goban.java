@@ -7,15 +7,17 @@ public class Goban extends JPanel implements ComponentListener {
    public static int SIZE;
    private Infos infos;
    public GobanGrid grid;
-   public static State player = State.BLACK;
-   private static ArrayList<Stone[][]> listeCoups = new ArrayList<Stone[][]>();
-   private static ArrayList<Chain> listChain = new ArrayList<Chain>();
+   public static State player;
+   private static ArrayList<Stone[][]> listeCoups;
+   private static ArrayList<Chain> listChain;
    private int listIndex = 1;
 
    public Goban(int SIZE) {
       addComponentListener(this);
-      // setBackground(new Color(60, 100, 125));
       setBackground(new Color(155, 105, 50));
+      player = State.BLACK;
+      listeCoups = new ArrayList<Stone[][]>();
+      listChain = new ArrayList<Chain>();
       this.SIZE = SIZE;
 
       setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -194,11 +196,11 @@ class GobanGrid extends JPanel implements MouseListener {
          dist = distance(e.getX(), e.getY(), (posX*cellSize)+padding+cellSize, (posY*cellSize)+padding);
          cell = new Point(posX+1, posY);
       }
-      if(distance(e.getX(), e.getY(), (posX*cellSize)+padding, (posY*cellSize)+padding+cellSize) < dist){
+      if(distance(e.getX(), e.getY(), (posX*cellSize)+padding, (posY*cellSize)+padding+cellSize) < dist) {
          dist = distance(e.getX(), e.getY(), (posX*cellSize)+padding, (posY*cellSize)+padding+cellSize);
          cell = new Point(posX, posY+1);
       }
-      if(distance(e.getX(), e.getY(), (posX*cellSize)+padding+cellSize, (posY*cellSize)+padding+cellSize) < dist){
+      if(distance(e.getX(), e.getY(), (posX*cellSize)+padding+cellSize, (posY*cellSize)+padding+cellSize) < dist) {
          dist = distance(e.getX(), e.getY(), (posX*cellSize)+padding+cellSize, (posY*cellSize)+padding+cellSize);
          cell = new Point(posX+1, posY+1);
       }
@@ -241,11 +243,12 @@ class GobanGrid extends JPanel implements MouseListener {
          if (neighbor == null) {
             continue;
          }
-         stones[x][y].liberties--;
          neighbor.liberties--;
          if (neighbor.color != stones[x][y].color) {
             checkStone(neighbor);
             continue;
+         } else {
+            stones[x][y].liberties--;
          }
          if (neighbor.chain != null) {
             finalChain.join(neighbor.chain);
@@ -259,7 +262,7 @@ class GobanGrid extends JPanel implements MouseListener {
 
    public boolean checkStone(Stone stone) {
       if(stone.chain == null) return false;
-      // System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
+      System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
       int score = 0;
       Chain chain = stone.chain;
       if (chain.getLiberties() <= 0) {

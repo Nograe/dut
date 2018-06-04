@@ -8,11 +8,12 @@ public class Chain {
    }
 
    public int getLiberties() {
+      ArrayList<int[][]> liberties = new ArrayList<int[][]>();
       int total = 0;
       for (Stone stone : stones) {
          total += stone.liberties;
       }
-      return total;
+      return liberties.size;
    }
 
    public void addStone(Stone stone) {
