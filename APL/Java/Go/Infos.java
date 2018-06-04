@@ -7,13 +7,15 @@ public class Infos extends JPanel implements ComponentListener {
    public Countdown p1Timer;
    public Countdown p2Timer;
    private int time = 100;
-   public static JLabel scoreBlack = new JLabel("0");
-   public static JLabel scoreWhite = new JLabel("0");
+   public static JLabel scoreBlack;
+   public static JLabel scoreWhite;
 
    public Infos() {
       addComponentListener(this);
       setBackground(new Color(60, 125, 100));
       setLayout(new GridBagLayout());
+      scoreBlack = new JLabel("0");
+      scoreWhite = new JLabel("0");
       displayInfos();
    }
 

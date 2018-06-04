@@ -6,7 +6,7 @@ import java.awt.event.*;
 public class Goban extends JPanel implements ComponentListener {
    public static int SIZE;
    private Infos infos;
-   public GobanGrid grid;
+   public static GobanGrid grid;
    public static State player;
    private static ArrayList<Stone[][]> listeCoups;
    private static ArrayList<Chain> listChain;
@@ -218,24 +218,15 @@ class GobanGrid extends JPanel implements MouseListener {
       Stone[] neighbors = new Stone[4];
       if (x > 0) {
          neighbors[0] = stones[x - 1][y];
-      } else stones[x][y].liberties--;
+      }
       if (x+1 < Goban.SIZE) {
          neighbors[1] = stones[x + 1][y];
-      } else stones[x][y].liberties--;
+      }
       if (y > 0) {
          neighbors[2] = stones[x][y - 1];
-      } else stones[x][y].liberties--;
+      }
       if (y+1 < Goban.SIZE) {
          neighbors[3] = stones[x][y + 1];
-      } else stones[x][y].liberties--;
-      for (Stone neighbor : neighbors) {
-         if(neighbor != null && neighbor.color != stones[x][y].color) {
-            stones[x][y].liberties--;
-         }
-      }
-      if(stones[x][y].liberties == 0) {
-         stones[x][y] = null;
-         return false;
       }
 
       Chain finalChain = new Chain();
@@ -243,18 +234,18 @@ class GobanGrid extends JPanel implements MouseListener {
          if (neighbor == null) {
             continue;
          }
-         neighbor.liberties--;
          if (neighbor.color != stones[x][y].color) {
             checkStone(neighbor);
             continue;
-         } else {
-            stones[x][y].liberties--;
          }
          if (neighbor.chain != null) {
             finalChain.join(neighbor.chain);
          }
       }
       finalChain.addStone(stones[x][y]);
+      if(checkStone(stones[x][y])) { /* On vérifie que ce n'est pas un coup suicide */
+         return false;
+      }
       // printStones(stones);
       // stones[x][y].chain.printChain();
       return true;

@@ -1,7 +1,6 @@
 public class Stone {
    public Chain chain;
    public State color;
-   public int liberties = 4;
    public int x;
    public int y;
 

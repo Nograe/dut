@@ -1,19 +1,34 @@
 import java.util.*;
+import java.awt.Point;
 
 public class Chain {
    public ArrayList<Stone> stones;
+   int liberties;
 
    public Chain() {
       stones = new ArrayList<>();
+      liberties = 0;
    }
 
    public int getLiberties() {
-      ArrayList<int[][]> liberties = new ArrayList<int[][]>();
-      int total = 0;
+      ArrayList<Point> liberties = new ArrayList<Point>();
       for (Stone stone : stones) {
-         total += stone.liberties;
+         int x = stone.x, y = stone.y;
+         if (x > 0 && Goban.grid.stones[x-1][y] == null && !liberties.contains(new Point(x-1, y))) {
+            liberties.add(new Point(x-1, y));
+         }
+         if (x+1 < Goban.SIZE && Goban.grid.stones[x+1][y] == null && !liberties.contains(new Point(x+1, y))) {
+            liberties.add(new Point(x+1, y));
+         }
+         if (y > 0 && Goban.grid.stones[x][y-1] == null && !liberties.contains(new Point(x, y-1))) {
+            liberties.add(new Point(x, y-1));
+         }
+         if (y+1 < Goban.SIZE && Goban.grid.stones[x][y+1] == null && !liberties.contains(new Point(x, y+1))) {
+            liberties.add(new Point(x, y+1));
+         }
       }
-      return liberties.size;
+      this.liberties = liberties.size();
+      return this.liberties;
    }
 
    public void addStone(Stone stone) {
