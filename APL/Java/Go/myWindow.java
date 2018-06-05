@@ -127,25 +127,42 @@ public class myWindow extends JFrame implements ComponentListener {
       contentPane.repaint();
       contentPane.setLayout(new GridBagLayout());
 
-      Label size = new Label("Score: ", getWidth()/14, Color.WHITE);
-      Label scoreB = new Label(Infos.scoreBlack.getText(), getWidth()/14, Color.WHITE);
-      Label scoreW = new Label(Infos.scoreWhite.getText(), getWidth()/14, Color.WHITE);
-      Panneau buttonContainer = new Panneau();
-      buttonContainer.setLayout(new GridBagLayout());
-      buttonContainer.setOpaque(false);
-      GridBagConstraints gbc = new GridBagConstraints();
-      gbc.insets = new Insets(0, getWidth()/20, 0, getWidth()/20);
-      buttonContainer.add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
-      buttonContainer.add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
-      buttonContainer.add(scoreB, gbc);
-      gbc.gridy++;
-      buttonContainer.add(scoreW, gbc);
+      Label scoreB = new Label(Infos.scoreBlack.getText(), getWidth()/17, Color.WHITE);
+      Label scoreW = new Label(Infos.scoreWhite.getText(), getWidth()/17, Color.WHITE);
 
-      gbc = new GridBagConstraints();
-      gbc.gridx = gbc.gridy = 0; gbc.insets = new Insets(0, 0, 20, 0);
-      contentPane.add(size, gbc);
-      gbc.gridy = 1;
-      contentPane.add(buttonContainer, gbc);
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.gridwidth = 4;
+      gbc.gridx = gbc.gridy = 0;
+      gbc.insets = new Insets(0, 0, 20, 0);
+      contentPane.add(new Label("Score: ", getWidth()/12, Color.WHITE), gbc);
+
+      gbc.insets = new Insets(0, 0, 0, getWidth()/16);
+      gbc.gridy = gbc.gridx = gbc.gridwidth = 1;
+      contentPane.add(scoreB, gbc);
+      gbc.insets = new Insets(0, getWidth()/16, 0, 0);
+      gbc.gridx = 2;
+      contentPane.add(scoreW, gbc);
+
+      gbc.insets = new Insets(0, 8, 0, 8);
+      gbc.gridx = 0;
+      contentPane.add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(getWidth()/16, getWidth()/16, Image.SCALE_DEFAULT))), gbc);
+      gbc.gridx = 3;
+      contentPane.add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(getWidth()/16, getWidth()/16, Image.SCALE_DEFAULT))), gbc);
+
+      gbc.gridwidth = 4;
+      gbc.gridx = 0; gbc.gridy = 2;
+      gbc.insets = new Insets(30, 0, 0, 0);
+      if(Integer.parseInt(scoreB.getText()) > Integer.parseInt(scoreW.getText())) {
+         scoreB.setForeground(new Color(20, 200, 50));
+         scoreW.setForeground(new Color(200, 20, 50));
+      } else if(Integer.parseInt(scoreB.getText()) < Integer.parseInt(scoreW.getText())) {
+         scoreB.setForeground(new Color(200, 20, 50));
+         scoreW.setForeground(new Color(20, 200, 50));
+      } else {
+         scoreB.setForeground(new Color(20, 110, 170));
+         scoreW.setForeground(new Color(20, 110, 170));
+         contentPane.add(new Label("\u00c9galit\u00e9 !", getWidth()/18, Color.WHITE), gbc);
+      }
 
       contentPane.validate();
    }

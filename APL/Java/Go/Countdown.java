@@ -27,6 +27,12 @@ public class Countdown extends JLabel {
                }
                else {
                   setForeground(new Color(200, 20, 20));
+                  if(Goban.player == State.BLACK) {
+                     Infos.scoreBlack.setText("-1");
+                  } else {
+                     Infos.scoreWhite.setText("-1");
+                  }
+                  Go.mainWindow.displayWinner();
                   return;
                }
             }
