@@ -122,6 +122,34 @@ public class myWindow extends JFrame implements ComponentListener {
       contentPane.validate();
    }
 
+   public void displayWinner() {
+      contentPane.removeAll();
+      contentPane.repaint();
+      contentPane.setLayout(new GridBagLayout());
+
+      Label size = new Label("Score: ", getWidth()/14, Color.WHITE);
+      Label scoreB = new Label(Infos.scoreBlack.getText(), getWidth()/14, Color.WHITE);
+      Label scoreW = new Label(Infos.scoreWhite.getText(), getWidth()/14, Color.WHITE);
+      Panneau buttonContainer = new Panneau();
+      buttonContainer.setLayout(new GridBagLayout());
+      buttonContainer.setOpaque(false);
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.insets = new Insets(0, getWidth()/20, 0, getWidth()/20);
+      buttonContainer.add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
+      buttonContainer.add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
+      buttonContainer.add(scoreB, gbc);
+      gbc.gridy++;
+      buttonContainer.add(scoreW, gbc);
+
+      gbc = new GridBagConstraints();
+      gbc.gridx = gbc.gridy = 0; gbc.insets = new Insets(0, 0, 20, 0);
+      contentPane.add(size, gbc);
+      gbc.gridy = 1;
+      contentPane.add(buttonContainer, gbc);
+
+      contentPane.validate();
+   }
+
    public void componentResized(ComponentEvent e) {
       if(title == null || start == null) return;
       title.setFontSize(getWidth()/8);

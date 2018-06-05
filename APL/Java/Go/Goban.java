@@ -6,17 +6,19 @@ import java.net.URL;
 
 public class Goban extends JPanel implements ComponentListener {
    public static int SIZE;
-   private Infos infos;
    public static GobanGrid grid;
    public static TimerType timer;
    public static State player;
+   public static int SKIPS;
    private static ArrayList<Stone[][]> listeCoups;
    private static ArrayList<Chain> listChain;
+   private Infos infos;
    private int listIndex = 1;
 
    public Goban(int SIZE, TimerType timer) {
       addComponentListener(this);
       setBackground(new Color(155, 105, 50));
+      SKIPS = 0;
       player = State.BLACK;
       listeCoups = new ArrayList<Stone[][]>();
       listChain = new ArrayList<Chain>();
@@ -50,6 +52,7 @@ public class Goban extends JPanel implements ComponentListener {
    }
 
    public void addCoup() {
+      SKIPS = 0;
       listeCoups.add(deepCopy(grid.stones));
 
       for (; listIndex > 1; listIndex--) {

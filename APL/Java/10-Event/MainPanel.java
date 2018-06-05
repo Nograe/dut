@@ -19,7 +19,7 @@ public class MainPanel extends JPanel implements MouseMotionListener, MouseListe
    private ArrayList<Coord> path = null;
    boolean visited[][];
    PriorityQueue<Case> openList;
-   HashMap<Coord, Coord> mapPath = null;
+   TableHash<Coord, Coord> mapPath = null;
    Clip clip = null;
 
    MainPanel (int width, int height, int tX, int tY) {
@@ -157,7 +157,7 @@ public class MainPanel extends JPanel implements MouseMotionListener, MouseListe
       }
    }
 
-   public HashMap<Coord,Coord> calculRoute(Coord depart, Coord arrivee) {
+   public TableHash<Coord,Coord> calculRoute(Coord depart, Coord arrivee) {
       if(obstacles[arrivee.getY()][arrivee.getX()] == 1) {
          return null;
       }
@@ -186,7 +186,7 @@ public class MainPanel extends JPanel implements MouseMotionListener, MouseListe
          }
          return 0;
       });
-      mapPath = new HashMap<Coord, Coord>();
+      mapPath = new TableHash<Coord, Coord>();
       openList.add(cases[depart.getX()][depart.getY()]);
       while(openList.size() != 0) {
          Case C = openList.poll();

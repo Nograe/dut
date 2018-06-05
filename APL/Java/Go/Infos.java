@@ -6,7 +6,6 @@ import java.awt.event.*;
 public class Infos extends JPanel implements ComponentListener {
    public Countdown p1Timer;
    public Countdown p2Timer;
-   private int time = 100;
    public static JLabel scoreBlack;
    public static JLabel scoreWhite;
 
@@ -20,14 +19,25 @@ public class Infos extends JPanel implements ComponentListener {
    }
 
    public void displayInfos() {
-      p1Timer = new Countdown(time);
-      p2Timer = new Countdown(time);
+      p1Timer = new Countdown();
+      p2Timer = new Countdown();
       p2Timer.setForeground(Color.BLACK);
+      Button skip = new Button("Passer", 20, getBackground().darker().darker());
       Button quit = new Button("Quitter", 20, getBackground().darker().darker());
       ImageIcon undoIcon = new ImageIcon(new ImageIcon("img/undo.png").getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
       Button undo = new Button(undoIcon, 20, getBackground().darker().darker());
       ImageIcon redoIcon = new ImageIcon(new ImageIcon("img/redo.png").getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
       Button redo = new Button(redoIcon, 20, getBackground().darker().darker());
+      skip.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            Goban.SKIPS++;
+            if(Goban.SKIPS == 2) {
+               Go.mainWindow.displayWinner();
+            }
+            Go.getGoban().nextPlayer();
+         }
+      });
       undo.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -64,7 +74,9 @@ public class Infos extends JPanel implements ComponentListener {
       gbc.gridx = 0; gbc.weighty = 1;
       gbc.anchor = GridBagConstraints.LAST_LINE_START;
       add(undo, gbc);
-      gbc.gridx = 2;
+      gbc.gridx++;
+      add(skip, gbc);
+      gbc.gridx++;
       gbc.anchor = GridBagConstraints.LAST_LINE_END;
       add(redo, gbc);
    }
