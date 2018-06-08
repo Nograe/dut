@@ -6,20 +6,24 @@ public class Countdown extends JLabel {
    public static int TIME = 10;
    private int interval;
    private Timer timer;
-   private int byoPeriods;
-   private int byoTime;
-   private int BYO_PERIODS = 3;
+   private int BYO_PERIODS;
    private int BYO_TIME = 5;
 
    public Countdown() {
       super(Integer.toString(TIME));
+      BYO_PERIODS = 3;
+
       setFont(new Font("Roboto", Font.PLAIN, 25));
       setForeground(Color.WHITE);
       interval = TIME*1000;
       int delay = 1000; //milliseconds
       ActionListener taskPerformer = new ActionListener() {
          public void actionPerformed(ActionEvent evt) {
-            if(interval <= 0) {
+            if(Goban.END) {
+               timer.stop();
+               return;
+            }
+            if(interval <= 0 && Goban.timer != TimerType.NONE) {
                if(Goban.timer == TimerType.BYO && BYO_PERIODS > 0) {
                   interval = BYO_TIME*1000;
                   BYO_PERIODS--;

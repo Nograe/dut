@@ -6,22 +6,19 @@ import java.awt.event.*;
 public class Infos extends JPanel implements ComponentListener {
    public Countdown p1Timer;
    public Countdown p2Timer;
-   public static JLabel scoreBlack;
-   public static JLabel scoreWhite;
+   public static Label scoreBlack;
+   public static Label scoreWhite;
 
    public Infos() {
       addComponentListener(this);
       setBackground(new Color(60, 125, 100));
       setLayout(new GridBagLayout());
-      scoreBlack = new JLabel("0");
-      scoreWhite = new JLabel("0");
+      scoreBlack = new Label("0", 20, Color.WHITE);
+      scoreWhite = new Label("0", 20, Color.BLACK);
       displayInfos();
    }
 
    public void displayInfos() {
-      p1Timer = new Countdown();
-      p2Timer = new Countdown();
-      p2Timer.setForeground(Color.BLACK);
       Button skip = new Button("Passer", 20, getBackground().darker().darker());
       Button quit = new Button("Quitter", 20, getBackground().darker().darker());
       ImageIcon undoIcon = new ImageIcon(new ImageIcon("img/undo.png").getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
@@ -34,6 +31,7 @@ public class Infos extends JPanel implements ComponentListener {
             Goban.SKIPS++;
             if(Goban.SKIPS == 2) {
                Go.mainWindow.displayWinner();
+               return;
             }
             Go.getGoban().nextPlayer();
          }
@@ -57,6 +55,9 @@ public class Infos extends JPanel implements ComponentListener {
       add(quit, gbc);
 
       if(Goban.timer != TimerType.NONE) {
+         p1Timer = new Countdown();
+         p2Timer = new Countdown();
+         p2Timer.setForeground(Color.BLACK);
          gbc.gridx = 0;
          gbc.gridy = 1;
          add(p1Timer, gbc);
@@ -66,26 +67,32 @@ public class Infos extends JPanel implements ComponentListener {
          add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
       }
 
-      gbc.gridy++; gbc.gridx = 0;
+      gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 2;
+      add(new Label("Score:", 30, Color.WHITE), gbc);
+      gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 1;
       add(scoreBlack, gbc);
+      add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
       gbc.gridx = 2;
       add(scoreWhite, gbc);
+      add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
 
       gbc.gridx = 0; gbc.weighty = 1;
-      gbc.anchor = GridBagConstraints.LAST_LINE_START;
+      gbc.gridy++;
+      // gbc.anchor = GridBagConstraints.LAST_LINE_START;
       add(undo, gbc);
       gbc.gridx++;
       add(skip, gbc);
       gbc.gridx++;
-      gbc.anchor = GridBagConstraints.LAST_LINE_END;
+      // gbc.anchor = GridBagConstraints.LAST_LINE_END;
       add(redo, gbc);
    }
 
-   public static void setScoreBlack(int score) {
-      scoreBlack.setText(Integer.toString(Integer.parseInt(scoreBlack.getText())+score));
-   }
-   public static void setScoreWhite(int score) {
-      scoreWhite.setText(Integer.toString(Integer.parseInt(scoreWhite.getText())+score));
+   public static void setScore(int score) {
+      if(Goban.player == State.BLACK) {
+         scoreBlack.setText(Integer.toString(Integer.parseInt(scoreBlack.getText())+score));
+      } else {
+         scoreWhite.setText(Integer.toString(Integer.parseInt(scoreWhite.getText())+score));
+      }
    }
 
    @Override

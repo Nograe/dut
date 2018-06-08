@@ -46,6 +46,7 @@ public class myWindow extends JFrame implements ComponentListener {
 
    public void chooseSize() { //Choisir taille goban
       contentPane.removeAll();
+      contentPane.repaint();
       contentPane.setLayout(new GridBagLayout());
       contentPane.setBackground(new Color(10, 90, 90));
 
@@ -114,15 +115,16 @@ public class myWindow extends JFrame implements ComponentListener {
       contentPane.validate();
    }
 
-   public void displayGame(int SIZE, TimerType timer) {
+   public void displayGame(int size, TimerType timer) {
       contentPane.setLayout(new BorderLayout());
       contentPane.removeAll();
-      goban = new Goban(SIZE, timer);
+      goban = new Goban(size, timer);
       contentPane.add(goban);
       contentPane.validate();
    }
 
    public void displayWinner() {
+      goban.END = true;
       contentPane.removeAll();
       contentPane.repaint();
       contentPane.setLayout(new GridBagLayout());
@@ -155,14 +157,21 @@ public class myWindow extends JFrame implements ComponentListener {
       if(Integer.parseInt(scoreB.getText()) > Integer.parseInt(scoreW.getText())) {
          scoreB.setForeground(new Color(20, 200, 50));
          scoreW.setForeground(new Color(200, 20, 50));
+         contentPane.add(new Label("Joueur 1 gagne !", getWidth()/18, Color.WHITE), gbc);
       } else if(Integer.parseInt(scoreB.getText()) < Integer.parseInt(scoreW.getText())) {
          scoreB.setForeground(new Color(200, 20, 50));
          scoreW.setForeground(new Color(20, 200, 50));
+         contentPane.add(new Label("Joueur 2 gagne !", getWidth()/18, Color.WHITE), gbc);
       } else {
          scoreB.setForeground(new Color(20, 110, 170));
          scoreW.setForeground(new Color(20, 110, 170));
          contentPane.add(new Label("\u00c9galit\u00e9 !", getWidth()/18, Color.WHITE), gbc);
       }
+
+      Button play = new Button("Jouer", 20, Color.WHITE, new Color(50, 100, 120));
+      gbc.gridwidth = 2;
+      gbc.gridx = 1; gbc.gridy = 3;
+      contentPane.add(play,gbc);
 
       contentPane.validate();
    }

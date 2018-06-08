@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.net.URL;
 
 public class Goban extends JPanel implements ComponentListener {
+   public static boolean END;
    public static int SIZE;
    public static GobanGrid grid;
    public static TimerType timer;
@@ -18,6 +19,7 @@ public class Goban extends JPanel implements ComponentListener {
    public Goban(int SIZE, TimerType timer) {
       addComponentListener(this);
       setBackground(new Color(155, 105, 50));
+      END = false;
       SKIPS = 0;
       player = State.BLACK;
       listeCoups = new ArrayList<Stone[][]>();
@@ -30,7 +32,9 @@ public class Goban extends JPanel implements ComponentListener {
       infos = new Infos();
       add(grid);
       add(infos);
-      infos.p1Timer.start();
+      if(Goban.timer != TimerType.NONE) {
+         infos.p1Timer.start();
+      }
       listeCoups.add(new Stone[Goban.SIZE+1][Goban.SIZE+1]);
    }
 
@@ -42,12 +46,16 @@ public class Goban extends JPanel implements ComponentListener {
    public void nextPlayer() {
       if(player == State.BLACK) {
          player = State.WHITE;
-         infos.p1Timer.stop();
-         infos.p2Timer.start();
+         if(Goban.timer != TimerType.NONE) {
+            infos.p1Timer.stop();
+            infos.p2Timer.start();
+         }
       } else {
          player = State.BLACK;
-         infos.p1Timer.start();
-         infos.p2Timer.stop();
+         if(Goban.timer != TimerType.NONE) {
+            infos.p1Timer.start();
+            infos.p2Timer.stop();
+         }
       }
    }
 
@@ -253,62 +261,62 @@ class GobanGrid extends JPanel implements MouseListener {
       }
       finalChain.addStone(stones[x][y]);
       if(checkStone(stones[x][y])) { /* On vérifie que ce n'est pas un coup suicide */
-         return false;
-      }
-      // printStones(stones);
-      // stones[x][y].chain.printChain();
-      return true;
-   }
-
-   public boolean checkStone(Stone stone) {
-      if(stone.chain == null) return false;
-      System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
-      int score = 0;
-      Chain chain = stone.chain;
-      if (chain.getLiberties() <= 0) {
-         for (Stone s : chain.stones) {
-            s.chain = null;
-            stones[s.x][s.y] = null;
-            score++;
-         }
-         if(Goban.player == State.BLACK) Infos.setScoreBlack(score);
-         else Infos.setScoreWhite(score);
-         return true;
-      }
+      Infos.setScore(-1); //On vérifie que ce n'est pas elle-même
       return false;
    }
+   // printStones(stones);
+   // stones[x][y].chain.printChain();
+   return true;
+}
 
-   public double distance(int x1, int y1, int x2, int y2) {
-      return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
-   }
-
-   public void setHoshi(Graphics g, int x, int y, int cellSize, int padding) {
-      g.fillOval(x*cellSize+padding-3, y*cellSize+padding-3, 6, 6);
-   }
-
-   public void mouseClicked(MouseEvent e) {
-   }
-   public void mousePressed(MouseEvent e) {
-      addStone(e);
-   }
-   public void mouseReleased(MouseEvent e) {
-   }
-   public void mouseEntered(MouseEvent e) {
-   }
-   public void mouseExited(MouseEvent e) {
-   }
-
-   public void printStones(Stone[][] array) {
-      for (int y = 0; y < Goban.SIZE; y++) {
-         for (int x = 0; x < Goban.SIZE; x++) {
-            if(array[x][y] == null) System.out.print(" ");
-            else System.out.print(array[x][y]);
-         }
-         System.out.println();
+public boolean checkStone(Stone stone) {
+   if(stone.chain == null) return false;
+   // System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
+   int score = 0;
+   Chain chain = stone.chain;
+   if (chain.getLiberties() <= 0) {
+      for (Stone s : chain.stones) {
+         s.chain = null;
+         stones[s.x][s.y] = null;
+         score++;
       }
+      Infos.setScore(score);
+      return true;
+   }
+   return false;
+}
+
+public double distance(int x1, int y1, int x2, int y2) {
+   return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
+}
+
+public void setHoshi(Graphics g, int x, int y, int cellSize, int padding) {
+   g.fillOval(x*cellSize+padding-3, y*cellSize+padding-3, 6, 6);
+}
+
+public void mouseClicked(MouseEvent e) {
+}
+public void mousePressed(MouseEvent e) {
+   addStone(e);
+}
+public void mouseReleased(MouseEvent e) {
+}
+public void mouseEntered(MouseEvent e) {
+}
+public void mouseExited(MouseEvent e) {
+}
+
+public void printStones(Stone[][] array) {
+   for (int y = 0; y < Goban.SIZE; y++) {
       for (int x = 0; x < Goban.SIZE; x++) {
-         System.out.print("-");
+         if(array[x][y] == null) System.out.print(" ");
+         else System.out.print(array[x][y]);
       }
       System.out.println();
    }
+   for (int x = 0; x < Goban.SIZE; x++) {
+      System.out.print("-");
+   }
+   System.out.println();
+}
 }
