@@ -67,7 +67,7 @@ public class Infos extends JPanel implements ComponentListener {
          add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
       }
 
-      gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 2;
+      gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 3;
       add(new Label("Score:", 30, Color.WHITE), gbc);
       gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 1;
       add(scoreBlack, gbc);

@@ -135,11 +135,53 @@ public class Goban extends JPanel implements ComponentListener {
 
 class GobanGrid extends JPanel implements MouseListener {
    public Stone[][] stones; // 1: noir 2: blanc
+   private boolean[][] hoshis;
 
    public GobanGrid() {
       addMouseListener(this);
       setBackground(new Color(155, 105, 50));
       stones = new Stone[Goban.SIZE+1][Goban.SIZE+1];
+
+      int handicap = myWindow.range.getValue();
+      if(handicap % 2 == 1) {
+         stones[Goban.SIZE/2][Goban.SIZE/2] = new Stone(State.BLACK, Goban.SIZE/2, Goban.SIZE/2);
+      }
+      if(handicap >= 2 && handicap <= 9) {
+         if(Goban.SIZE == 9 || Goban.SIZE == 13) {
+            stones[Goban.SIZE-Goban.SIZE/4-1][Goban.SIZE/4] = new Stone(State.BLACK, Goban.SIZE-Goban.SIZE/4-1, Goban.SIZE/4);
+            stones[Goban.SIZE/4][Goban.SIZE-Goban.SIZE/4-1] = new Stone(State.BLACK, Goban.SIZE/4, Goban.SIZE-Goban.SIZE/4-1);
+         } else {
+            stones[3][15] = new Stone(State.BLACK, 3, 15); stones[15][3] = new Stone(State.BLACK, 15, 3);
+         }
+      }
+      if(handicap >= 4 && handicap <= 9) {
+         if(Goban.SIZE == 9 || Goban.SIZE == 13) {
+            stones[Goban.SIZE/4][Goban.SIZE/4] = new Stone(State.BLACK, Goban.SIZE/4, Goban.SIZE/4);
+            stones[Goban.SIZE-Goban.SIZE/4-1][Goban.SIZE-Goban.SIZE/4-1] = new Stone(State.BLACK, Goban.SIZE-Goban.SIZE/4-1, Goban.SIZE-Goban.SIZE/4-1);
+         } else {
+            stones[3][3] = new Stone(State.BLACK, 3, 3); stones[15][15] = new Stone(State.BLACK, 15, 15);
+         }
+      }
+      if(handicap >= 6 && handicap <= 9) {
+         stones[9][3] = new Stone(State.BLACK, 9, 3); stones[9][15] = new Stone(State.BLACK, 9, 15);
+      }
+      if(handicap >= 8 && handicap <= 9) {
+         stones[3][9] = new Stone(State.BLACK, 3, 9); stones[15][9] = new Stone(State.BLACK, 15, 9);
+      }
+
+      hoshis = new boolean[Goban.SIZE][Goban.SIZE];
+      if(Goban.SIZE == 9 || Goban.SIZE == 13) {
+         hoshis[(int)Goban.SIZE/4][(int)Goban.SIZE/4] =
+         hoshis[Goban.SIZE-(int)Goban.SIZE/4-1][(int)Goban.SIZE/4] =
+         hoshis[(int)Goban.SIZE/4][Goban.SIZE-(int)Goban.SIZE/4-1] =
+         hoshis[Goban.SIZE-(int)Goban.SIZE/4-1][Goban.SIZE-(int)Goban.SIZE/4-1] =
+         hoshis[(int)Goban.SIZE/2][(int)Goban.SIZE/2] = true;
+      }
+      if(Goban.SIZE == 19) {
+         hoshis[3][3] = hoshis[9][3] = hoshis[15][3] =
+         hoshis[3][9] = hoshis[9][9] = hoshis[15][9] =
+         hoshis[3][15] = hoshis[9][15] = hoshis[15][15] = true;
+      }
    }
 
    public void setSize(int gridSize) {
@@ -162,18 +204,7 @@ class GobanGrid extends JPanel implements MouseListener {
       padding /= 2;
 
       g.setColor(new Color(30, 30, 30));
-      if(Goban.SIZE == 9 || Goban.SIZE == 13) {
-         setHoshi(g, (int)Goban.SIZE/4, (int)Goban.SIZE/4, cellSize, padding);
-         setHoshi(g, (int)Goban.SIZE/4, Goban.SIZE-(int)Goban.SIZE/4-1, cellSize, padding);
-         setHoshi(g, Goban.SIZE-(int)Goban.SIZE/4-1, (int)Goban.SIZE/4, cellSize, padding);
-         setHoshi(g, Goban.SIZE-(int)Goban.SIZE/4-1, Goban.SIZE-(int)Goban.SIZE/4-1, cellSize, padding);
-         setHoshi(g, (int)Goban.SIZE/2, (int)Goban.SIZE/2, cellSize, padding);
-      }
-      if(Goban.SIZE == 19) {
-         setHoshi(g, 3, 3, cellSize, padding); setHoshi(g, 9, 3, cellSize, padding); setHoshi(g, 15, 3, cellSize, padding);
-         setHoshi(g, 3, 9, cellSize, padding); setHoshi(g, 9, 9, cellSize, padding); setHoshi(g, 15, 9, cellSize, padding);
-         setHoshi(g, 3, 15, cellSize, padding); setHoshi(g, 9, 15, cellSize, padding); setHoshi(g, 15, 15, cellSize, padding);
-      }
+      setHoshi(g, cellSize, padding);
 
       for (int x = 0; x < Goban.SIZE; x++) {
          g.drawLine(x*cellSize+padding, padding, x*cellSize+padding, gridSize+padding);
@@ -290,8 +321,12 @@ public double distance(int x1, int y1, int x2, int y2) {
    return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
 }
 
-public void setHoshi(Graphics g, int x, int y, int cellSize, int padding) {
-   g.fillOval(x*cellSize+padding-3, y*cellSize+padding-3, 6, 6);
+public void setHoshi(Graphics g, int cellSize, int padding) {
+   for (int y = 0; y < hoshis[0].length; y++) {
+      for (int x = 0; x < hoshis.length; x++) {
+         if(hoshis[x][y]) g.fillOval(x*cellSize+padding-3, y*cellSize+padding-3, 6, 6);
+      }
+   }
 }
 
 public void mouseClicked(MouseEvent e) {

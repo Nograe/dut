@@ -70,6 +70,7 @@ class Button extends JButton implements ActionListener {
          Go.mainWindow.chooseTimer(Integer.parseInt(e.getActionCommand()));
       }
       if(e.getActionCommand() == "Quitter") {
+         Goban.END = true;
          Go.mainWindow.displayMenu();
       }
    }

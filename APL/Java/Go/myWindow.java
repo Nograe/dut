@@ -1,11 +1,10 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.*;
+import javax.swing.event.*;
 import java.awt.event.*;
 
-public class myWindow extends JFrame implements ComponentListener {
+public class myWindow extends JFrame implements ComponentListener, ChangeListener {
    private Panneau contentPane = new Panneau();
    public Goban goban;
    private Label title;
@@ -13,6 +12,9 @@ public class myWindow extends JFrame implements ComponentListener {
 
    public static Dimension MenuWindow = new Dimension(800, 600);
    public static Dimension GobanWindow = new Dimension(650, 500);
+
+   public static JSlider range;
+   private Label output;
 
    public myWindow() {
       addComponentListener(this);
@@ -112,6 +114,20 @@ public class myWindow extends JFrame implements ComponentListener {
       contentPane.add(size, gbc);
       gbc.gridy = 1;
       contentPane.add(buttonContainer, gbc);
+
+      gbc.gridy++; gbc.gridx--; gbc.insets = new Insets(20, 0, 0, 0);
+      if(SIZE == 9 || SIZE == 13) {
+         range = new JSlider(0, 5, 0);
+      } else {
+         range = new JSlider(0, 9, 0);
+      }
+      range.setOpaque(false);
+      range.addChangeListener(this);
+      contentPane.add(range, gbc);
+      gbc.gridy++;
+      output = new Label("Handicap: 0", 30, Color.WHITE);
+      contentPane.add(output, gbc);
+
       contentPane.validate();
    }
 
@@ -187,5 +203,9 @@ public class myWindow extends JFrame implements ComponentListener {
    public void componentHidden(ComponentEvent e) {
    }
    public void componentShown(ComponentEvent e) {
+   }
+
+   public void stateChanged(ChangeEvent e) {
+      output.setText("Handicap: " + range.getValue());
    }
 }
