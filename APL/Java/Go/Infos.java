@@ -30,7 +30,7 @@ public class Infos extends JPanel implements ComponentListener {
          public void actionPerformed(ActionEvent e) {
             Goban.SKIPS++;
             if(Goban.SKIPS == 2) {
-               Go.mainWindow.displayWinner();
+               Go.getGoban().finish();
                return;
             }
             Go.getGoban().nextPlayer();
@@ -100,6 +100,23 @@ public class Infos extends JPanel implements ComponentListener {
       } else {
          scoreWhite.setText(Double.toString(Double.parseDouble(scoreWhite.getText())+score));
       }
+   }
+
+   public void finish() {
+      removeAll();
+
+      Button quit = new Button("Quitter", 20, getBackground().darker().darker());
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.insets = new Insets(15, 0, 15, 0);
+      gbc.gridy = 0; gbc.gridx = 0; gbc.gridwidth = 3;
+      add(quit, gbc);
+
+      gbc.gridy++;
+      add(new Label("Retirez les groupes morts", 18, Color.WHITE), gbc);
+
+
+      repaint();
+      revalidate();
    }
 
    @Override

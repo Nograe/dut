@@ -140,8 +140,6 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
    }
 
    public void displayWinner() {
-      goban.END = true;
-      setScores();
       contentPane.removeAll();
       contentPane.repaint();
       contentPane.setLayout(new GridBagLayout());
@@ -196,10 +194,6 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
       contentPane.add(play,gbc);
 
       contentPane.validate();
-   }
-
-   public void setScores() {
-      
    }
 
    public void componentResized(ComponentEvent e) {

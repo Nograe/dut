@@ -136,6 +136,12 @@ public class Goban extends JPanel implements ComponentListener {
    public void componentShown(ComponentEvent e) {
    }
 
+   public void finish() {
+      END = true;
+      grid.finish();
+      infos.finish();
+   }
+
    // public static void StonesOnGrid() {
    //    int scoreBlack = Integer.parseInt(Infos.scoreBlack.getText());
    //    double scoreWhite = Double.parseDouble(Infos.scoreWhite.getText());
@@ -254,12 +260,23 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
       if(hoverStone == null) return;
       double width = cellSize*0.9;
       URL url = null;
-      if(Goban.player == State.BLACK) url = this.getClass().getResource("img/icon.png");
-      if(Goban.player == State.WHITE) url = this.getClass().getResource("img/white.png");
-      Image stone = new ImageIcon(url).getImage();
+      Image stone = null;
       Graphics2D g2d = (Graphics2D)g;
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.35f));
+      if(Goban.player == State.BLACK) {
+         stone = getImage("img/icon.png");
+      }
+      if(Goban.player == State.WHITE) {
+         stone = getImage("img/white.png");
+      }
+      if(Goban.END) {
+         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.45f));
+         stone = getImage("img/triangle.png");
+      }
       g.drawImage(stone, (int)hoverStone.getX()*cellSize+(int)width/14, (int)hoverStone.getY()*cellSize+(int)width/14, (int)width, (int)width, this);
+   }
+   public Image getImage(String url) {
+      return new ImageIcon(this.getClass().getResource(url)).getImage();
    }
 
    public void addStone(MouseEvent e, boolean hover) {
@@ -285,7 +302,7 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
          dist = distance(e.getX(), e.getY(), (posX*cellSize)+padding+cellSize, (posY*cellSize)+padding+cellSize);
          cell = new Point(posX+1, posY+1);
       }
-      if(stones[(int)cell.getX()][(int)cell.getY()] == null) {
+      if(stones[(int)cell.getX()][(int)cell.getY()] == null && !Goban.END) {
          if(hover) {
             hoverStone = new Point((int)cell.getX(), (int)cell.getY());
          }
@@ -294,6 +311,11 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
             Go.getGoban().addCoup();
             Infos.setScore(1);
             Go.getGoban().nextPlayer();
+         }
+      }
+      if(Goban.END && stones[(int)cell.getX()][(int)cell.getY()] != null) {
+         if(hover) {
+            hoverStone = new Point((int)cell.getX(), (int)cell.getY());
          }
       }
       repaint();
@@ -329,72 +351,76 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
          }
       }
       finalChain.addStone(stones[x][y]);
-      if(checkStone(stones[x][y])) { // On vérifie que ce n'est pas un coup suicide
-      Infos.setScore(-1);
-      return false;
-   }
-   // printStones(stones);
-   // stones[x][y].chain.printChain();
-   return true;
-}
-
-public boolean checkStone(Stone stone) {
-   if(stone.chain == null) return false;
-   // System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
-   int score = 0;
-   Chain chain = stone.chain;
-   if (chain.getLiberties() <= 0) {
-      for (Stone s : chain.stones) {
-         s.chain = null;
-         stones[s.x][s.y] = null;
-         score++;
+      if(checkStone(stones[x][y])) {
+         // Infos.setScore(-1);
+         return false; //On verif que ce n'est pas un coup suicide
       }
-      Infos.setScore(score);
+      // printStones(stones);
+      // stones[x][y].chain.printChain();
       return true;
    }
-   return false;
-}
 
-public double distance(int x1, int y1, int x2, int y2) {
-   return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
-}
+   public boolean checkStone(Stone stone) {
+      if(stone.chain == null) return false;
+      // System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
+      int score = 0;
+      Chain chain = stone.chain;
+      if (chain.getLiberties() <= 0) {
+         for (Stone s : chain.stones) {
+            s.chain = null;
+            stones[s.x][s.y] = null;
+            // score++;
+         }
+         // Infos.setScore(score); //Règle japonaise
+         return true;
+      }
+      return false;
+   }
 
-public void setHoshi(Graphics g, int cellSize, int padding) {
-   for (int y = 0; y < hoshis[0].length; y++) {
-      for (int x = 0; x < hoshis.length; x++) {
-         if(hoshis[x][y]) g.fillOval(x*cellSize+padding-3, y*cellSize+padding-3, 6, 6);
+   public double distance(int x1, int y1, int x2, int y2) {
+      return Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
+   }
+
+   public void setHoshi(Graphics g, int cellSize, int padding) {
+      for (int y = 0; y < hoshis[0].length; y++) {
+         for (int x = 0; x < hoshis.length; x++) {
+            if(hoshis[x][y]) g.fillOval(x*cellSize+padding-3, y*cellSize+padding-3, 6, 6);
+         }
       }
    }
-}
 
-public void mousePressed(MouseEvent e) {
-   addStone(e, false);
-}
-public void mouseMoved(MouseEvent e) {
-   addStone(e, true);
-}
-public void mouseClicked(MouseEvent e) {
-}
-public void mouseReleased(MouseEvent e) {
-}
-public void mouseEntered(MouseEvent e) {
-}
-public void mouseExited(MouseEvent e) {
-}
-public void mouseDragged(MouseEvent e) {
-}
+   public void mousePressed(MouseEvent e) {
+      addStone(e, false);
+   }
+   public void mouseMoved(MouseEvent e) {
+      addStone(e, true);
+   }
+   public void mouseClicked(MouseEvent e) {
+   }
+   public void mouseReleased(MouseEvent e) {
+   }
+   public void mouseEntered(MouseEvent e) {
+   }
+   public void mouseExited(MouseEvent e) {
+   }
+   public void mouseDragged(MouseEvent e) {
+   }
 
-public void printStones(Stone[][] array) {
-   for (int y = 0; y < Goban.SIZE; y++) {
+   public void printStones(Stone[][] array) {
+      for (int y = 0; y < Goban.SIZE; y++) {
+         for (int x = 0; x < Goban.SIZE; x++) {
+            if(array[x][y] == null) System.out.print(" ");
+            else System.out.print(array[x][y]);
+         }
+         System.out.println();
+      }
       for (int x = 0; x < Goban.SIZE; x++) {
-         if(array[x][y] == null) System.out.print(" ");
-         else System.out.print(array[x][y]);
+         System.out.print("-");
       }
       System.out.println();
    }
-   for (int x = 0; x < Goban.SIZE; x++) {
-      System.out.print("-");
+
+   public void finish() {
+      hoverStone = null;
    }
-   System.out.println();
-}
 }
