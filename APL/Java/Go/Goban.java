@@ -36,6 +36,11 @@ public class Goban extends JPanel implements ComponentListener {
          infos.p1Timer.start();
       }
       listeCoups.add(new Stone[Goban.SIZE+1][Goban.SIZE+1]);
+      // StonesOnGrid();
+   }
+
+   public static Stone[][] getStones() {
+      return grid.stones;
    }
 
    @Override
@@ -130,15 +135,31 @@ public class Goban extends JPanel implements ComponentListener {
    }
    public void componentShown(ComponentEvent e) {
    }
+
+   // public static void StonesOnGrid() {
+   //    int scoreBlack = Integer.parseInt(Infos.scoreBlack.getText());
+   //    double scoreWhite = Double.parseDouble(Infos.scoreWhite.getText());
+   //    for (Stone[] row : Goban.getStones()) {
+   //       for (Stone S : row) {
+   //          if(S == null) continue;
+   //          if(S.color == State.BLACK) scoreBlack++;
+   //          if(S.color == State.WHITE) scoreWhite++;
+   //       }
+   //    }
+   //    Infos.scoreBlack.setText(Integer.toString(scoreBlack));
+   //    Infos.scoreWhite.setText(Double.toString(scoreWhite));
+   // }
 }
 
 
-class GobanGrid extends JPanel implements MouseListener {
+class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
    public Stone[][] stones; // 1: noir 2: blanc
    private boolean[][] hoshis;
+   private Point hoverStone;
 
    public GobanGrid() {
       addMouseListener(this);
+      addMouseMotionListener(this);
       setBackground(new Color(155, 105, 50));
       stones = new Stone[Goban.SIZE+1][Goban.SIZE+1];
 
@@ -213,23 +234,35 @@ class GobanGrid extends JPanel implements MouseListener {
          g.drawLine(padding, y*cellSize+padding, gridSize+padding, y*cellSize+padding);
          drawLineStones(g, y, cellSize, padding);
       }
+      drawHoverStone(g, cellSize, padding);
    }
 
    public void drawLineStones(Graphics g, int y, int cellSize, int padding) {
       double width = cellSize*0.9;
-      URL url = this.getClass().getResource("img/black.png");
+      URL url = null;
       for (int x = 0; x < Goban.SIZE; x++) {
          if(stones[x][y] == null) continue;
-         if(stones[x][y].color == State.BLACK) url = this.getClass().getResource("img/icon.png"); //g.setColor(new Color(30, 30, 30));
-         if(stones[x][y].color == State.WHITE) url = this.getClass().getResource("img/white.png"); //g.setColor(new Color(200, 200, 200));
-         // g.fillOval(x*cellSize+(int)width/14, y*cellSize+(int)width/14, (int)width, (int)width);
+         if(stones[x][y].color == State.BLACK) url = this.getClass().getResource("img/icon.png");
+         if(stones[x][y].color == State.WHITE) url = this.getClass().getResource("img/white.png");
          Image stone = new ImageIcon(url).getImage();
          g.drawImage(stone, x*cellSize+(int)width/14, y*cellSize+(int)width/14, (int)width, (int)width, this);
       }
       g.setColor(new Color(0, 0, 0));
    }
 
-   public void addStone(MouseEvent e) {
+   public void drawHoverStone(Graphics g, int cellSize, int padding) {
+      if(hoverStone == null) return;
+      double width = cellSize*0.9;
+      URL url = null;
+      if(Goban.player == State.BLACK) url = this.getClass().getResource("img/icon.png");
+      if(Goban.player == State.WHITE) url = this.getClass().getResource("img/white.png");
+      Image stone = new ImageIcon(url).getImage();
+      Graphics2D g2d = (Graphics2D)g;
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.35f));
+      g.drawImage(stone, (int)hoverStone.getX()*cellSize+(int)width/14, (int)hoverStone.getY()*cellSize+(int)width/14, (int)width, (int)width, this);
+   }
+
+   public void addStone(MouseEvent e, boolean hover) {
       int gridSize = getWidth();
       int cellSize = gridSize/(Goban.SIZE);
       int padding = cellSize;
@@ -252,9 +285,14 @@ class GobanGrid extends JPanel implements MouseListener {
          dist = distance(e.getX(), e.getY(), (posX*cellSize)+padding+cellSize, (posY*cellSize)+padding+cellSize);
          cell = new Point(posX+1, posY+1);
       }
-      if (stones[(int)cell.getX()][(int)cell.getY()] == null) {
-         if(addStone((int)cell.getX(), (int)cell.getY())) {
+      if(stones[(int)cell.getX()][(int)cell.getY()] == null) {
+         if(hover) {
+            hoverStone = new Point((int)cell.getX(), (int)cell.getY());
+         }
+         if(!hover && addStone((int)cell.getX(), (int)cell.getY())) {
+            hoverStone = null;
             Go.getGoban().addCoup();
+            Infos.setScore(1);
             Go.getGoban().nextPlayer();
          }
       }
@@ -291,8 +329,8 @@ class GobanGrid extends JPanel implements MouseListener {
          }
       }
       finalChain.addStone(stones[x][y]);
-      if(checkStone(stones[x][y])) { /* On vérifie que ce n'est pas un coup suicide */
-      Infos.setScore(-1); //On vérifie que ce n'est pas elle-même
+      if(checkStone(stones[x][y])) { // On vérifie que ce n'est pas un coup suicide
+      Infos.setScore(-1);
       return false;
    }
    // printStones(stones);
@@ -329,16 +367,21 @@ public void setHoshi(Graphics g, int cellSize, int padding) {
    }
 }
 
-public void mouseClicked(MouseEvent e) {
-}
 public void mousePressed(MouseEvent e) {
-   addStone(e);
+   addStone(e, false);
+}
+public void mouseMoved(MouseEvent e) {
+   addStone(e, true);
+}
+public void mouseClicked(MouseEvent e) {
 }
 public void mouseReleased(MouseEvent e) {
 }
 public void mouseEntered(MouseEvent e) {
 }
 public void mouseExited(MouseEvent e) {
+}
+public void mouseDragged(MouseEvent e) {
 }
 
 public void printStones(Stone[][] array) {

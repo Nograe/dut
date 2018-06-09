@@ -141,9 +141,11 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
 
    public void displayWinner() {
       goban.END = true;
+      setScores();
       contentPane.removeAll();
       contentPane.repaint();
       contentPane.setLayout(new GridBagLayout());
+
 
       Label scoreB = new Label(Infos.scoreBlack.getText(), getWidth()/17, Color.WHITE);
       Label scoreW = new Label(Infos.scoreWhite.getText(), getWidth()/17, Color.WHITE);
@@ -170,11 +172,15 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
       gbc.gridwidth = 4;
       gbc.gridx = 0; gbc.gridy = 2;
       gbc.insets = new Insets(30, 0, 0, 0);
-      if(Integer.parseInt(scoreB.getText()) > Integer.parseInt(scoreW.getText())) {
+      double scoreBlack = Double.parseDouble(scoreB.getText());
+      double scoreWhite = Double.parseDouble(scoreW.getText());
+      if(scoreBlack > scoreWhite) {
+         if(scoreWhite == -1) scoreW.setText("Temps \u00e9coul\u00e9");
          scoreB.setForeground(new Color(20, 200, 50));
          scoreW.setForeground(new Color(200, 20, 50));
          contentPane.add(new Label("Joueur 1 gagne !", getWidth()/18, Color.WHITE), gbc);
-      } else if(Integer.parseInt(scoreB.getText()) < Integer.parseInt(scoreW.getText())) {
+      } else if(scoreBlack < scoreWhite) {
+         if(scoreBlack == -1) scoreB.setText("Temps \u00e9coul\u00e9");
          scoreB.setForeground(new Color(200, 20, 50));
          scoreW.setForeground(new Color(20, 200, 50));
          contentPane.add(new Label("Joueur 2 gagne !", getWidth()/18, Color.WHITE), gbc);
@@ -190,6 +196,10 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
       contentPane.add(play,gbc);
 
       contentPane.validate();
+   }
+
+   public void setScores() {
+      
    }
 
    public void componentResized(ComponentEvent e) {

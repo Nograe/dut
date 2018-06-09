@@ -13,8 +13,8 @@ public class Infos extends JPanel implements ComponentListener {
       addComponentListener(this);
       setBackground(new Color(60, 125, 100));
       setLayout(new GridBagLayout());
-      scoreBlack = new Label("0", 20, Color.WHITE);
-      scoreWhite = new Label("0", 20, Color.BLACK);
+      scoreBlack = new Label(Integer.toString(myWindow.range.getValue()), 20, Color.WHITE);
+      scoreWhite = new Label("7.5", 20, Color.BLACK);
       displayInfos();
    }
 
@@ -91,7 +91,14 @@ public class Infos extends JPanel implements ComponentListener {
       if(Goban.player == State.BLACK) {
          scoreBlack.setText(Integer.toString(Integer.parseInt(scoreBlack.getText())+score));
       } else {
-         scoreWhite.setText(Integer.toString(Integer.parseInt(scoreWhite.getText())+score));
+         scoreWhite.setText(Double.toString(Double.parseDouble(scoreWhite.getText())+score));
+      }
+   }
+   public static void setScore(State color, int score) {
+      if(color == State.BLACK) {
+         scoreBlack.setText(Integer.toString(Integer.parseInt(scoreBlack.getText())+score));
+      } else {
+         scoreWhite.setText(Double.toString(Double.parseDouble(scoreWhite.getText())+score));
       }
    }
 
