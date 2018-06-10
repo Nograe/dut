@@ -35,7 +35,7 @@ public class Chain {
    }
 
    public void addStone(Stone stone) {
-      stone.chain = this;
+      // stone.chain = this;
       stones.add(stone);
    }
 

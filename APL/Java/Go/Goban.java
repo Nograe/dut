@@ -337,44 +337,23 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
          neighbors[3] = stones[x][y + 1];
       }
 
-      Chain finalChain = new Chain();
       for (Stone neighbor : neighbors) {
          if (neighbor == null) {
             continue;
          }
          if (neighbor.color != stones[x][y].color) {
             checkStone(neighbor);
-            continue;
-         }
-         if (neighbor.chain != null) {
-            finalChain.join(neighbor.chain);
          }
       }
-      finalChain.addStone(stones[x][y]);
-      if(checkStone(stones[x][y])) {
-         // Infos.setScore(-1);
-         return false; //On verif que ce n'est pas un coup suicide
-      }
-      // printStones(stones);
-      // stones[x][y].chain.printChain();
-      return true;
+      return checkStone(stones[x][y]);
    }
 
    public boolean checkStone(Stone stone) {
-      if(stone.chain == null) return false;
-      // System.out.println("stone has "+stone.chain.getLiberties()+" liberties");
-      int score = 0;
-      Chain chain = stone.chain;
-      if (chain.getLiberties() <= 0) {
-         for (Stone s : chain.stones) {
-            s.chain = null;
-            stones[s.x][s.y] = null;
-            // score++;
-         }
-         // Infos.setScore(score); //Règle japonaise
-         return true;
+      if (!stone.isFree()) {
+         stones[stone.x][stone.y] = null;
+         return false;
       }
-      return false;
+      return true;
    }
 
    public double distance(int x1, int y1, int x2, int y2) {
@@ -422,5 +401,6 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
 
    public void finish() {
       hoverStone = null;
+      repaint();
    }
 }
