@@ -50,6 +50,21 @@ public class Stone {
       return (boolcurrent || bool1 || bool2 || bool3 || bool4);
    }
 
+   public void removeGroup() {
+      Goban.getStones()[x][y] = null;
+      if (x > 0 && Goban.getStones()[x-1][y] != null && Goban.getStones()[x-1][y].color == color) {
+         Goban.getStones()[x-1][y].removeGroup();
+      }
+      if (x+1 < Goban.SIZE && Goban.getStones()[x+1][y] != null && Goban.getStones()[x+1][y].color == color) {
+         Goban.getStones()[x+1][y].removeGroup();
+      }
+      if (y > 0 && Goban.getStones()[x][y-1] != null && Goban.getStones()[x][y-1].color == color) {
+         Goban.getStones()[x][y-1].removeGroup();
+      }
+      if (y+1 < Goban.SIZE && Goban.getStones()[x][y+1] != null && Goban.getStones()[x][y+1].color == color) {
+         Goban.getStones()[x][y+1].removeGroup();
+      }
+   }
 
    @Override
    public String toString() {
@@ -61,5 +76,5 @@ public class Stone {
 }
 
 enum State {
-    BLACK, WHITE
+   BLACK, WHITE
 }

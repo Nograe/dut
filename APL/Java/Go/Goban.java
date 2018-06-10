@@ -350,7 +350,7 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
 
    public boolean checkStone(Stone stone) {
       if (!stone.isFree()) {
-         stones[stone.x][stone.y] = null;
+         stone.removeGroup();
          return false;
       }
       return true;
