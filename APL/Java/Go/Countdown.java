@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Countdown extends JLabel {
-   public static int TIME = 10;
+   public static int TIME;
    private int interval;
    private Timer timer;
    private int BYO_PERIODS;
@@ -12,11 +12,13 @@ public class Countdown extends JLabel {
    public Countdown() {
       super(Integer.toString(TIME));
       BYO_PERIODS = 3;
+      TIME = myWindow.timer.getValue()*60;
 
       setFont(new Font("Roboto", Font.PLAIN, 25));
       setForeground(Color.WHITE);
       interval = TIME*1000;
       int delay = 1000; //milliseconds
+      setText(interval/1000/60 + ":00");
       ActionListener taskPerformer = new ActionListener() {
          public void actionPerformed(ActionEvent evt) {
             if(Goban.END) {
@@ -41,7 +43,7 @@ public class Countdown extends JLabel {
                }
             }
             interval-=delay;
-            setText(Integer.toString(interval/1000));
+            setText(interval/1000/60 + ":" + interval/1000%60);
          }
       };
       timer = new Timer(delay, taskPerformer);

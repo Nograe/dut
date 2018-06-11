@@ -9,6 +9,9 @@ public class Infos extends JPanel implements ComponentListener {
    public static Label scoreBlack;
    public static Label scoreWhite;
 
+   private Button redo;
+   private Button undo;
+
    public Infos() {
       addComponentListener(this);
       setBackground(new Color(60, 125, 100));
@@ -22,9 +25,9 @@ public class Infos extends JPanel implements ComponentListener {
       Button skip = new Button("Passer", 20, getBackground().darker().darker());
       Button quit = new Button("Quitter", 20, getBackground().darker().darker());
       ImageIcon undoIcon = new ImageIcon(new ImageIcon("img/undo.png").getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-      Button undo = new Button(undoIcon, 20, getBackground().darker().darker());
+      undo = new Button(undoIcon, 20, getBackground().darker().darker());
       ImageIcon redoIcon = new ImageIcon(new ImageIcon("img/redo.png").getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-      Button redo = new Button(redoIcon, 20, getBackground().darker().darker());
+      redo = new Button(redoIcon, 20, getBackground().darker().darker());
       skip.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -58,20 +61,21 @@ public class Infos extends JPanel implements ComponentListener {
          p1Timer = new Countdown();
          p2Timer = new Countdown();
          p2Timer.setForeground(Color.BLACK);
+         gbc.gridwidth = 3;
          gbc.gridx = 0;
          gbc.gridy = 1;
          add(p1Timer, gbc);
-         add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
-         gbc.gridx = 2;
+         add(new JLabel(new ImageIcon(new ImageIcon("img/black.png").getImage().getScaledInstance(90, 90, Image.SCALE_DEFAULT))), gbc);
+         gbc.gridy = 2;
          add(p2Timer, gbc);
-         add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
+         add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(90, 90, Image.SCALE_DEFAULT))), gbc);
       }
 
       gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 3;
       add(new Label("Score:", 30, Color.WHITE), gbc);
       gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 1;
       add(scoreBlack, gbc);
-      add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
+      add(new JLabel(new ImageIcon(new ImageIcon("img/black.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
       gbc.gridx = 2;
       add(scoreWhite, gbc);
       add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
@@ -87,18 +91,31 @@ public class Infos extends JPanel implements ComponentListener {
       add(redo, gbc);
    }
 
+   public static void setScore() {
+      Stone stones[][] = Go.getGoban().getStones();
+      int scoreB = 0, scoreW = 0;
+      for (Stone[] row : stones) {
+         for (Stone stone : row) {
+            if(stone == null) continue;
+            if(stone.color == State.BLACK) scoreB++;
+            else scoreW++;
+         }
+      }
+      setScore(State.BLACK, scoreB);
+      setScore(State.WHITE, scoreW);
+   }
    public static void setScore(int score) {
       if(Goban.player == State.BLACK) {
-         scoreBlack.setText(Integer.toString(Integer.parseInt(scoreBlack.getText())+score));
+         scoreBlack.setText(Integer.toString(score));
       } else {
-         scoreWhite.setText(Double.toString(Double.parseDouble(scoreWhite.getText())+score));
+         scoreWhite.setText(Double.toString(7.5 + score));
       }
    }
    public static void setScore(State color, int score) {
       if(color == State.BLACK) {
-         scoreBlack.setText(Integer.toString(Integer.parseInt(scoreBlack.getText())+score));
+         scoreBlack.setText(Integer.toString(score));
       } else {
-         scoreWhite.setText(Double.toString(Double.parseDouble(scoreWhite.getText())+score));
+         scoreWhite.setText(Double.toString(7.5 + score));
       }
    }
 
@@ -108,15 +125,47 @@ public class Infos extends JPanel implements ComponentListener {
       Button quit = new Button("Quitter", 20, getBackground().darker().darker());
       GridBagConstraints gbc = new GridBagConstraints();
       gbc.insets = new Insets(15, 0, 15, 0);
-      gbc.gridy = 0; gbc.gridx = 0; gbc.gridwidth = 3;
+      gbc.gridy = gbc.gridx = 0; gbc.gridwidth = 3;
       add(quit, gbc);
 
       gbc.gridy++;
       add(new Label("Retirez les groupes morts", 18, Color.WHITE), gbc);
 
+      Button captureB = new Button("Capturer", 20, new Color(200, 200, 200), new Color(20, 20, 20));
+      Button captureW = new Button("Capturer", 20, new Color(20, 20, 20), new Color(200, 200, 200));
+      captureB.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            Goban.player = State.BLACK;
+            Goban.CAPTURE = !Goban.CAPTURE;
+         }
+      });
+      captureW.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            Goban.player = State.WHITE;
+            Goban.CAPTURE = !Goban.CAPTURE;
+         }
+      });
+      gbc.gridy++; gbc.gridwidth = 1;
+      add(captureB, gbc);
+      gbc.gridx = 2;
+      add(captureW, gbc);
+      Button suivant = new Button("Suivant", 20, new Color(50, 120, 180));
+      suivant.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            territories();
+         }
+      });
+      gbc.gridx = 0; gbc.gridy++; gbc.gridwidth = 3;
+      add(suivant, gbc);
 
       repaint();
       revalidate();
+   }
+   public void territories() {
+
    }
 
    @Override

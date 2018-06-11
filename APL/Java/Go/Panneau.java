@@ -11,7 +11,7 @@ public class Panneau extends JPanel {
    }
 }
 
-class Button extends JButton implements ActionListener {
+class Button extends JButton implements ActionListener, MouseMotionListener {
    private Color backgroundColor;
 
    public Button(Icon icon, int iconSize, Color backgroundColor) {
@@ -24,6 +24,7 @@ class Button extends JButton implements ActionListener {
       constructor(backgroundColor);
    }
    public void constructor(Color backgroundColor) {
+      addMouseMotionListener(this);
       setContentAreaFilled(false);
       addActionListener(this);
       setBorderPainted(false);
@@ -73,6 +74,14 @@ class Button extends JButton implements ActionListener {
          Goban.END = true;
          Go.mainWindow.displayMenu();
       }
+   }
+
+   @Override
+   public void mouseMoved(MouseEvent e) {
+      setCursor(new Cursor(Cursor.HAND_CURSOR));
+   }
+   @Override
+   public void mouseDragged(MouseEvent e) {
    }
 }
 

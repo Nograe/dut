@@ -9,45 +9,45 @@ public class Stone {
       this.y = y;
    }
 
-   public boolean isFree() {
-      return isFree(new boolean[Goban.SIZE][Goban.SIZE]);
+   public int getLiberties() {
+      return getLiberties(new boolean[Goban.SIZE][Goban.SIZE]);
    }
-   public boolean isFree(boolean[][] visited) {
-      boolean boolcurrent, bool1, bool2, bool3, bool4;
-      boolcurrent = bool1 = bool2 = bool3 = bool4 = false;
+   public int getLiberties(boolean[][] visited) {
+      int boolcurrent, bool1, bool2, bool3, bool4;
+      boolcurrent = bool1 = bool2 = bool3 = bool4 = 0;
       if (x > 0) {
          if(Goban.getStones()[x-1][y] != null && !visited[x-1][y] && Goban.getStones()[x-1][y].color == color) {
             visited[x-1][y] = true;
-            bool1 = Goban.getStones()[x-1][y].isFree(visited);
+            bool1 = Goban.getStones()[x-1][y].getLiberties(visited);
          } else if(Goban.getStones()[x-1][y] == null) {
-            boolcurrent = true;
+            boolcurrent++;
          }
       }
       if (x+1 < Goban.SIZE) {
          if(Goban.getStones()[x+1][y] != null && !visited[x+1][y] && Goban.getStones()[x+1][y].color == color) {
             visited[x+1][y] = true;
-            bool2 = Goban.getStones()[x+1][y].isFree(visited);
+            bool2 = Goban.getStones()[x+1][y].getLiberties(visited);
          } else if(Goban.getStones()[x+1][y] == null) {
-            boolcurrent = true;
+            boolcurrent++;
          }
       }
       if (y > 0) {
          if(Goban.getStones()[x][y-1] != null && !visited[x][y-1] && Goban.getStones()[x][y-1].color == color) {
             visited[x][y-1] = true;
-            bool3 = Goban.getStones()[x][y-1].isFree(visited);
+            bool3 = Goban.getStones()[x][y-1].getLiberties(visited);
          } else if(Goban.getStones()[x][y-1] == null) {
-            boolcurrent = true;
+            boolcurrent++;
          }
       }
       if (y+1 < Goban.SIZE) {
          if(Goban.getStones()[x][y+1] != null && !visited[x][y+1] && Goban.getStones()[x][y+1].color == color) {
             visited[x][y+1] = true;
-            bool4 = Goban.getStones()[x][y+1].isFree(visited);
+            bool4 = Goban.getStones()[x][y+1].getLiberties(visited);
          } else if(Goban.getStones()[x][y+1] == null) {
-            boolcurrent = true;
+            boolcurrent++;
          }
       }
-      return (boolcurrent || bool1 || bool2 || bool3 || bool4);
+      return (boolcurrent + bool1 + bool2 + bool3 + bool4);
    }
 
    public void removeGroup() {

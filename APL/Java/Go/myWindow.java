@@ -13,12 +13,15 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
    public static Dimension MenuWindow = new Dimension(800, 600);
    public static Dimension GobanWindow = new Dimension(650, 500);
 
+   public static JSlider timer;
+   private Label outputTimer;
+
    public static JSlider range;
-   private Label output;
+   private Label outputRange;
 
    public myWindow() {
       addComponentListener(this);
-      setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("img/icon.png")));
+      setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("img/black.png")));
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
 
@@ -115,7 +118,16 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
       gbc.gridy = 1;
       contentPane.add(buttonContainer, gbc);
 
-      gbc.gridy++; gbc.gridx--; gbc.insets = new Insets(20, 0, 0, 0);
+      gbc.gridy++; gbc.gridx = 0;
+      timer = new JSlider(1, 60, 30);
+      timer.setOpaque(false);
+      timer.addChangeListener(this);
+      contentPane.add(timer, gbc);
+      gbc.gridy++;
+      outputTimer = new Label("Temps: 30min.", 30, Color.WHITE);
+      contentPane.add(outputTimer, gbc);
+
+      gbc.gridy++; gbc.insets = new Insets(20, 0, 0, 0);
       if(SIZE == 9 || SIZE == 13) {
          range = new JSlider(0, 5, 0);
       } else {
@@ -125,8 +137,8 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
       range.addChangeListener(this);
       contentPane.add(range, gbc);
       gbc.gridy++;
-      output = new Label("Handicap: 0", 30, Color.WHITE);
-      contentPane.add(output, gbc);
+      outputRange = new Label("Handicap: 0", 30, Color.WHITE);
+      contentPane.add(outputRange, gbc);
 
       contentPane.validate();
    }
@@ -140,10 +152,10 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
    }
 
    public void displayWinner() {
+      Goban.END = true;
       contentPane.removeAll();
       contentPane.repaint();
       contentPane.setLayout(new GridBagLayout());
-
 
       Label scoreB = new Label(Infos.scoreBlack.getText(), getWidth()/17, Color.WHITE);
       Label scoreW = new Label(Infos.scoreWhite.getText(), getWidth()/17, Color.WHITE);
@@ -163,7 +175,7 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
 
       gbc.insets = new Insets(0, 8, 0, 8);
       gbc.gridx = 0;
-      contentPane.add(new JLabel(new ImageIcon(new ImageIcon("img/icon.png").getImage().getScaledInstance(getWidth()/16, getWidth()/16, Image.SCALE_DEFAULT))), gbc);
+      contentPane.add(new JLabel(new ImageIcon(new ImageIcon("img/black.png").getImage().getScaledInstance(getWidth()/16, getWidth()/16, Image.SCALE_DEFAULT))), gbc);
       gbc.gridx = 3;
       contentPane.add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(getWidth()/16, getWidth()/16, Image.SCALE_DEFAULT))), gbc);
 
@@ -210,6 +222,7 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
    }
 
    public void stateChanged(ChangeEvent e) {
-      output.setText("Handicap: " + range.getValue());
+      outputRange.setText("Handicap: " + range.getValue());
+      outputTimer.setText("Temps: " + timer.getValue() + "min.");
    }
 }
