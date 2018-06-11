@@ -86,14 +86,18 @@ public class Stone {
 
    public State calculateTerritory() {
       setToEmpty();
-      GobanGrid.printStones(Goban.getStones());
+      // GobanGrid.printStones(Goban.getStones());
 
-      if(calculateTerritory(State.BLACK, new boolean[Goban.SIZE][Goban.SIZE])) {
-         System.out.println("Group is: "+State.BLACK);
+      boolean[][] visited = new boolean[Goban.SIZE][Goban.SIZE];
+      if(calculateTerritory(State.BLACK, visited)) {
+         // System.out.println("Group is: "+State.BLACK);
+         Go.getGoban().grid.fill(State.BLACK_T, visited);
          return State.BLACK;
       }
-      if(calculateTerritory(State.WHITE, new boolean[Goban.SIZE][Goban.SIZE])) {
-         System.out.println("Group is: "+State.WHITE);
+      visited = new boolean[Goban.SIZE][Goban.SIZE];
+      if(calculateTerritory(State.WHITE, visited)) {
+         // System.out.println("Group is: "+State.WHITE);
+         Go.getGoban().grid.fill(State.WHITE_T, visited);
          return State.WHITE;
       }
       return null;
@@ -102,26 +106,39 @@ public class Stone {
       Stone[][] stones = Goban.getStones();
       visited[x][y] = true;
       boolean bool1 = false, bool2 = false, bool3 = false, bool4 = false;
-      if (x > 0 && stones[x-1][y] != null && !visited[x-1][y]) {
-         if(stones[x-1][y].color == State.EMPTY) return stones[x-1][y].calculateTerritory(color, visited);
-         if(stones[x-1][y].color != color) return false;
-         else bool1 = true;
-      }
-      if (x+1 < Goban.SIZE && stones[x+1][y] != null && !visited[x+1][y]) {
-         if(stones[x+1][y].color == State.EMPTY) return stones[x+1][y].calculateTerritory(color, visited);
-         if(stones[x+1][y].color != color) return false;
-         else bool2 = true;
-      }
-      if (y > 0 && stones[x][y-1] != null && !visited[x][y-1]) {
-         if(stones[x][y-1].color == State.EMPTY) return stones[x][y-1].calculateTerritory(color, visited);
-         if(stones[x][y-1].color != color) return false;
-         else bool3 = true;
-      }
-      if (y+1 < Goban.SIZE && stones[x][y+1] != null && !visited[x][y+1]) {
-         if(stones[x][y+1].color == State.EMPTY) return stones[x][y+1].calculateTerritory(color, visited);
-         if(stones[x][y+1].color != color) return false;
-         else bool4 = true;
-      }
+      if (x > 0 && stones[x-1][y] != null) {
+         if(stones[x-1][y].color == State.EMPTY) {
+            if(!visited[x-1][y]) bool1 = stones[x-1][y].calculateTerritory(color, visited);
+            else bool1 = true;
+         }
+         else if(stones[x-1][y].color == color) bool1 = true;
+         else if(stones[x-1][y].color != color) return false;
+      } else bool1 = true;
+      if (x+1 < Goban.SIZE && stones[x+1][y] != null) {
+         if(stones[x+1][y].color == State.EMPTY) {
+            if(!visited[x+1][y]) bool2 = stones[x+1][y].calculateTerritory(color, visited);
+            else bool2 = true;
+         }
+         else if(stones[x+1][y].color == color) bool2 = true;
+         else if(stones[x+1][y].color != color) return false;
+      } else bool2 = true;
+      if (y > 0 && stones[x][y-1] != null) {
+         if(stones[x][y-1].color == State.EMPTY) {
+            if(!visited[x][y-1]) bool3 = stones[x][y-1].calculateTerritory(color, visited);
+            else bool3 = true;
+         }
+         else if(stones[x][y-1].color == color) bool3 = true;
+         else if(stones[x][y-1].color != color) return false;
+      } else bool3 = true;
+      if (y+1 < Goban.SIZE && stones[x][y+1] != null) {
+         if(stones[x][y+1].color == State.EMPTY) {
+            if(!visited[x][y+1]) bool4 = stones[x][y+1].calculateTerritory(color, visited);
+            else bool4 = true;
+         }
+         else if(stones[x][y+1].color == color) bool4 = true;
+         else if(stones[x][y+1].color != color) return false;
+      } else bool4 = true;
+      // System.out.println("bool1: "+bool1+"bool2: "+bool2+"bool3: "+bool3+"bool4: "+bool4);
       return bool1 && bool2 && bool3 && bool4;
    }
    public void setToEmpty() {
@@ -156,5 +173,5 @@ public class Stone {
 }
 
 enum State {
-   BLACK, WHITE, EMPTY
+   BLACK, WHITE, EMPTY, BLACK_T, WHITE_T
 }

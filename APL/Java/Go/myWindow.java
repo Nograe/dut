@@ -152,7 +152,7 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
    }
 
    public void displayWinner() {
-      Goban.END = true;
+      Goban.gameState = GameState.END;
       contentPane.removeAll();
       contentPane.repaint();
       contentPane.setLayout(new GridBagLayout());

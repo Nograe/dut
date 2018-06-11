@@ -21,7 +21,7 @@ public class Countdown extends JLabel {
       setText(interval/1000/60 + ":00");
       ActionListener taskPerformer = new ActionListener() {
          public void actionPerformed(ActionEvent evt) {
-            if(Goban.END) {
+            if(Goban.gameState == GameState.END) {
                timer.stop();
                return;
             }

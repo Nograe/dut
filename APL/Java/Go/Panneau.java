@@ -71,7 +71,7 @@ class Button extends JButton implements ActionListener, MouseMotionListener {
          Go.mainWindow.chooseTimer(Integer.parseInt(e.getActionCommand()));
       }
       if(e.getActionCommand() == "Quitter") {
-         Goban.END = true;
+         Goban.gameState = GameState.END;
          Go.mainWindow.displayMenu();
       }
    }

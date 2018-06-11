@@ -97,8 +97,8 @@ public class Infos extends JPanel implements ComponentListener {
       for (Stone[] row : stones) {
          for (Stone stone : row) {
             if(stone == null) continue;
-            if(stone.color == State.BLACK) scoreB++;
-            else scoreW++;
+            if(stone.color == State.BLACK || stone.color == State.BLACK_T) scoreB++;
+            if(stone.color == State.WHITE || stone.color == State.WHITE_T) scoreW++;
          }
       }
       setScore(State.BLACK, scoreB);
@@ -137,7 +137,7 @@ public class Infos extends JPanel implements ComponentListener {
          @Override
          public void actionPerformed(ActionEvent e) {
             Goban.player = State.BLACK;
-            Goban.CAPTURE = !Goban.CAPTURE;
+            Goban.gameState = (Goban.gameState == GameState.CAPTURE) ? GameState.END : GameState.CAPTURE;
             GobanGrid.hoverStone = null;
             Goban.grid.repaint();
          }
@@ -146,7 +146,7 @@ public class Infos extends JPanel implements ComponentListener {
          @Override
          public void actionPerformed(ActionEvent e) {
             Goban.player = State.WHITE;
-            Goban.CAPTURE = !Goban.CAPTURE;
+            Goban.gameState = (Goban.gameState == GameState.CAPTURE) ? GameState.END : GameState.CAPTURE;
             GobanGrid.hoverStone = null;
             Goban.grid.repaint();
          }
@@ -169,11 +169,18 @@ public class Infos extends JPanel implements ComponentListener {
       gbc.gridx = 0; gbc.gridy++; gbc.gridwidth = 3;
       add(suivant, gbc);
 
+      Goban.grid.repaint();
       repaint();
       revalidate();
    }
    public void territories() {
+      Stone[][] backupStones = Goban.deepCopy(Goban.getStones());
       Stone[][] stones = Goban.getStones();
+      for (int y = 0; y < stones[0].length; y++) {
+         for (int x = 0; x < stones.length; x++) {
+            if(Go.getGoban().grid.deadStones[x][y]) stones[x][y] = null;
+         }
+      }
       for (int y = 0; y < stones[0].length; y++) {
          for (int x = 0; x < stones.length; x++) {
             if(stones[x][y] != null) continue;
@@ -181,7 +188,38 @@ public class Infos extends JPanel implements ComponentListener {
             stones[x][y].calculateTerritory();
          }
       }
-      // Goban.setStones(stones);
+
+      removeAll();
+      GobanGrid.hoverStone = null;
+      Goban.gameState = GameState.TERRITORY;
+      Button retour = new Button("Retour", 20, getBackground().darker().darker());
+      retour.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            Goban.setStones(backupStones);
+            Goban.gameState = GameState.END;
+            finish();
+         }
+      });
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.insets = new Insets(15, 0, 15, 0);
+      gbc.gridy = gbc.gridx = 0; gbc.gridwidth = 3;
+      add(retour, gbc);
+
+      Button suivant = new Button("Suivant", 20, new Color(50, 120, 180));
+      suivant.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            Go.mainWindow.displayWinner();
+         }
+      });
+      gbc.gridx = 0; gbc.gridy++;
+      add(suivant, gbc);
+      setScore();
+
+      Goban.grid.repaint();
+      repaint();
+      revalidate();
    }
 
    @Override
@@ -199,4 +237,8 @@ public class Infos extends JPanel implements ComponentListener {
    }
    public void componentShown(ComponentEvent e) {
    }
+}
+
+enum GameState {
+   START, END, CAPTURE, TERRITORY
 }
