@@ -44,6 +44,9 @@ public class Goban extends JPanel implements ComponentListener {
    public static Stone[][] getStones() {
       return grid.stones;
    }
+   public static void setStones(Stone[][] A) {
+      grid.stones = A;
+   }
 
    @Override
    public void paintComponent(Graphics g) {
@@ -101,7 +104,7 @@ public class Goban extends JPanel implements ComponentListener {
       System.out.println("------------------------------");
    }
 
-   public Stone[][] deepCopy(Stone[][] A) {
+   public static Stone[][] deepCopy(Stone[][] A) {
       Stone[][] array = A.clone();
       for (int i = 0; i < array.length; i++) {
          array[i] = A[i].clone();
@@ -133,6 +136,8 @@ public class Goban extends JPanel implements ComponentListener {
    public void finish() {
       END = true;
       listeCoups = new ArrayList<Stone[][]>();
+      listIndex = 1;
+      addCoup();
       grid.finish();
       infos.finish();
    }
@@ -143,14 +148,14 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
    public Stone[][] stones; // 1: noir 2: blanc
    public boolean[][] deadStones;
    private boolean[][] hoshis;
-   private Point hoverStone;
+   public static Point hoverStone;
 
    public GobanGrid() {
       addMouseListener(this);
       addMouseMotionListener(this);
       setBackground(new Color(155, 105, 50));
-      stones = new Stone[Goban.SIZE+1][Goban.SIZE+1];
-      deadStones = new boolean[Goban.SIZE+1][Goban.SIZE+1];
+      stones = new Stone[Goban.SIZE][Goban.SIZE];
+      deadStones = new boolean[Goban.SIZE][Goban.SIZE];
 
       int handicap = myWindow.range.getValue();
       if(handicap % 2 == 1) {
@@ -234,6 +239,7 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
          if(stones[x][y] == null) continue;
          if(stones[x][y].color == State.BLACK) url = this.getClass().getResource("img/black.png");
          if(stones[x][y].color == State.WHITE) url = this.getClass().getResource("img/white.png");
+         if(stones[x][y].color == State.EMPTY) url = this.getClass().getResource("img/cancel.png");
          Image stone = new ImageIcon(url).getImage();
          if(Goban.END && deadStones[x][y]) g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
          else g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
@@ -303,11 +309,11 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
             Go.getGoban().nextPlayer();
          }
       }
-      if(Goban.END && stones[posX][posY] != null && !Goban.CAPTURE) {
+      else if(Goban.END && stones[posX][posY] != null && !Goban.CAPTURE) {
          if(hover) {
             hoverStone = new Point(posX, posY);
-         } else if(stones[posX][posY].getLiberties() <= 1) {
-            deadStones[posX][posY] = !deadStones[posX][posY];
+         } else {
+            stones[posX][posY].removeGroup(!deadStones[posX][posY]);
          }
       }
       repaint();
@@ -334,15 +340,13 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
             continue;
          }
          if (neighbor.color != stones[x][y].color) {
-            checkStone(neighbor);
+            if(neighbor.getLiberties() < 1) {
+               neighbor.removeGroup();
+            }
          }
       }
-      return checkStone(stones[x][y]);
-   }
-
-   public boolean checkStone(Stone stone) {
-      if (stone.getLiberties() < 1) {
-         stone.removeGroup();
+      if(stones[x][y].getLiberties() < 1) {
+         stones[x][y] = null;
          return false;
       }
       return true;
@@ -377,7 +381,7 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
    public void mouseDragged(MouseEvent e) {
    }
 
-   public void printStones(Stone[][] array) {
+   public static void printStones(Stone[][] array) {
       for (int y = 0; y < Goban.SIZE; y++) {
          for (int x = 0; x < Goban.SIZE; x++) {
             if(array[x][y] == null) System.out.print(" ");

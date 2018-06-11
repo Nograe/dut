@@ -138,6 +138,8 @@ public class Infos extends JPanel implements ComponentListener {
          public void actionPerformed(ActionEvent e) {
             Goban.player = State.BLACK;
             Goban.CAPTURE = !Goban.CAPTURE;
+            GobanGrid.hoverStone = null;
+            Goban.grid.repaint();
          }
       });
       captureW.addActionListener(new ActionListener() {
@@ -145,6 +147,8 @@ public class Infos extends JPanel implements ComponentListener {
          public void actionPerformed(ActionEvent e) {
             Goban.player = State.WHITE;
             Goban.CAPTURE = !Goban.CAPTURE;
+            GobanGrid.hoverStone = null;
+            Goban.grid.repaint();
          }
       });
       gbc.gridy++; gbc.gridwidth = 1;
@@ -158,6 +162,10 @@ public class Infos extends JPanel implements ComponentListener {
             territories();
          }
       });
+      gbc.gridx = 0; gbc.gridy++;
+      add(undo, gbc);
+      gbc.gridx = 2;
+      add(redo, gbc);
       gbc.gridx = 0; gbc.gridy++; gbc.gridwidth = 3;
       add(suivant, gbc);
 
@@ -165,7 +173,15 @@ public class Infos extends JPanel implements ComponentListener {
       revalidate();
    }
    public void territories() {
-
+      Stone[][] stones = Goban.getStones();
+      for (int y = 0; y < stones[0].length; y++) {
+         for (int x = 0; x < stones.length; x++) {
+            if(stones[x][y] != null) continue;
+            stones[x][y] = new Stone(State.EMPTY, x, y);
+            stones[x][y].calculateTerritory();
+         }
+      }
+      // Goban.setStones(stones);
    }
 
    @Override
