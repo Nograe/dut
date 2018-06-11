@@ -80,6 +80,7 @@ public class Infos extends JPanel implements ComponentListener {
       add(scoreWhite, gbc);
       add(new JLabel(new ImageIcon(new ImageIcon("img/white.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))), gbc);
 
+      gbc.insets = new Insets(5, 0, 5, 0);
       gbc.gridx = 0; gbc.weighty = 1;
       gbc.gridy++;
       // gbc.anchor = GridBagConstraints.LAST_LINE_START;

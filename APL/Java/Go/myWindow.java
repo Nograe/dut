@@ -32,7 +32,7 @@ public class myWindow extends JFrame implements ComponentListener, ChangeListene
       setTitle("Go");
       setSize((int)MenuWindow.getWidth(), (int)MenuWindow.getHeight());
       setLocationRelativeTo(null);
-      setMinimumSize(new Dimension(300, 200));
+      setMinimumSize(new Dimension(600, 580));
       contentPane.removeAll();
       contentPane.setLayout(new GridBagLayout());
       contentPane.setBackground(new Color(20, 120, 130));
