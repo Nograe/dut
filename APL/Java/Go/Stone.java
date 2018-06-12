@@ -9,6 +9,23 @@ public class Stone {
       this.y = y;
    }
 
+   public boolean isAlone() {
+      Stone[][] stones = Goban.getStones();
+      if (x > 0 && stones[x-1][y] != null && stones[x-1][y].color == color) {
+         return false;
+      }
+      if (x+1 < Goban.SIZE && stones[x+1][y] != null && stones[x+1][y].color == color) {
+         return false;
+      }
+      if (y > 0 && stones[x][y-1] != null && stones[x][y-1].color == color) {
+         return false;
+      }
+      if (y+1 < Goban.SIZE && stones[x][y+1] != null && stones[x][y+1].color == color) {
+         return false;
+      }
+      return true;
+   }
+
    public int getLiberties() {
       return getLiberties(new boolean[Goban.SIZE][Goban.SIZE]);
    }
@@ -173,5 +190,5 @@ public class Stone {
 }
 
 enum State {
-   BLACK, WHITE, EMPTY, BLACK_T, WHITE_T
+   BLACK, WHITE, EMPTY, BLACK_T, WHITE_T, KO
 }

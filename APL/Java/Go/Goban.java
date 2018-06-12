@@ -12,6 +12,7 @@ public class Goban extends JPanel implements ComponentListener {
 
    public static State player;
    private static ArrayList<Stone[][]> listeCoups;
+   private static ArrayList<Stone> listeKo;
    private int listIndex;
    public static GobanGrid grid;
    private Infos infos;
@@ -23,6 +24,7 @@ public class Goban extends JPanel implements ComponentListener {
       SKIPS = 0;
       player = State.BLACK;
       listeCoups = new ArrayList<Stone[][]>();
+      listeKo = new ArrayList<Stone>();
       this.SIZE = SIZE;
       this.timer = timer;
       listIndex = 1;
@@ -69,6 +71,23 @@ public class Goban extends JPanel implements ComponentListener {
       grid.repaint();
    }
 
+   public void addKo(Stone stone) {
+      listeKo.add(stone);
+   }
+   public void removeKo() {
+      if(listeKo.size() > 0) {
+         listeKo.remove(listeKo.size()-1);
+      }
+   }
+   public boolean isKo(Stone stone) {
+      for(int i = 0; i < listeKo.size(); i++) {
+         if(stone.x == listeKo.get(i).x && stone.y == listeKo.get(i).y) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public void addCoup() {
       SKIPS = 0;
       listeCoups.add(deepCopy(grid.stones));
@@ -76,6 +95,7 @@ public class Goban extends JPanel implements ComponentListener {
          listeCoups.remove(listeCoups.size()-listIndex);
       }
       listIndex = 1;
+      // GobanGrid.printStones(getStones());
    }
    public void undoCoup() {
       if(listIndex >= listeCoups.size()) return;
@@ -299,7 +319,7 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
          if(hover) {
             hoverStone = new Point(posX, posY);
          }
-         if(!hover && addStone(posX, posY)) {
+         else if(addStone(posX, posY)) {
             hoverStone = null;
             Infos.setScore();
             Go.getGoban().addCoup();
@@ -318,7 +338,13 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
 
    public boolean addStone(int x, int y) {
       stones[x][y] = new Stone(Go.getGoban().player, x, y);
+      if(Go.getGoban().isKo(stones[x][y])) {
+         stones[x][y] = null;
+         return false;
+      }
       Stone[] neighbors = new Stone[4];
+      boolean ko = (stones[x][y].getLiberties() < 1) ? true : false;
+      Stone koStone = null;
       if (x > 0) {
          neighbors[0] = stones[x - 1][y];
       }
@@ -338,13 +364,20 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
          }
          if (neighbor.color != stones[x][y].color) {
             if(neighbor.getLiberties() < 1) {
+               if(!neighbor.isAlone()) ko = false;
+               else if(ko) koStone = new Stone(State.KO, neighbor.x, neighbor.y);
                neighbor.removeGroup();
             }
          }
       }
       if(stones[x][y].getLiberties() < 1) {
          stones[x][y] = null;
+         ko = false;
          return false;
+      }
+      Go.getGoban().removeKo();
+      if(ko) {
+         Go.getGoban().addKo(koStone);
       }
       return true;
    }
@@ -382,6 +415,7 @@ class GobanGrid extends JPanel implements MouseListener, MouseMotionListener {
       for (int y = 0; y < Goban.SIZE; y++) {
          for (int x = 0; x < Goban.SIZE; x++) {
             if(array[x][y] == null) System.out.print(" ");
+            else if(Go.getGoban().isKo(array[x][y])) System.out.print('k');
             else System.out.print(array[x][y]);
          }
          System.out.println();
