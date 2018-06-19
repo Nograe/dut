@@ -3,6 +3,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
 import javax.swing.ListSelectionModel.*;
+import java.io.*;
 
 public class GestionLivre extends JFrame implements ListSelectionListener {
    private JPanel contentPane = new JPanel();
@@ -22,7 +23,7 @@ public class GestionLivre extends JFrame implements ListSelectionListener {
       setTitle("Bibliotheque");
       setSize(500, 500);
       setLocationRelativeTo(null);
-      setResizable(false);
+      // setResizable(false);
       listModel = new DefaultListModel<Livre>();
       liste = new JList<Livre>(listModel);
       liste.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -101,7 +102,11 @@ public class GestionLivre extends JFrame implements ListSelectionListener {
       save.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            save();
+            try {
+               save();
+            } catch (FileNotFoundException | UnsupportedEncodingException e1) {
+               e1.printStackTrace();
+            }
          }
       });
       contentPane.add(save, gbc);
@@ -110,7 +115,11 @@ public class GestionLivre extends JFrame implements ListSelectionListener {
       load.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            load();
+            try {
+               load();
+            } catch (IOException e1) {
+               e1.printStackTrace();
+            }
          }
       });
       contentPane.add(load, gbc);
@@ -132,7 +141,7 @@ public class GestionLivre extends JFrame implements ListSelectionListener {
 
    public void valueChanged(ListSelectionEvent e) {
       int maxIndex = listModel.getSize();
-      for (int i = 0; i <= maxIndex; i++) {
+      for (int i = 0; i < maxIndex; i++) {
          if (liste.isSelectedIndex(i)) {
             outputAuteur.setText("Auteur: "+listModel.getElementAt(i).getAuteur());
             outputPrix.setText("Prix: "+listModel.getElementAt(i).getPrix());
@@ -141,11 +150,31 @@ public class GestionLivre extends JFrame implements ListSelectionListener {
       repaint();
    }
 
-   public void save() {
-
+   public void save() throws FileNotFoundException, UnsupportedEncodingException {
+      PrintWriter writer = new PrintWriter("livres.save", "UTF-8");
+      int maxIndex = listModel.getSize();
+      for (int i = 0; i < maxIndex; i++) {
+         writer.println(listModel.getElementAt(i).getTitre());
+         writer.println(listModel.getElementAt(i).getAuteur());
+         writer.println(listModel.getElementAt(i).getPrix());
+      }
+      writer.close();
    }
 
-   public void load() {
-      
+   public void load() throws IOException {
+      listModel.removeAllElements();
+      BufferedReader load = new BufferedReader(new FileReader("livres.save"));
+      String titre;
+      String auteur;
+      float prix;
+
+      String line;
+      while((line = load.readLine()) != null) {
+         titre = line;
+         auteur = load.readLine();
+         prix = Float.parseFloat(load.readLine());
+         listModel.addElement(new Livre(titre, auteur, prix));
+      }
+      load.close();
    }
 }
