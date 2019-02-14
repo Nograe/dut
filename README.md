@@ -3,8 +3,8 @@
 </p>
 
 # [Algorithmique et Programmation](APL/)
-- ## [Cours](APL/)
-- ## [Projets](APL/projets/)
+- ## [C](APL/C)
+- ## [Java](APL/Java/)
 # [Architecture, Systèmes et Réseaux](ASR/)
 - ## [TP](ASR/)
 - ## [Homework](ASR/HOMEWORK/)
